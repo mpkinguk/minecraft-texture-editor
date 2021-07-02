@@ -30,14 +30,15 @@ namespace MinecraftTextureEditorUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pictureBoxImage = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxImage
             // 
             this.pictureBoxImage.Location = new System.Drawing.Point(0, 0);
+            this.pictureBoxImage.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.pictureBoxImage.Name = "pictureBoxImage";
             this.pictureBoxImage.Size = new System.Drawing.Size(100, 50);
             this.pictureBoxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -46,12 +47,14 @@ namespace MinecraftTextureEditorUI
             // 
             // EditorForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(646, 566);
+            this.ClientSize = new System.Drawing.Size(579, 740);
             this.Controls.Add(this.pictureBoxImage);
+            this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "EditorForm";
             this.Text = "Editor";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();

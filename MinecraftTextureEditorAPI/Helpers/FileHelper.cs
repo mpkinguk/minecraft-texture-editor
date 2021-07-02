@@ -101,6 +101,9 @@ namespace MinecraftTextureEditorAPI
                     if (MessageBox.Show("File already exists. Create a backup?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         File.Move(filename, string.Concat(filename, ".bak"));
+                    } else
+                    {
+                        File.Delete(filename);
                     }
                 }
 

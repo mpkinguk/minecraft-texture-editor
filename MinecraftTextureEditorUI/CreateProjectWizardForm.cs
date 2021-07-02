@@ -100,6 +100,10 @@ namespace MinecraftTextureEditorUI
                         {
                             throw new ArgumentException("Project path is empty");
                         }
+                        if (!Directory.Exists(textBoxProjectPath.Text))
+                        {
+                            throw new ArgumentException("Project path is invalid");
+                        }
 
                         // Clone to prevent threading issues
                         var packVersion = (string)comboBoxVersion.Text.Clone();

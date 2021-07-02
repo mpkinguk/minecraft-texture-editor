@@ -62,7 +62,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonEraser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonEraser.Font = new System.Drawing.Font("Minecraft", 10F);
-            this.buttonEraser.Location = new System.Drawing.Point(100, 373);
+            this.buttonEraser.Location = new System.Drawing.Point(100, 374);
             this.buttonEraser.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonEraser.Name = "buttonEraser";
             this.buttonEraser.Size = new System.Drawing.Size(53, 42);
@@ -75,7 +75,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.panelColour1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColour1.Font = new System.Drawing.Font("Minecraft", 10F);
-            this.panelColour1.Location = new System.Drawing.Point(20, 491);
+            this.panelColour1.Location = new System.Drawing.Point(21, 495);
             this.panelColour1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panelColour1.Name = "panelColour1";
             this.panelColour1.Size = new System.Drawing.Size(52, 41);
@@ -85,7 +85,7 @@ namespace MinecraftTextureEditorUI
             // panelColour2
             // 
             this.panelColour2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour2.Location = new System.Drawing.Point(101, 491);
+            this.panelColour2.Location = new System.Drawing.Point(102, 495);
             this.panelColour2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panelColour2.Name = "panelColour2";
             this.panelColour2.Size = new System.Drawing.Size(52, 41);
@@ -109,7 +109,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonMirrorX.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonMirrorX.Font = new System.Drawing.Font("Minecraft", 10F);
-            this.buttonMirrorX.Location = new System.Drawing.Point(20, 423);
+            this.buttonMirrorX.Location = new System.Drawing.Point(20, 424);
             this.buttonMirrorX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonMirrorX.Name = "buttonMirrorX";
             this.buttonMirrorX.Size = new System.Drawing.Size(53, 42);
@@ -122,7 +122,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonMirrorY.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonMirrorY.Font = new System.Drawing.Font("Minecraft", 10F);
-            this.buttonMirrorY.Location = new System.Drawing.Point(100, 423);
+            this.buttonMirrorY.Location = new System.Drawing.Point(100, 424);
             this.buttonMirrorY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonMirrorY.Name = "buttonMirrorY";
             this.buttonMirrorY.Size = new System.Drawing.Size(53, 42);
@@ -144,6 +144,7 @@ namespace MinecraftTextureEditorUI
             // 
             // pictureBoxColourPicker
             // 
+            this.pictureBoxColourPicker.BackColor = System.Drawing.Color.Transparent;
             this.pictureBoxColourPicker.Location = new System.Drawing.Point(17, 64);
             this.pictureBoxColourPicker.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.pictureBoxColourPicker.Name = "pictureBoxColourPicker";
@@ -156,9 +157,10 @@ namespace MinecraftTextureEditorUI
             // label7
             // 
             this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label7.Location = new System.Drawing.Point(5, 4);
+            this.label7.ForeColor = System.Drawing.Color.Yellow;
+            this.label7.Location = new System.Drawing.Point(8, 8);
             this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(143, 20);
@@ -169,6 +171,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.ClientSize = new System.Drawing.Size(251, 549);
             this.ControlBox = false;
             this.Controls.Add(this.label7);

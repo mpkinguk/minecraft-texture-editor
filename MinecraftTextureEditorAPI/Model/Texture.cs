@@ -11,12 +11,12 @@ namespace MinecraftTextureEditorAPI.Model
         /// <summary>
         /// The width
         /// </summary>
-        public int Width => PixelList.Max(o => o.X);
+        public int Width => PixelList.Max(o => o.X) + 1;
 
         /// <summary>
         /// The height
         /// </summary>
-        public int Height => PixelList.Max(o => o.Y);
+        public int Height => PixelList.Max(o => o.Y) + 1;
 
         /// <summary>
         /// Constructor

@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateProjectWizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,12 +102,21 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResolutionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResolutionForm.Designer.cs">
+      <DependentUpon>ResolutionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TexturePickerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TexturePickerForm.Designer.cs">
       <DependentUpon>TexturePickerForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CreateProjectWizardForm.resx">
       <DependentUpon>CreateProjectWizardForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -133,6 +148,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ResolutionForm.resx">
+      <DependentUpon>ResolutionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TexturePickerForm.resx">
       <DependentUpon>TexturePickerForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -177,9 +195,6 @@
     <None Include="Resources\eraser.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\pen.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\mirror.png" />
   </ItemGroup>
   <ItemGroup>
@@ -193,9 +208,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wizard.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\wizardcreate.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wizarddeploy.png" />
@@ -213,6 +225,36 @@
       <Project>{298cfc84-c8c2-4b63-a5d7-e432a9401f36}</Project>
       <Name>ZipFileManagerAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wizardcreate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wallpaper5.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wallpaper4.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wallpaper3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wallpaper2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\texturewallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\steve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MinecraftTextureEditorIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

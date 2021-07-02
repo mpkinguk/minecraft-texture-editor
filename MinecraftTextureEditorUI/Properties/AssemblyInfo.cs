@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MinecraftTextureEditor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Minecraft Texture Editor")]
+[assembly: AssemblyDescription("Texture editor and packager for Minecraft Java Edition")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Lord Martin King of Sealand")]
 [assembly: AssemblyProduct("MinecraftTextureEditor")]
 [assembly: AssemblyCopyright("Copyright © Lord Martin King of Sealand 2021")]
 [assembly: AssemblyTrademark("")]

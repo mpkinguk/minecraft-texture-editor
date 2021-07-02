@@ -38,9 +38,10 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSave.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSave.Location = new System.Drawing.Point(470, 415);
+            this.buttonSave.Location = new System.Drawing.Point(511, 416);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(91, 27);
+            this.buttonSave.Size = new System.Drawing.Size(120, 30);
             this.buttonSave.TabIndex = 0;
             this.buttonSave.Text = "&Save";
             this.buttonSave.UseVisualStyleBackColor = true;
@@ -50,9 +51,10 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonReload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonReload.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonReload.Location = new System.Drawing.Point(373, 415);
+            this.buttonReload.Location = new System.Drawing.Point(381, 416);
+            this.buttonReload.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonReload.Name = "buttonReload";
-            this.buttonReload.Size = new System.Drawing.Size(91, 27);
+            this.buttonReload.Size = new System.Drawing.Size(120, 30);
             this.buttonReload.TabIndex = 0;
             this.buttonReload.Text = "&Reload";
             this.buttonReload.UseVisualStyleBackColor = true;
@@ -61,9 +63,11 @@ namespace MinecraftTextureEditorUI
             // label7
             // 
             this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label7.Location = new System.Drawing.Point(18, 18);
+            this.label7.ForeColor = System.Drawing.Color.Yellow;
+            this.label7.Location = new System.Drawing.Point(8, 8);
+            this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(81, 20);
             this.label7.TabIndex = 4;
@@ -71,13 +75,17 @@ namespace MinecraftTextureEditorUI
             // 
             // OptionsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(573, 450);
+            this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ClientSize = new System.Drawing.Size(645, 461);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.buttonReload);
             this.Controls.Add(this.buttonSave);
+            this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "OptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ResumeLayout(false);

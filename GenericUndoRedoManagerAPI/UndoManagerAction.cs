@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GenericUndoRedoManagerAPI
 {
-    public class UndoManagerAction<T>
+    public class UndoManagerAction<T>:IDisposable
     {
         /// <summary>
         /// Private Undo stack
@@ -101,6 +102,11 @@ namespace GenericUndoRedoManagerAPI
         public List<T> RedoItems()
         {
             return RedoStack.ToList();
+        }
+
+        public void Dispose()
+        {
+            Clear();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using MinecraftTextureEditorAPI;
+﻿using GenericUndoRedoManagerAPI;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Model;
-using GenericUndoRedoManagerAPI;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -33,7 +33,29 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Display drawing grid
         /// </summary>
-        public bool ShowGrid { get; set; }
+        public bool ShowGrid
+        {
+            get => _showGrid;
+            set
+            {
+                _showGrid = value;
+                RefreshDisplay();
+            }
+        }
+
+        /// <summary>
+        /// Display drawing grid
+        /// </summary>
+        public bool ShowTransparent
+        {
+            get => _showTransparent;
+            set
+            {
+                _showTransparent = !_showTransparent;
+                BackgroundImage = _showTransparent ? Properties.Resources.transparentGrid : null;
+                RefreshDisplay();
+            }
+        }
 
         /// <summary>
         /// Has the image changed since loading?
@@ -89,6 +111,10 @@ namespace MinecraftTextureEditorUI
 
         #region private variables
 
+        private bool _showGrid;
+
+        private bool _showTransparent;
+
         private const int StartZoom = 16;
 
         private int _width;
@@ -118,11 +144,11 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The constructor
         /// </summary>
-        public EditorForm()
+        public EditorForm(int width, int height)
         {
             InitializeComponent();
 
-            Init();
+            Init(width, height);
         }
 
         #region Private methods
@@ -130,12 +156,12 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Init variables
         /// </summary>
-        private void Init()
+        private void Init(int width, int height)
         {
-            Texture = DrawingHelper.GetBlankTexture(16, 16);
+            Texture = DrawingHelper.GetBlankTexture(width, height);
 
-            _width = 15;
-            _height = 15;
+            _width = width;
+            _height = height;
 
             _undoManager = new UndoManagerAction<Texture>();
 
@@ -148,7 +174,8 @@ namespace MinecraftTextureEditorUI
             pictureBoxImage.MouseDown += EditorMousePaintPixel;
             pictureBoxImage.MouseUp += PictureBoxImageMouseUp;
             pictureBoxImage.MouseWheel += PictureBoxImageMouseWheel;
-            pictureBoxImage.BackgroundImage = Properties.Resources.transparentGrid;
+
+            pictureBoxImage.BackColor = Color.FromKnownColor(KnownColor.Transparent);
 
             MouseWheel += PictureBoxImageMouseWheel;
             MouseMove += EditorFormMouseMove;
@@ -159,6 +186,10 @@ namespace MinecraftTextureEditorUI
             EraserColor = Color.Transparent;
 
             HasChanged = false;
+
+            ShowGrid = true;
+
+            ShowTransparent = true;
 
             RefreshDisplay();
         }
@@ -266,14 +297,23 @@ namespace MinecraftTextureEditorUI
 
             foreach (var pixel in Texture.PixelList)
             {
-                g.FillRectangle(new SolidBrush(pixel.PixelColour), pixel.X * Zoom, pixel.Y * Zoom, Zoom, Zoom);
+                var pixelRectangle = new Rectangle(pixel.X * Zoom, pixel.Y * Zoom, Zoom, Zoom);
 
-                // Otherwise you can't see what you're painting!
-                if (Zoom > StartZoom / 2 && ShowGrid)
+                if (pixelRectangle.IntersectsWith(e.ClipRectangle))
                 {
-                    g.DrawRectangle(Pens.Black, pixel.X * Zoom, pixel.Y * Zoom, Zoom, Zoom);
+                    g.FillRectangle(new SolidBrush(pixel.PixelColour), pixelRectangle);
+
+                    // Otherwise you can't see what you're painting!
+                    if (Zoom > StartZoom / 2 && ShowGrid)
+                    {
+                        g.DrawRectangle(Pens.Black, pixelRectangle);
+                    }
                 }
             }
+
+            var gridRectangle = new Rectangle(pictureBoxImage.Location, new Size(pictureBoxImage.ClientRectangle.Width - 1, pictureBoxImage.ClientRectangle.Height - 1));
+
+            g.DrawRectangle(Pens.Black, gridRectangle);
 
             // Show cursor
 
@@ -356,13 +396,13 @@ namespace MinecraftTextureEditorUI
 
             if (ToolType.Equals(ToolType.MirrorX))
             {
-                Pixel inversePixel = Texture.PixelList.Where(o => o.X.Equals(_width - pixel.X) && o.Y.Equals(pixel.Y)).FirstOrDefault();
+                Pixel inversePixel = Texture.PixelList.Where(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y)).FirstOrDefault();
 
                 inversePixel.PixelColour = colour;
             }
             else if (ToolType.Equals(ToolType.MirrorY))
             {
-                Pixel inversePixel = Texture.PixelList.Where(o => o.Y.Equals(_height - pixel.Y) && o.X.Equals(pixel.X)).FirstOrDefault();
+                Pixel inversePixel = Texture.PixelList.Where(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X)).FirstOrDefault();
 
                 inversePixel.PixelColour = colour;
             }
@@ -377,8 +417,8 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public void RefreshDisplay()
         {
-            pictureBoxImage.Width = (_width + 1) * Zoom;
-            pictureBoxImage.Height = (_height + 1) * Zoom;
+            pictureBoxImage.Width = (_width) * Zoom;
+            pictureBoxImage.Height = (_height) * Zoom;
 
             pictureBoxImage.Invalidate(true);
         }
@@ -396,6 +436,10 @@ namespace MinecraftTextureEditorUI
                 {
                     SaveFile(FileName);
                 }
+
+                _undoManager.Dispose();
+
+                Dispose();
             }
         }
 
@@ -414,11 +458,6 @@ namespace MinecraftTextureEditorUI
                 if (image is null)
                 {
                     return;
-                }
-
-                if(image.Width > 256 || image.Height > 256) 
-                { 
-                    
                 }
 
                 FileName = fileName;

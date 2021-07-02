@@ -1,5 +1,4 @@
-﻿using MinecraftTextureEditorAPI;
-using MinecraftTextureEditorAPI.Model;
+﻿using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -37,6 +36,8 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public string CurrentPath { get; set; }
 
+        private bool _skipResolutionCheck;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -53,9 +54,45 @@ namespace MinecraftTextureEditorUI
             WindowState = FormWindowState.Maximized;
 
             Shown += MDIMainFormShown;
+
+            // Reduce display flicker
+            SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+
+            RandomiseWallpaper();
         }
 
         #region Private methods
+
+        /// <summary>
+        /// Randomises the wallpaper
+        /// </summary>
+        private void RandomiseWallpaper()
+        {
+            var rnd = new System.Random();
+
+            switch (rnd.Next(1, 5))
+            {
+                case 2:
+                    BackgroundImage = Properties.Resources.wallpaper1;
+                    break;
+
+                case 3:
+                    BackgroundImage = Properties.Resources.wallpaper2;
+                    break;
+
+                case 4:
+                    BackgroundImage = Properties.Resources.wallpaper3;
+                    break;
+
+                case 5:
+                    BackgroundImage = Properties.Resources.wallpaper4;
+                    break;
+
+                default:
+                    BackgroundImage = Properties.Resources.wallpaper5;
+                    break;
+            }
+        }
 
         /// <summary>
         /// Is called once form is fully loaded
@@ -180,9 +217,8 @@ namespace MinecraftTextureEditorUI
         /// <param name="filename"></param>
         private void TexturePickerTextureClicked(string filename)
         {
-            ShowNewEditorForm(this, new EventArgs());
-
             LoadFile(filename);
+            //ShowNewEditorForm(this, new EventArgs());
         }
 
         /// <summary>
@@ -196,7 +232,7 @@ namespace MinecraftTextureEditorUI
                 return;
             }
 
-            Text = $"Current Tool type is {toolType}";
+            toolStripStatusLabel.Text = $"Current Tool type is {toolType}";
 
             CurrentEditor.ToolType = toolType;
         }
@@ -208,54 +244,61 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ShowNewEditorForm(object sender, EventArgs e)
         {
-            EditorForm childForm = new EditorForm
+            int width;
+            int height;
+
+            if (_skipResolutionCheck)
+            {
+                // Default to 16x16 if loading
+                width = 16;
+                height = 16;
+            }
+            else
+            {
+                using (ResolutionForm resolutionForm = new ResolutionForm())
+                {
+                    resolutionForm.ShowDialog(this);
+
+                    width = resolutionForm.ImageWidth;
+                    height = resolutionForm.ImageHeight;
+                }
+            }
+
+            EditorForm childForm = new EditorForm(width, height)
             {
                 MdiParent = this,
                 Text = "Editor " + MdiChildren.Count(x => x.Name == "EditorForm"),
                 Colour1 = DrawingTools.Colour1,
                 Colour2 = DrawingTools.Colour2,
                 ToolType = DrawingTools.CurrentToolType,
-                Texture = DrawingHelper.GetBlankTexture(16, 16),
                 Zoom = 16
             };
 
             childForm.GotFocus += ChildFormGotFocus;
             childForm.ColourSelected += ChildFormColourSelected;
             childForm.UndoManagerAction += ChildFormUndoManagerAction;
+            childForm.Disposed += ChildFormDisposed;
             childForm.Show();
         }
 
         /// <summary>
-        /// Capture the undo manager action event from the current editor window
+        /// Enable/disable undo controls based on current editor status
         /// </summary>
-        private void ChildFormUndoManagerAction()
+        private void CheckUndos()
         {
             if (CurrentEditor is null)
             {
+                undoToolStripMenuItem.Enabled = false;
+                redoToolStripMenuItem.Enabled = false;
+                toolStripButtonUndo.Enabled = false;
+                toolStripButtonRedo.Enabled = false;
                 return;
             }
 
-            Text = $"Undo manager action occurred";
-
             undoToolStripMenuItem.Enabled = CurrentEditor.UndoEnabled;
             redoToolStripMenuItem.Enabled = CurrentEditor.RedoEnabled;
-        }
-
-        /// <summary>
-        /// Capture the colour from the dropper and return it to the drawing tools window
-        /// </summary>
-        /// <param name="colour"></param>
-        /// <param name="isColour1"></param>
-        private void ChildFormColourSelected(Color colour, bool isColour1)
-        {
-            if (isColour1)
-            {
-                DrawingTools.Colour1 = colour;
-            }
-            else
-            {
-                DrawingTools.Colour2 = colour;
-            }
+            toolStripButtonUndo.Enabled = CurrentEditor.UndoEnabled;
+            toolStripButtonRedo.Enabled = CurrentEditor.RedoEnabled;
         }
 
         /// <summary>
@@ -264,13 +307,10 @@ namespace MinecraftTextureEditorUI
         /// <param name="fileName">The filename</param>
         private void LoadFile(string fileName = "")
         {
-            // Open a new form if none exist
-            if (MdiChildren.Count(x => x.Name == "EditorForm") == 0)
-            {
-                ShowNewEditorForm(this, new EventArgs());
-            }
-
+            _skipResolutionCheck = true;
+            ShowNewEditorForm(this, new EventArgs());
             CurrentEditor.LoadFile(fileName);
+            _skipResolutionCheck = false;
         }
 
         /// <summary>
@@ -305,9 +345,89 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Open the Create Project Wizard form
+        /// </summary>
+        private void OpenCreateProjectWizardForm()
+        {
+            var createProjectWizard = new CreateProjectWizardForm()
+            {
+                CurrentPath = CurrentPath
+            };
+
+            if (createProjectWizard.ShowDialog(this) == DialogResult.OK)
+            {
+                MessageBox.Show("Project Created!", "Deployment complete");
+
+                CurrentPath = createProjectWizard.CurrentPath;
+
+                ShowToolWindows(CurrentPath);
+            }
+        }
+
+        /// <summary>
+        /// Open the deployment wizard form
+        /// </summary>
+        private void OpenDeploymentWizardForm()
+        {
+            var deploymentWizard = new DeploymentWizardForm()
+            {
+                DeploymentPath = CurrentPath
+            };
+
+            if (deploymentWizard.ShowDialog(this) == DialogResult.OK)
+            {
+                MessageBox.Show("Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete");
+            }
+        }
+
         #endregion Private methods
 
         #region Form events
+
+        /// <summary>
+        /// Clear down the current editor object if form closed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChildFormDisposed(object sender, EventArgs e)
+        {
+            CurrentEditor = null;
+
+            CheckUndos();
+        }
+
+        /// <summary>
+        /// Capture the undo manager action event from the current editor window
+        /// </summary>
+        private void ChildFormUndoManagerAction()
+        {
+            if (CurrentEditor is null)
+            {
+                return;
+            }
+
+            toolStripStatusLabel.Text = $"Undo manager action occurred";
+
+            CheckUndos();
+        }
+
+        /// <summary>
+        /// Capture the colour from the dropper and return it to the drawing tools window
+        /// </summary>
+        /// <param name="colour"></param>
+        /// <param name="isColour1"></param>
+        private void ChildFormColourSelected(Color colour, bool isColour1)
+        {
+            if (isColour1)
+            {
+                DrawingTools.Colour1 = colour;
+            }
+            else
+            {
+                DrawingTools.Colour2 = colour;
+            }
+        }
 
         /// <summary>
         /// Captures the child form got focus event
@@ -327,7 +447,7 @@ namespace MinecraftTextureEditorUI
             CurrentEditor.Colour2 = DrawingTools.Colour2;
             CurrentEditor.ToolType = DrawingTools.CurrentToolType;
 
-            Text = $"Current editor is {CurrentEditor.Text}";
+            toolStripStatusLabel.Text = $"Current editor is {CurrentEditor.Text}";
         }
 
         /// <summary>
@@ -377,7 +497,7 @@ namespace MinecraftTextureEditorUI
                 return;
             }
 
-            PixelClipboard = CurrentEditor.Texture;
+            PixelClipboard = CurrentEditor.Texture.Clone();
 
             CurrentEditor.Texture = new Texture(PixelClipboard.Width, PixelClipboard.Height);
 
@@ -400,7 +520,7 @@ namespace MinecraftTextureEditorUI
                 return;
             }
 
-            PixelClipboard = CurrentEditor.Texture;
+            PixelClipboard = CurrentEditor.Texture.Clone();
         }
 
         /// <summary>
@@ -415,7 +535,7 @@ namespace MinecraftTextureEditorUI
                 return;
             }
 
-            var data = PixelClipboard;
+            var data = PixelClipboard.Clone();
 
             if (data is null)
             {
@@ -625,15 +745,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripButtonDeploymentWizardClick(object sender, EventArgs e)
         {
-            var deploymentWizard = new DeploymentWizardForm()
-            {
-                DeploymentPath = CurrentPath
-            };
-
-            if (deploymentWizard.ShowDialog(this) == DialogResult.OK)
-            {
-                MessageBox.Show("Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete");
-            }
+            OpenDeploymentWizardForm();
         }
 
         /// <summary>
@@ -643,19 +755,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripButtonCreateWizardClick(object sender, EventArgs e)
         {
-            var createProjectWizard = new CreateProjectWizardForm()
-            {
-                CurrentPath = CurrentPath
-            };
-
-            if (createProjectWizard.ShowDialog(this) == DialogResult.OK)
-            {
-                MessageBox.Show("Project Created!", "Deployment complete");
-
-                CurrentPath = createProjectWizard.CurrentPath;
-
-                ShowToolWindows(CurrentPath);
-            }
+            OpenCreateProjectWizardForm();
         }
 
         /// <summary>
@@ -671,7 +771,7 @@ namespace MinecraftTextureEditorUI
             {
                 if (optionsForm.HasSaved)
                 {
-                    Text = "Restarting App...";
+                    toolStripStatusLabel.Text = "Restarting App...";
 
                     Close();
 
@@ -689,11 +789,47 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void AboutToolStripMenuItemClick(object sender, EventArgs e)
         {
-
+            using (var aboutForm = new AboutForm())
+            {
+                aboutForm.ShowDialog(this);
+            }
         }
 
+        /// <summary>
+        /// Toggle the transparent grid background for the current editor form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripButtonTransparentClick(object sender, EventArgs e)
+        {
+            if (CurrentEditor is null)
+            {
+                return;
+            }
+
+            CurrentEditor.ShowTransparent = !CurrentEditor.ShowTransparent;
+        }
+
+        /// <summary>
+        /// Open the create project wizard form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemCreateProjectWizardClick(object sender, EventArgs e)
+        {
+            OpenCreateProjectWizardForm();
+        }
+
+        /// <summary>
+        /// Open the deployment wizard form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemDeploymentWizardClick(object sender, EventArgs e)
+        {
+            OpenDeploymentWizardForm();
+        }
 
         #endregion Form events
-
     }
 }

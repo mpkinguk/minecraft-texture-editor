@@ -84,6 +84,8 @@ namespace MinecraftTextureEditorUI
                     Text = textInfo.ToTitleCase(setting.Key),
                     Name = $"label{setting.Key}",
                     Font = new Font("Minecraft", 10F),
+                    ForeColor = Color.Yellow,
+                    BackColor = Color.FromKnownColor(KnownColor.Transparent),
                     Location = new Point(x, y),
                     AutoSize = true
                 };

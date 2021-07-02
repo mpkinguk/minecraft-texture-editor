@@ -153,6 +153,26 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap steve {
+            get {
+                object obj = ResourceManager.GetObject("steve", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap texturewallpaper {
+            get {
+                object obj = ResourceManager.GetObject("texturewallpaper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap transparentGrid {
             get {
                 object obj = ResourceManager.GetObject("transparentGrid", resourceCulture);
@@ -166,6 +186,56 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap undo {
             get {
                 object obj = ResourceManager.GetObject("undo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper1 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper2 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper3 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper4 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper5 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper5", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
