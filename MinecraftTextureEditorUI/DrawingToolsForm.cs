@@ -30,7 +30,8 @@ namespace MinecraftTextureEditorUI
             Eraser,
             Dropper,
             MirrorX,
-            MirrorY
+            MirrorY,
+            Texturiser
         }
 
         #endregion Enums
@@ -249,6 +250,8 @@ namespace MinecraftTextureEditorUI
 
             buttonMirrorY.BackgroundImage = Properties.Resources.mirrory;
 
+            buttonTexturiser.BackgroundImage = Properties.Resources.texturiser;
+
             Invalidate(true);
         }
 
@@ -344,6 +347,16 @@ namespace MinecraftTextureEditorUI
         private void ButtonMirrorYClick(object sender, EventArgs e)
         {
             OnToolTypeChanged(ToolType.MirrorY);
+        }
+
+        /// <summary>
+        /// Texturiser click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonTexturiserClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Texturiser);
         }
 
         #endregion Form events

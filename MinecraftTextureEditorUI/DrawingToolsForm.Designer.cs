@@ -41,6 +41,7 @@ namespace MinecraftTextureEditorUI
             this.pictureBoxGamma = new System.Windows.Forms.PictureBox();
             this.pictureBoxColourPicker = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.buttonTexturiser = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColourPicker)).BeginInit();
             this.SuspendLayout();
@@ -167,6 +168,19 @@ namespace MinecraftTextureEditorUI
             this.label7.TabIndex = 5;
             this.label7.Text = "Drawing Tools";
             // 
+            // buttonTexturiser
+            // 
+            this.buttonTexturiser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonTexturiser.Font = new System.Drawing.Font("Minecraft", 10F);
+            this.buttonTexturiser.Location = new System.Drawing.Point(180, 424);
+            this.buttonTexturiser.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.buttonTexturiser.Name = "buttonTexturiser";
+            this.buttonTexturiser.Size = new System.Drawing.Size(53, 42);
+            this.buttonTexturiser.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.buttonTexturiser, "Texturiser");
+            this.buttonTexturiser.UseVisualStyleBackColor = true;
+            this.buttonTexturiser.Click += new System.EventHandler(this.ButtonTexturiserClick);
+            // 
             // DrawingToolsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -178,6 +192,7 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.pictureBoxGamma);
             this.Controls.Add(this.panelColour2);
             this.Controls.Add(this.panelColour1);
+            this.Controls.Add(this.buttonTexturiser);
             this.Controls.Add(this.buttonMirrorY);
             this.Controls.Add(this.buttonMirrorX);
             this.Controls.Add(this.buttonDropper);
@@ -210,5 +225,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonMirrorY;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button buttonTexturiser;
     }
 }

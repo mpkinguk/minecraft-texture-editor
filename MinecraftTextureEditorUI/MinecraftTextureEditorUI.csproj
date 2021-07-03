@@ -256,5 +256,8 @@
   <ItemGroup>
     <None Include="Resources\MinecraftTextureEditorIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\texturiser.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

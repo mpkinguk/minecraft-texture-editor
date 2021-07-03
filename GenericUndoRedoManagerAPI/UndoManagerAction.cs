@@ -4,17 +4,21 @@ using System.Linq;
 
 namespace GenericUndoRedoManagerAPI
 {
+    /// <summary>
+    /// Undo manager class
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class UndoManagerAction<T>:IDisposable
     {
         /// <summary>
         /// Private Undo stack
         /// </summary>
-        private readonly Stack<T> UndoStack;
+        private Stack<T> UndoStack;
 
         /// <summary>
         /// Private Redo stack
         /// </summary>
-        private readonly Stack<T> RedoStack;
+        private Stack<T> RedoStack;
 
         /// <summary>
         /// The current item
@@ -107,6 +111,9 @@ namespace GenericUndoRedoManagerAPI
         public void Dispose()
         {
             Clear();
+
+            UndoStack = null;
+            RedoStack = null;
         }
     }
 }
