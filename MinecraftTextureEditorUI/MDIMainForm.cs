@@ -51,6 +51,10 @@ namespace MinecraftTextureEditorUI
 
             ResizeRedraw = true;
 
+            Resize += (sender, e) => { Refresh(); };
+
+            BackgroundImageLayout = ImageLayout.Center;
+
             InitializeComponent();
 
             WindowState = FormWindowState.Maximized;

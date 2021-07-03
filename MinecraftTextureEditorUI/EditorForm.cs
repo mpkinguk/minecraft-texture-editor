@@ -1,6 +1,7 @@
 ﻿using GenericUndoRedoManagerAPI;
 using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Model;
+using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -271,19 +272,13 @@ namespace MinecraftTextureEditorUI
         /// Fire colour selected event
         /// </summary>
         /// <param name="colour">The colour selected</param>
-        /// <param name="isForeColour">Is fore colour</param>
-        private void OnColourSelected(Color colour, bool isForeColour)
+        /// <param name="isColour1">Is fore colour</param>
+        private void OnColourSelected(Color colour, bool isColour1)
         {
-            ColourSelected?.Invoke(colour, isForeColour);
+            ColourSelected?.Invoke(colour, isColour1);
 
-            if (isForeColour)
-            {
-                Colour1 = colour;
-            }
-            else
-            {
-                Colour2 = colour;
-            }
+            Colour1 = isColour1 ? colour : Colour1;
+            Colour2 = isColour1 ? Colour2 : colour;
         }
 
         /// <summary>
@@ -392,8 +387,6 @@ namespace MinecraftTextureEditorUI
                     return;
             }
 
-            pixel.PixelColour = colour;
-
             if (ToolType.Equals(ToolType.MirrorX))
             {
                 Pixel inversePixel = Texture.PixelList.Where(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y)).FirstOrDefault();
@@ -407,6 +400,20 @@ namespace MinecraftTextureEditorUI
                 inversePixel.PixelColour = colour;
             }
 
+            if (ToolType.Equals(ToolType.Texturiser))
+            {
+                var rnd = new Random();
+
+                var a = colour.A;
+                var r = (rnd.Next(-20, 20) + colour.R).Clamp(0, 255);
+                var g = (rnd.Next(-20, 20) + colour.G).Clamp(0, 255);
+                var b = (rnd.Next(-20, 20) + colour.B).Clamp(0, 255);
+
+                colour = Color.FromArgb(a, r, g, b);
+            }
+
+            pixel.PixelColour = colour;
+
             HasChanged = true;
 
             RefreshDisplay();
@@ -417,8 +424,8 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public void RefreshDisplay()
         {
-            pictureBoxImage.Width = (_width) * Zoom;
-            pictureBoxImage.Height = (_height) * Zoom;
+            pictureBoxImage.Width = Texture.Width * Zoom;
+            pictureBoxImage.Height = Texture.Height * Zoom;
 
             pictureBoxImage.Invalidate(true);
         }

@@ -137,9 +137,12 @@ namespace MinecraftTextureEditorUI
                         }
                         else
                         {
-                            UpdateProgressLabel("Unpacking zip file to resource pack folder...");
-                            await UnpackZipFile(PackName).ConfigureAwait(false);
-                            IncrementTabControl();
+                            if (_unpack)
+                            {
+                                UpdateProgressLabel("Unpacking zip file to resource pack folder...");
+                                await UnpackZipFile(PackName).ConfigureAwait(false);
+                                IncrementTabControl();
+                            }
                         }
                         break;
 
