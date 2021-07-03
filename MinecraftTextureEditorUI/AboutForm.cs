@@ -1,30 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorUI
 {
     partial class AboutForm : Form
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public AboutForm()
         {
             InitializeComponent();
 
+            // Reduce display flicker
+            SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+
             labelProductName.Text = AssemblyTitle;
-            labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
+            labelVersion.Text = $"Version {AssemblyVersion}";
             labelCopyright.Text = AssemblyCopyright;
-            labelCompanyName.Text = AssemblyCompany;
+            labelCompanyName.Text = $"Produced by {AssemblyCompany}";
             labelDescription.Text = AssemblyDescription;
 
+            labelDescription.Paint += LabelPaint;
+            labelProductName.Paint += LabelPaint;
+            labelVersion.Paint += LabelPaint;
+            labelCopyright.Paint += LabelPaint;
+            labelCompanyName.Paint += LabelPaint;
+            labelAbout.Paint += LabelPaint;
+        }
+
+        /// <summary>
+        /// Override the paint commands of each 'Label' so we can add shadows!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LabelPaint(object sender, PaintEventArgs e)
+        {
+            var label = (PictureBox)sender;
+
+            var g = e.Graphics;
+                        
+            var shadowRectangle = new Rectangle(1, 1, e.ClipRectangle.Width, e.ClipRectangle.Height);
+
+            g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
+
+            g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), e.ClipRectangle);
+
+            g.Flush();
         }
 
         #region Assembly Attribute Accessors
 
+        /// <summary>
+        /// The assembly title
+        /// </summary>
         public string AssemblyTitle
         {
             get
@@ -42,6 +72,9 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The assembly version
+        /// </summary>
         public string AssemblyVersion
         {
             get
@@ -50,6 +83,9 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The assembly description
+        /// </summary>
         public string AssemblyDescription
         {
             get
@@ -63,6 +99,9 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The assembly product
+        /// </summary>
         public string AssemblyProduct
         {
             get
@@ -76,6 +115,9 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The assembly copyright
+        /// </summary>
         public string AssemblyCopyright
         {
             get
@@ -89,6 +131,9 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The assembly company
+        /// </summary>
         public string AssemblyCompany
         {
             get

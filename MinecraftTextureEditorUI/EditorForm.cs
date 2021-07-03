@@ -501,7 +501,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="fileName">The filename</param>
         public void SaveFile(string fileName = "")
         {
-            using (var tmp = new Bitmap(_width + 1, _height + 1))
+            using (var tmp = new Bitmap(_width, _height))
             {
                 foreach (Pixel pixel in Texture.PixelList)
                 {

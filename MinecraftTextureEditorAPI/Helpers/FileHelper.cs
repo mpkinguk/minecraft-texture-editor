@@ -100,8 +100,15 @@ namespace MinecraftTextureEditorAPI
                 {
                     if (MessageBox.Show("File already exists. Create a backup?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        File.Move(filename, string.Concat(filename, ".bak"));
-                    } else
+                        var backupFilename = $"{filename}.bak";
+
+                        if (File.Exists(backupFilename))
+                        {
+                            File.Delete(backupFilename);
+                        }
+                        File.Move(filename, backupFilename);
+                    }
+                    else
                     {
                         File.Delete(filename);
                     }
@@ -224,7 +231,7 @@ namespace MinecraftTextureEditorAPI
                 throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
             }
 
-            var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x=> new DirectoryInfo(x).Name);
+            var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
 
             return list.ToArray<object>();
         }

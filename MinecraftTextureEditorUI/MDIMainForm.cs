@@ -49,6 +49,8 @@ namespace MinecraftTextureEditorUI
                 Application.Exit();
             }
 
+            ResizeRedraw = true;
+
             InitializeComponent();
 
             WindowState = FormWindowState.Maximized;
@@ -70,26 +72,30 @@ namespace MinecraftTextureEditorUI
         {
             var rnd = new System.Random();
 
-            switch (rnd.Next(1, 5))
+            switch (rnd.Next(1, 6))
             {
                 case 2:
-                    BackgroundImage = Properties.Resources.wallpaper1;
-                    break;
-
-                case 3:
                     BackgroundImage = Properties.Resources.wallpaper2;
                     break;
 
-                case 4:
+                case 3:
                     BackgroundImage = Properties.Resources.wallpaper3;
                     break;
 
-                case 5:
+                case 4:
                     BackgroundImage = Properties.Resources.wallpaper4;
                     break;
 
-                default:
+                case 5:
                     BackgroundImage = Properties.Resources.wallpaper5;
+                    break;
+
+                case 6:
+                    BackgroundImage = Properties.Resources.steve;
+                    break;
+
+                default:
+                    BackgroundImage = Properties.Resources.wallpaper1;
                     break;
             }
         }
