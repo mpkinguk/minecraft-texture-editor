@@ -115,6 +115,8 @@ namespace MinecraftTextureEditorUI
 
                         await UnpackZipFile(packVersion, projectPath).ConfigureAwait(false);
 
+                        IncrementTabControl();
+
                         break;
 
                     case 0:
@@ -184,6 +186,18 @@ namespace MinecraftTextureEditorUI
             DialogResult = DialogResult.OK;
 
             Close();
+        }
+
+        /// <summary>
+        /// Capture the path browser button event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
+        {
+            string folder = FileHelper.OpenFolderName(FileHelper.GetMineCraftFolder());
+
+            textBoxProjectPath.Text = folder;
         }
 
         #endregion Form events
@@ -316,12 +330,5 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Threadsafe methods
-
-        private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
-        {
-            string folder = FileHelper.OpenFolderName(FileHelper.GetMineCraftFolder());
-
-            textBoxProjectPath.Text = folder;
-        }
     }
 }

@@ -8,7 +8,7 @@ namespace GenericUndoRedoManagerAPI
     /// Undo manager class
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class UndoManagerAction<T>:IDisposable
+    public class UndoManagerAction<T> : IDisposable
     {
         /// <summary>
         /// Private Undo stack

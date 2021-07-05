@@ -93,6 +93,16 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap floodfill {
+            get {
+                object obj = ResourceManager.GetObject("floodfill", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap grid {
             get {
                 object obj = ResourceManager.GetObject("grid", resourceCulture);
@@ -126,6 +136,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap Pen {
             get {
                 object obj = ResourceManager.GetObject("Pen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap rainbow {
+            get {
+                object obj = ResourceManager.GetObject("rainbow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

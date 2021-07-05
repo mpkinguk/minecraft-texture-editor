@@ -7,7 +7,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <summary>
         /// Constrains a value within min and max
         /// </summary>
-        /// <typeparam name="T">The type of value</typeparam>
+        /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="val">The value</param>
         /// <param name="min">The minimum value</param>
         /// <param name="max">The maximium value</param>

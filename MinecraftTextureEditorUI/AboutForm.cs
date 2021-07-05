@@ -40,7 +40,7 @@ namespace MinecraftTextureEditorUI
             var label = (PictureBox)sender;
 
             var g = e.Graphics;
-                        
+
             var shadowRectangle = new Rectangle(1, 1, e.ClipRectangle.Width, e.ClipRectangle.Height);
 
             g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
@@ -146,6 +146,7 @@ namespace MinecraftTextureEditorUI
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
             }
         }
-        #endregion
+
+        #endregion Assembly Attribute Accessors
     }
 }

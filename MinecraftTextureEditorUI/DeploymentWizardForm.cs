@@ -506,6 +506,5 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Threadsafe methods
-
     }
 }

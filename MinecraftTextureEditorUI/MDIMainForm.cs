@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using static MinecraftTextureEditorAPI.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -235,7 +236,7 @@ namespace MinecraftTextureEditorUI
         /// Captures the tool type changed event from the drawing tools window
         /// </summary>
         /// <param name="toolType"></param>
-        private void DrawingToolsToolTypeChanged(DrawingToolsForm.ToolType toolType)
+        private void DrawingToolsToolTypeChanged(ToolType toolType)
         {
             if (CurrentEditor is null)
             {

@@ -35,6 +35,9 @@
   <PropertyGroup>
     <StartupObject>MinecraftTextureEditorUI.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MinecraftTextureEditorIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -258,6 +261,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\texturiser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinecraftTextureEditorIcon.ico" />
+    <None Include="Resources\rainbow.png" />
+    <None Include="Resources\floodfill.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

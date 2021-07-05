@@ -1,12 +1,13 @@
 ﻿using GenericUndoRedoManagerAPI;
 using MinecraftTextureEditorAPI;
-using MinecraftTextureEditorAPI.Model;
 using MinecraftTextureEditorAPI.Helpers;
+using MinecraftTextureEditorAPI.Model;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static MinecraftTextureEditorUI.DrawingToolsForm;
+using static MinecraftTextureEditorAPI.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -122,7 +123,11 @@ namespace MinecraftTextureEditorUI
 
         private int _height;
 
+        private int _currentRainbowColour;
+
         private Point _cursor;
+
+        private Pixel _lastRainbowPixel = new Pixel();
 
         private UndoManagerAction<Texture> _undoManager;
 
@@ -164,6 +169,8 @@ namespace MinecraftTextureEditorUI
             _width = width;
             _height = height;
 
+            _currentRainbowColour = 0;
+
             _undoManager = new UndoManagerAction<Texture>();
 
             AddItem();
@@ -192,7 +199,65 @@ namespace MinecraftTextureEditorUI
 
             ShowTransparent = true;
 
+            KeyUp += EditorFormKeyUp;
+
             RefreshDisplay();
+        }
+
+        /// <summary>
+        /// Allows commands using single key presses
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorFormKeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Delete:
+                    if (e.KeyCode.Equals(Keys.Delete))
+                    {
+                        var newTexture = DrawingHelper.GetBlankTexture(Texture.Width, Texture.Height);
+
+                        Texture = newTexture.Clone();
+
+                        AddItem();
+
+                        RefreshDisplay();
+                    }
+                    break;
+                case Keys.D1:
+                case Keys.NumPad1:
+                    ToolType = ToolType.Pen;
+                    break;
+                case Keys.D2:
+                case Keys.NumPad2:
+                    ToolType = ToolType.Eraser;
+                    break;
+                case Keys.D3:
+                case Keys.NumPad3:
+                    ToolType = ToolType.Dropper;
+                    break;
+                case Keys.D4:
+                case Keys.NumPad4:
+                    ToolType = ToolType.Texturiser;
+                    break;
+                case Keys.D5:
+                case Keys.NumPad5:
+                    ToolType = ToolType.FloodFill;
+                    break;
+                case Keys.D6:
+                case Keys.NumPad6:
+                    ToolType = ToolType.Rainbow;
+                    break;
+                case Keys.D7:
+                case Keys.NumPad7:
+                    ToolType = ToolType.MirrorX;
+                    break;
+                case Keys.D8:
+                case Keys.NumPad8:
+                    ToolType = ToolType.MirrorY;
+                    break;
+            }
         }
 
         /// <summary>
@@ -202,6 +267,50 @@ namespace MinecraftTextureEditorUI
         private bool CursorOutOfBounds()
         {
             return (_cursor.X < 0 || _cursor.Y < 0 || _cursor.X >= pictureBoxImage.Width || _cursor.Y >= pictureBoxImage.Height);
+        }
+
+        /// <summary>
+        /// Stack-based floodfill routine
+        /// </summary>
+        /// <param name="currentColour">The current colour</param>
+        /// <param name="newColour">The new colour</param>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
+        private void FloodFill(Color currentColour, Color newColour, int x, int y)
+        {
+            Stack<Point> pixels = new Stack<Point>();
+            pixels.Push(new Point(x, y));
+
+            if (Texture.PixelList.Any(o => o.PixelColour != currentColour))
+            {
+
+                // The *1.75F denotes the various offshoots from the main coordinates
+                while (pixels.Count > 0 && pixels.Count <= Convert.ToInt32(Texture.PixelList.Count * 1.75F))
+                {
+                    Point a = pixels.Pop();
+                    if (a.X >= 0 && a.X < Texture.Width &&
+                         a.Y >= 0 && a.Y < Texture.Height)//make sure we stay within bounds
+                    {
+
+                        var currentPixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(a.X) && o.Y.Equals(a.Y));
+
+                        if (currentPixel.PixelColour.Equals(currentColour) && currentColour != newColour)
+                        {
+                            currentPixel.PixelColour = newColour;
+                            pixels.Push(new Point(a.X - 1, a.Y));
+                            pixels.Push(new Point(a.X + 1, a.Y));
+                            pixels.Push(new Point(a.X, a.Y - 1));
+                            pixels.Push(new Point(a.X, a.Y + 1));
+                        }
+                    }
+                }
+            } else
+            {
+                foreach(var pixel in Texture.PixelList)
+                {
+                    pixel.PixelColour = newColour;
+                }
+            }
         }
 
         #endregion Private methods
@@ -387,15 +496,45 @@ namespace MinecraftTextureEditorUI
                     return;
             }
 
+            if (ToolType.Equals(ToolType.Rainbow))
+            {
+                colour = RainbowColours[_currentRainbowColour];
+
+                var moveNextColour = false;
+
+                if (e.Button.Equals(MouseButtons.Left))
+                {
+                    if (pixel.X != _lastRainbowPixel.X && pixel.Y != _lastRainbowPixel.Y)
+                    {
+                        moveNextColour = true;
+                    }
+                } else if (e.Button.Equals(MouseButtons.Right))
+                {
+                    if (pixel.X != _lastRainbowPixel.X || pixel.Y != _lastRainbowPixel.Y)
+                    {
+                        moveNextColour = true;
+                    }
+                }
+
+                if (moveNextColour)
+                {
+                    _currentRainbowColour = _currentRainbowColour >= RainbowColours.Count - 1 ? 0 : _currentRainbowColour + 1;
+
+                    _lastRainbowPixel.X = pixel.X;
+                    _lastRainbowPixel.Y = pixel.Y;
+                }
+
+            }
+
             if (ToolType.Equals(ToolType.MirrorX))
             {
-                Pixel inversePixel = Texture.PixelList.Where(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y)).FirstOrDefault();
+                Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
 
                 inversePixel.PixelColour = colour;
             }
             else if (ToolType.Equals(ToolType.MirrorY))
             {
-                Pixel inversePixel = Texture.PixelList.Where(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X)).FirstOrDefault();
+                Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
 
                 inversePixel.PixelColour = colour;
             }
@@ -412,7 +551,20 @@ namespace MinecraftTextureEditorUI
                 colour = Color.FromArgb(a, r, g, b);
             }
 
-            pixel.PixelColour = colour;
+            if (ToolType.Equals(ToolType.FloodFill))
+            {
+                var currentColour = pixel.PixelColour;
+
+                var x = pixel.X;
+
+                var y = pixel.Y;
+
+                FloodFill(currentColour, colour, x, y);
+            }
+            else
+            {
+                pixel.PixelColour = colour;
+            }
 
             HasChanged = true;
 

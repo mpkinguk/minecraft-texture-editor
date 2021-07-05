@@ -49,7 +49,7 @@
     <Compile Include="Helpers\DrawingHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\SafeFileEnumerator.cs" />
-    <Compile Include="MathHelper.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Model\MetaFile.cs" />
     <Compile Include="Model\Pack.cs" />
     <Compile Include="Model\Pixel.cs" />

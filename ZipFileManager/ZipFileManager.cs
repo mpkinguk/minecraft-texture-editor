@@ -13,14 +13,13 @@ namespace ZipFileManagerAPI
 
         public delegate void FileProcessedEventHandler(string filename);
 
-
         #endregion Public delegates
 
         #region Public events
 
         public event FileProcessedEventHandler FileProcessed;
 
-        #endregion Public Events
+        #endregion Public events
 
         /// <summary>
         /// Create zip files from individual files

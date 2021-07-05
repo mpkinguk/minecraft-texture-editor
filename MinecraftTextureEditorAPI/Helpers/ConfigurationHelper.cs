@@ -35,7 +35,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             var result = new Dictionary<string, string>();
 
-            for(int i=0; i<ConfigurationManager.AppSettings.Count; i++)
+            for (int i = 0; i < ConfigurationManager.AppSettings.Count; i++)
             {
                 result.Add(ConfigurationManager.AppSettings.Keys[i], ConfigurationManager.AppSettings[i]);
             }

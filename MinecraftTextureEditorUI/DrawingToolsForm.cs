@@ -1,9 +1,11 @@
 ﻿using MinecraftTextureEditorAPI;
+using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using static MinecraftTextureEditorAPI.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -18,23 +20,6 @@ namespace MinecraftTextureEditorUI
         public delegate void ForeColourChangedEventHandler(Color colour);
 
         #endregion Public delegates
-
-        #region Enums
-
-        /// <summary>
-        /// Tool types
-        /// </summary>
-        public enum ToolType
-        {
-            Pen,
-            Eraser,
-            Dropper,
-            MirrorX,
-            MirrorY,
-            Texturiser
-        }
-
-        #endregion Enums
 
         #region Public properties
 
@@ -90,6 +75,12 @@ namespace MinecraftTextureEditorUI
 
         #endregion Public events
 
+        #region Private properties
+
+        private int _alpha;
+
+        #endregion Private properties
+
         /// <summary>
         /// The constructor
         /// </summary>
@@ -99,6 +90,8 @@ namespace MinecraftTextureEditorUI
 
             LoadImages();
 
+            DrawAlpha();
+
             pictureBoxColourPicker.MouseDown += PictureBoxColourPicker_MouseDown;
 
             pictureBoxColourPicker.MouseMove += PictureBoxColourPicker_MouseMove;
@@ -107,6 +100,10 @@ namespace MinecraftTextureEditorUI
 
             pictureBoxGamma.MouseMove += PictureBoxSaturationMouseMove;
 
+            pictureBoxAlpha.MouseDown += PictureBoxAlphaMouseDown;
+
+            pictureBoxAlpha.MouseMove += PictureBoxAlphaMouseMove;
+
             panelColour1.Click += PanelColourClick;
 
             panelColour2.Click += PanelColourClick;
@@ -114,47 +111,11 @@ namespace MinecraftTextureEditorUI
             Colour2 = Color.Black;
 
             Colour1 = Color.White;
-        }
 
-        /// <summary>
-        /// Change the saturation panel to reflect panel back colour
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PanelColourClick(object sender, EventArgs e)
-        {
-            var panel = (Panel)sender;
-
-            PickColour(panel);
+            _alpha = 255;
         }
 
         #region Private methods
-
-        /// <summary>
-        /// Tool type changed event
-        /// </summary>
-        /// <param name="toolType"></param>
-        private void OnToolTypeChanged(ToolType toolType)
-        {
-            CurrentToolType = toolType;
-            ToolTypeChanged?.Invoke(toolType);
-        }
-
-        /// <summary>
-        /// Fore colour changed event
-        /// </summary>
-        private void OnColour1Changed(Color colour)
-        {
-            Colour1Changed?.Invoke(colour);
-        }
-
-        /// <summary>
-        /// Back colour changed event
-        /// </summary>
-        private void OnColour2Changed(Color colour)
-        {
-            Colour2Changed?.Invoke(colour);
-        }
 
         /// <summary>
         /// Pick a colour
@@ -178,7 +139,7 @@ namespace MinecraftTextureEditorUI
         /// Pick a colour
         /// </summary>
         /// <param name="e"></param>
-        private void PickColour(object pictureBox, MouseEventArgs e, bool isPicker = true)
+        private void PickColour(object pictureBox, MouseEventArgs e, ColourSelectionType colourSelectionType = ColourSelectionType.ColourWheel)
         {
             try
             {
@@ -186,9 +147,20 @@ namespace MinecraftTextureEditorUI
 
                 var colour = DrawingHelper.GetColour((PictureBox)pictureBox, cursorPosition.X, cursorPosition.Y);
 
+                if (colourSelectionType.Equals(ColourSelectionType.Alpha))
+                {
+                    if (e.Button.Equals(MouseButtons.Left) || e.Button.Equals(MouseButtons.Right))
+                    {
+                        _alpha = Convert.ToInt32(DrawingHelper.GetColour((PictureBox)pictureBox, cursorPosition.X, cursorPosition.Y).A).Clamp(0, 255);
+                    }
+                }
+
+                colour = colourSelectionType.Equals(ColourSelectionType.Alpha) ? Color.FromArgb(_alpha, e.Button.Equals(MouseButtons.Left) ? Colour1 : Colour2) : Color.FromArgb(_alpha, colour);
+
                 switch (e.Button)
                 {
                     case MouseButtons.Left:
+
                         panelColour1.BackColor = colour;
                         OnColour1Changed(colour);
                         break;
@@ -200,12 +172,19 @@ namespace MinecraftTextureEditorUI
 
                     default:
                         return;
-                }
+                };
 
-                if (isPicker)
+                switch (colourSelectionType)
                 {
-                    DrawSaturation(colour);
-                }
+                    case ColourSelectionType.Saturation:
+                    case ColourSelectionType.ColourWheel:
+                        DrawSaturation(colour);
+                        DrawAlpha();
+                        break;
+                    case ColourSelectionType.Alpha:
+                        DrawAlpha();
+                        break;
+                };
             }
             catch (Exception exc)
             {
@@ -234,6 +213,29 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Draw alpha picker
+        /// </summary>
+        private void DrawAlpha()
+        {
+            var tmp = new Bitmap(pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height);
+
+            var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height), Color.FromArgb(0, Color.Black), Color.Black, LinearGradientMode.Horizontal);
+
+            using (var g = Graphics.FromImage(tmp))
+            {
+                g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height));
+
+                var x1 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour1.A);
+                var x2 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour2.A);
+
+                g.DrawLine(new Pen(Color.Yellow, 2F), x1, 0, x1, pictureBoxAlpha.ClientSize.Width);
+                g.DrawLine(new Pen(Color.Red, 2F), x2, 0, x2, pictureBoxAlpha.ClientSize.Width);
+            }
+
+            pictureBoxAlpha.Image = tmp;
+        }
+
+        /// <summary>
         /// Load images for buttons
         /// </summary>
         private void LoadImages()
@@ -252,6 +254,10 @@ namespace MinecraftTextureEditorUI
 
             buttonTexturiser.BackgroundImage = Properties.Resources.texturiser;
 
+            buttonFloodFill.BackgroundImage = Properties.Resources.floodfill;
+
+            buttonRainbow.BackgroundImage = Properties.Resources.rainbow;
+
             Invalidate(true);
         }
 
@@ -264,9 +270,29 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void PictureBoxAlphaMouseDown(object sender, MouseEventArgs e)
+        {
+            PickColour(sender, e, ColourSelectionType.Alpha);
+        }
+
+        /// <summary>
+        /// Pick a colour
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PictureBoxAlphaMouseMove(object sender, MouseEventArgs e)
+        {
+            PickColour(sender, e, ColourSelectionType.Alpha);
+        }
+
+        /// <summary>
+        /// Pick a colour
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PictureBoxSaturationMouseDown(object sender, MouseEventArgs e)
         {
-            PickColour(sender, e, false);
+            PickColour(sender, e, ColourSelectionType.Saturation);
         }
 
         /// <summary>
@@ -276,7 +302,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void PictureBoxSaturationMouseMove(object sender, MouseEventArgs e)
         {
-            PickColour(sender, e, false);
+            PickColour(sender, e, ColourSelectionType.Saturation);
         }
 
         /// <summary>
@@ -359,6 +385,66 @@ namespace MinecraftTextureEditorUI
             OnToolTypeChanged(ToolType.Texturiser);
         }
 
+        /// <summary>
+        /// Change the saturation panel to reflect panel back colour
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PanelColourClick(object sender, EventArgs e)
+        {
+            var panel = (Panel)sender;
+
+            PickColour(panel);
+        }
+
+        /// <summary>
+        /// Tool type changed event
+        /// </summary>
+        /// <param name="toolType"></param>
+        private void OnToolTypeChanged(ToolType toolType)
+        {
+            CurrentToolType = toolType;
+            ToolTypeChanged?.Invoke(toolType);
+        }
+
+        /// <summary>
+        /// Fore colour changed event
+        /// </summary>
+        private void OnColour1Changed(Color colour)
+        {
+            Colour1Changed?.Invoke(colour);
+        }
+
+        /// <summary>
+        /// Back colour changed event
+        /// </summary>
+        private void OnColour2Changed(Color colour)
+        {
+            Colour2Changed?.Invoke(colour);
+        }
+
+        /// <summary>
+        /// Flood fill
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonFloodFillClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.FloodFill);
+        }
+
+        /// <summary>
+        /// Rainbow :D
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonRainbow_Click(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Rainbow);
+        }
+
         #endregion Form events
+
+
     }
 }

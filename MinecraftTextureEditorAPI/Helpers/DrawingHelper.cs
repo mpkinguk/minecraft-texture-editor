@@ -7,6 +7,37 @@ namespace MinecraftTextureEditorAPI
 {
     public static class DrawingHelper
     {
+        #region Enums
+
+        /// <summary>
+        /// Tool types
+        /// </summary>
+        public enum ToolType
+        {
+            Pen,
+            Eraser,
+            Dropper,
+            Texturiser,
+            FloodFill,
+            Rainbow,
+            MirrorX,
+            MirrorY
+        }
+
+        /// <summary>
+        /// Colour selection types
+        /// </summary>
+        public enum ColourSelectionType
+        {
+            ColourWheel,
+            Saturation,
+            Alpha
+        }
+
+        #endregion Enums
+
+        public static List<Color> RainbowColours = new List<Color> { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+
         /// <summary>
         /// The eraser colour
         /// </summary>
