@@ -146,7 +146,7 @@ namespace MinecraftTextureEditorUI
 
         private Pixel _lastRainbowPixel = new Pixel();
 
-        private UndoManagerAction<Texture> _undoManager;
+        private UndoManagerAction<List<Pixel>> _undoManager;
 
         /// <summary>
         /// Used for undo
@@ -195,9 +195,9 @@ namespace MinecraftTextureEditorUI
 
             _brushSize = 1;
 
-            _undoManager = new UndoManagerAction<Texture>();
+            _undoManager = new UndoManagerAction<List<Pixel>>();
 
-            AddItem();
+            AddItem(Texture.PixelList);
 
             FormClosing += EditorFormFormClosing;
 
@@ -291,11 +291,9 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public void Clear()
         {
-            var newTexture = GetBlankTexture(Texture.Width, Texture.Height);
+            Texture = GetBlankTexture(Texture.Width, Texture.Height).Clone();
 
-            Texture = newTexture.Clone();
-
-            AddItem();
+            AddItem(Texture.PixelList);
 
             RefreshDisplay();
         }
@@ -320,7 +318,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void PictureBoxImageMouseUp(object sender, MouseEventArgs e)
         {
-            AddItem();
+            AddItem(_currentPixels);
             RefreshDisplay();
         }
 
@@ -433,6 +431,20 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void EditorMouseDown(object sender, MouseEventArgs e)
+        {
+            // Clear down current pixel list
+            _currentPixels = new List<Pixel>();
+
+            // Call main paint procedure
+            EditorMousePaintPixel(sender, e);
+        }
+
+        /// <summary>
+        /// Paint pixels using fore or back color where appropriate
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditorMousePaintPixel(object sender, MouseEventArgs e)
         {
             Color colour;
@@ -518,12 +530,16 @@ namespace MinecraftTextureEditorUI
                         Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
 
                         inversePixel.PixelColour = colour;
+
+                        _currentPixels.Add(inversePixel);
                     }
                     else if (ToolType.Equals(ToolType.MirrorY))
                     {
                         Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
 
                         inversePixel.PixelColour = colour;
+
+                        _currentPixels.Add(inversePixel);
                     }
 
                     if (ToolType.Equals(ToolType.Texturiser))
@@ -539,13 +555,14 @@ namespace MinecraftTextureEditorUI
 
                         var floodY = pixel.Y;
 
-                        FloodFill(currentColour, colour, floodX, floodY, Texture);
+                        _currentPixels.AddRange(FloodFill(currentColour, colour, floodX, floodY, Texture));
 
                         return;
                     }
                     else
                     {
                         pixel.PixelColour = colour;
+                        _currentPixels.Add(pixel);
                     }
                 }
             }
@@ -607,11 +624,11 @@ namespace MinecraftTextureEditorUI
 
                 Texture = GetTextureFromImage(image);
 
-                _undoManager = new UndoManagerAction<Texture>();
+                _undoManager = new UndoManagerAction<List<Pixel>>();
 
                 Text = FileName.FileDetails()?.Name.ToUpper();
 
-                AddItem();
+                AddItem(Texture.PixelList);
 
                 _width = Texture.Width;
                 _height = Texture.Height;
@@ -623,9 +640,9 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Add item to undo stack
         /// </summary>
-        public void AddItem()
+        public void AddItem(List<Pixel> pixelList)
         {
-            _undoManager.AddItem(Texture.Clone());
+            _undoManager.AddItem(pixelList.Clone());
 
             UndoRedoHappened();
         }
@@ -667,7 +684,7 @@ namespace MinecraftTextureEditorUI
         {
             if (UndoEnabled)
             {
-                Texture = _undoManager.Undo().Clone();
+                RestorePixels(_undoManager.Undo().Clone());
 
                 RefreshDisplay();
 
@@ -682,11 +699,23 @@ namespace MinecraftTextureEditorUI
         {
             if (RedoEnabled)
             {
-                Texture = _undoManager.Redo().Clone();
+                RestorePixels(_undoManager.Redo().Clone());
 
                 RefreshDisplay();
 
                 UndoRedoHappened();
+            }
+        }
+
+        /// <summary>
+        /// Restore pixels from a list
+        /// </summary>
+        /// <param name="pixelList"></param>
+        private void RestorePixels(List<Pixel> pixelList)
+        {
+            foreach (Pixel pixel in pixelList)
+            {
+                Texture.PixelList.FirstOrDefault(o => o.X.Equals(pixel.X) && o.Y.Equals(pixel.Y)).PixelColour = pixel.PixelColour;
             }
         }
 
