@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace MinecraftTextureEditorAPI
+namespace MinecraftTextureEditorAPI.Helpers
 {
     /// <summary>
     /// Enumerate files whilst reducing impact of protected files

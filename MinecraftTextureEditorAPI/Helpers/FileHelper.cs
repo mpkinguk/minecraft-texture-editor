@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MinecraftTextureEditorAPI
+namespace MinecraftTextureEditorAPI.Helpers
 {
     public static class FileHelper
     {

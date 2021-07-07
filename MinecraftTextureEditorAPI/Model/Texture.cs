@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorAPI.Model
 {
@@ -33,7 +34,7 @@ namespace MinecraftTextureEditorAPI.Model
         /// <param name="height">The height</param>
         public Texture(int width, int height)
         {
-            PixelList = DrawingHelper.GetBlankPixels(width, height);
+            PixelList = GetBlankPixels(width, height);
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace MinecraftTextureEditorAPI.Model
         /// <param name="image">The image</param>
         public Texture(Image image)
         {
-            PixelList = DrawingHelper.GetPixelsFromImage(image);
+            PixelList = GetPixelsFromImage(image);
         }
 
         /// <summary>

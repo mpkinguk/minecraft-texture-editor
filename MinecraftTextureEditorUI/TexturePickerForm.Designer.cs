@@ -40,13 +40,14 @@ namespace MinecraftTextureEditorUI
             // listViewTextureList
             // 
             this.listViewTextureList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewTextureList.Font = new System.Drawing.Font("Minecraft", 8F);
             this.listViewTextureList.HideSelection = false;
             this.listViewTextureList.Location = new System.Drawing.Point(0, 56);
             this.listViewTextureList.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listViewTextureList.Name = "listViewTextureList";
             this.listViewTextureList.OwnerDraw = true;
             this.listViewTextureList.Size = new System.Drawing.Size(337, 577);
-            this.listViewTextureList.TabIndex = 4;
+            this.listViewTextureList.TabIndex = 1;
             this.listViewTextureList.UseCompatibleStateImageBehavior = false;
             // 
             // panel1
@@ -78,21 +79,21 @@ namespace MinecraftTextureEditorUI
             // 
             this.textBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxFilter.Location = new System.Drawing.Point(0, 31);
+            this.textBoxFilter.Location = new System.Drawing.Point(0, 32);
             this.textBoxFilter.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(218, 24);
-            this.textBoxFilter.TabIndex = 1;
+            this.textBoxFilter.TabIndex = 0;
             this.textBoxFilter.TextChanged += new System.EventHandler(this.TextBoxFilterTextChanged);
             // 
             // buttonRefresh
             // 
             this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRefresh.Location = new System.Drawing.Point(217, 26);
+            this.buttonRefresh.Location = new System.Drawing.Point(217, 27);
             this.buttonRefresh.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(120, 30);
-            this.buttonRefresh.TabIndex = 2;
+            this.buttonRefresh.TabIndex = 1;
             this.buttonRefresh.Text = "&Refresh";
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.ButtonRefreshClick);

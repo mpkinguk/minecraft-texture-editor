@@ -1,5 +1,4 @@
-﻿using MinecraftTextureEditorAPI;
-using MinecraftTextureEditorAPI.Helpers;
+﻿using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Diagnostics;

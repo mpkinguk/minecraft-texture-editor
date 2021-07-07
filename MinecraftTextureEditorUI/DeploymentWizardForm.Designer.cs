@@ -45,15 +45,15 @@ namespace MinecraftTextureEditorUI
             this.label2 = new System.Windows.Forms.Label();
             this.labelMetaFile = new System.Windows.Forms.Label();
             this.comboBoxFormat = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPageDeploy3 = new System.Windows.Forms.TabPage();
             this.labelProgress = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.progressBarDeploymentProgress = new System.Windows.Forms.ProgressBar();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControlDeploy.SuspendLayout();
             this.tabPageDeploy1.SuspendLayout();
@@ -274,6 +274,42 @@ namespace MinecraftTextureEditorUI
             this.comboBoxFormat.Size = new System.Drawing.Size(437, 25);
             this.comboBoxFormat.TabIndex = 1;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Yellow;
+            this.label10.Location = new System.Drawing.Point(155, 275);
+            this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(312, 17);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "The description to display in Minecraft";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.Yellow;
+            this.label9.Location = new System.Drawing.Point(155, 182);
+            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(279, 17);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "Which format does your pack use?";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Yellow;
+            this.label8.Location = new System.Drawing.Point(155, 125);
+            this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(321, 17);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "What do you want to call your new pack?";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -325,7 +361,7 @@ namespace MinecraftTextureEditorUI
             this.labelProgress.Name = "labelProgress";
             this.labelProgress.Size = new System.Drawing.Size(500, 100);
             this.labelProgress.TabIndex = 5;
-            this.labelProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelProgress.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label7
             // 
@@ -349,42 +385,6 @@ namespace MinecraftTextureEditorUI
             this.progressBarDeploymentProgress.Size = new System.Drawing.Size(500, 35);
             this.progressBarDeploymentProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBarDeploymentProgress.TabIndex = 0;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.Yellow;
-            this.label8.Location = new System.Drawing.Point(155, 125);
-            this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(321, 17);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "What do you want to call your new pack?";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.Yellow;
-            this.label9.Location = new System.Drawing.Point(155, 182);
-            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(279, 17);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "Which format does your pack use?";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.ForeColor = System.Drawing.Color.Yellow;
-            this.label10.Location = new System.Drawing.Point(155, 275);
-            this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(312, 17);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "The description to display in Minecraft";
             // 
             // DeploymentWizardForm
             // 

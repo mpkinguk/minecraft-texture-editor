@@ -126,7 +126,11 @@ namespace MinecraftTextureEditorUI
             {
                 var g = e.Graphics;
 
-                g.DrawImage(e.Item.ImageList.Images[e.Item.ImageIndex], e.Item.Bounds.X, e.Item.Bounds.Y, 32, 32);
+                // Prevents crashing while loading the imagelist
+                if (!(e.Item.ImageList is null))
+                {
+                    g.DrawImage(listViewTextureList.LargeImageList.Images[e.Item.ImageIndex], e.Item.Bounds.X, e.Item.Bounds.Y, 32, 32);
+                }
 
                 g.DrawString(e.Item.Text.Substring(0, 4) + "...", e.Item.Font, Brushes.Black, e.Item.Bounds.X, e.Item.Bounds.Bottom - 7);
 
@@ -198,10 +202,13 @@ namespace MinecraftTextureEditorUI
             foreach (var file in files)
             {
                 var fileInfo = new FileInfo(file);
+                var groupName = fileInfo.Directory.Name;
+
+                ListViewGroup group = new ListViewGroup(groupName);
 
                 Bitmap tmp;
 
-                var item = new ListViewItem() { Tag = file, Text = fileInfo.Name, ImageIndex = imageList.Images.Count };
+                var item = new ListViewItem() { Tag = file, Text = fileInfo.Name, ImageIndex = imageList.Images.Count, Group = group };
 
                 try
                 {

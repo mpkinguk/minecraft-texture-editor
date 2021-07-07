@@ -1,9 +1,11 @@
 ﻿using MinecraftTextureEditorAPI.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
-namespace MinecraftTextureEditorAPI
+namespace MinecraftTextureEditorAPI.Helpers
 {
     public static class DrawingHelper
     {
@@ -165,6 +167,107 @@ namespace MinecraftTextureEditorAPI
         public static Texture GetBlankTexture(int width, int height)
         {
             return new Texture(width, height);
+        }
+
+        /// <summary>
+        /// Stack-based floodfill routine
+        /// </summary>
+        /// <param name="currentColour">The current colour</param>
+        /// <param name="newColour">The new colour</param>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
+        /// <param name="texture">The texture</param>
+        public static void FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
+        {
+            Stack<Point> pixels = new Stack<Point>();
+            pixels.Push(new Point(x, y));
+
+            if (texture.PixelList.Any(o => o.PixelColour != currentColour))
+            {
+                // The *1.75F denotes the various offshoots from the main coordinates
+                while (pixels.Count > 0 && pixels.Count <= Convert.ToInt32(texture.PixelList.Count * 1.75F))
+                {
+                    Point a = pixels.Pop();
+                    if (a.X >= 0 && a.X < texture.Width &&
+                         a.Y >= 0 && a.Y < texture.Height)//make sure we stay within bounds
+                    {
+                        var currentPixel = texture.PixelList.FirstOrDefault(o => o.X.Equals(a.X) && o.Y.Equals(a.Y));
+
+                        if (currentPixel.PixelColour.Equals(currentColour) && currentColour != newColour)
+                        {
+                            currentPixel.PixelColour = newColour;
+                            pixels.Push(new Point(a.X - 1, a.Y));
+                            pixels.Push(new Point(a.X + 1, a.Y));
+                            pixels.Push(new Point(a.X, a.Y - 1));
+                            pixels.Push(new Point(a.X, a.Y + 1));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var pixel in texture.PixelList)
+                {
+                    pixel.PixelColour = newColour;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Rainbow
+        /// </summary>
+        /// <param name="pixel">The pixel</param>
+        /// <param name="leftButton">Left button used</param>
+        /// <returns>Color</returns>
+        public static Color Rainbow(Pixel pixel, bool leftButton, ref int currentRainbowColour, ref Pixel lastRainbowPixel)
+        {
+            var colour = RainbowColours[currentRainbowColour];
+
+            var moveNextColour = false;
+
+            if (leftButton)
+            {
+                if (pixel.X != lastRainbowPixel.X && pixel.Y != lastRainbowPixel.Y)
+                {
+                    moveNextColour = true;
+                }
+            }
+            else
+            {
+                if (pixel.X != lastRainbowPixel.X || pixel.Y != lastRainbowPixel.Y)
+                {
+                    moveNextColour = true;
+                }
+            }
+
+            if (moveNextColour)
+            {
+                currentRainbowColour = currentRainbowColour >= RainbowColours.Count - 1 ? 0 : currentRainbowColour + 1;
+
+                lastRainbowPixel.X = pixel.X;
+                lastRainbowPixel.Y = pixel.Y;
+            }
+
+            return colour;
+        }
+
+        /// <summary>
+        /// Randomiser
+        /// </summary>
+        /// <param name="colour">The color</param>
+        /// <returns>Color</returns>
+        public static Color Randomiser(Color colour)
+        {
+            var rnd = new Random();
+
+            var a = colour.A;
+            var r = (rnd.Next(-30, 30) + colour.R).Clamp(0, 255);
+            var g = (rnd.Next(-30, 30) + colour.G).Clamp(0, 255);
+            var b = (rnd.Next(-30, 30) + colour.B).Clamp(0, 255);
+
+            var newColour = Color.FromArgb(a, r, g, b);
+
+            return newColour;
         }
     }
 }

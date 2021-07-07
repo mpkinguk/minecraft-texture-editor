@@ -43,8 +43,11 @@ namespace MinecraftTextureEditorUI
             this.buttonTexturiser = new System.Windows.Forms.Button();
             this.buttonFloodFill = new System.Windows.Forms.Button();
             this.pictureBoxAlpha = new System.Windows.Forms.PictureBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.buttonRainbow = new System.Windows.Forms.Button();
+            this.buttonSize1 = new System.Windows.Forms.Button();
+            this.buttonSize2 = new System.Windows.Forms.Button();
+            this.buttonSize4 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColourPicker)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAlpha)).BeginInit();
@@ -52,6 +55,7 @@ namespace MinecraftTextureEditorUI
             // 
             // buttonPen
             // 
+            this.buttonPen.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.Pen;
             this.buttonPen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonPen.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonPen.Location = new System.Drawing.Point(20, 384);
@@ -65,6 +69,7 @@ namespace MinecraftTextureEditorUI
             // 
             // buttonEraser
             // 
+            this.buttonEraser.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.Eraser;
             this.buttonEraser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonEraser.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonEraser.Location = new System.Drawing.Point(65, 384);
@@ -80,25 +85,26 @@ namespace MinecraftTextureEditorUI
             // 
             this.panelColour1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColour1.Font = new System.Drawing.Font("Minecraft", 10F);
-            this.panelColour1.Location = new System.Drawing.Point(20, 472);
+            this.panelColour1.Location = new System.Drawing.Point(20, 486);
             this.panelColour1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panelColour1.Name = "panelColour1";
-            this.panelColour1.Size = new System.Drawing.Size(64, 64);
-            this.panelColour1.TabIndex = 5;
+            this.panelColour1.Size = new System.Drawing.Size(50, 50);
+            this.panelColour1.TabIndex = 8;
             this.toolTip1.SetToolTip(this.panelColour1, "Colour 1");
             // 
             // panelColour2
             // 
             this.panelColour2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour2.Location = new System.Drawing.Point(168, 472);
+            this.panelColour2.Location = new System.Drawing.Point(182, 486);
             this.panelColour2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panelColour2.Name = "panelColour2";
-            this.panelColour2.Size = new System.Drawing.Size(64, 64);
-            this.panelColour2.TabIndex = 6;
+            this.panelColour2.Size = new System.Drawing.Size(50, 50);
+            this.panelColour2.TabIndex = 9;
             this.toolTip1.SetToolTip(this.panelColour2, "Colour 2");
             // 
             // buttonDropper
             // 
+            this.buttonDropper.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.dropper;
             this.buttonDropper.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonDropper.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonDropper.Location = new System.Drawing.Point(110, 384);
@@ -112,29 +118,35 @@ namespace MinecraftTextureEditorUI
             // 
             // buttonMirrorX
             // 
+            this.buttonMirrorX.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.mirrorx;
             this.buttonMirrorX.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonMirrorX.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonMirrorX.Location = new System.Drawing.Point(155, 423);
             this.buttonMirrorX.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonMirrorX.Name = "buttonMirrorX";
             this.buttonMirrorX.Size = new System.Drawing.Size(32, 32);
-            this.buttonMirrorX.TabIndex = 3;
+            this.buttonMirrorX.TabIndex = 6;
             this.toolTip1.SetToolTip(this.buttonMirrorX, "Mirror X");
             this.buttonMirrorX.UseVisualStyleBackColor = true;
             this.buttonMirrorX.Click += new System.EventHandler(this.ButtonMirrorXClick);
             // 
             // buttonMirrorY
             // 
+            this.buttonMirrorY.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.mirrory;
             this.buttonMirrorY.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonMirrorY.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonMirrorY.Location = new System.Drawing.Point(200, 423);
             this.buttonMirrorY.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonMirrorY.Name = "buttonMirrorY";
             this.buttonMirrorY.Size = new System.Drawing.Size(32, 32);
-            this.buttonMirrorY.TabIndex = 4;
+            this.buttonMirrorY.TabIndex = 7;
             this.toolTip1.SetToolTip(this.buttonMirrorY, "Mirror Y");
             this.buttonMirrorY.UseVisualStyleBackColor = true;
             this.buttonMirrorY.Click += new System.EventHandler(this.ButtonMirrorYClick);
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.OwnerDraw = true;
             // 
             // pictureBoxGamma
             // 
@@ -150,6 +162,8 @@ namespace MinecraftTextureEditorUI
             // pictureBoxColourPicker
             // 
             this.pictureBoxColourPicker.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBoxColourPicker.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxColourPicker.Image = global::MinecraftTextureEditorUI.Properties.Resources.ColourWheel;
             this.pictureBoxColourPicker.Location = new System.Drawing.Point(17, 64);
             this.pictureBoxColourPicker.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.pictureBoxColourPicker.Name = "pictureBoxColourPicker";
@@ -161,24 +175,26 @@ namespace MinecraftTextureEditorUI
             // 
             // buttonTexturiser
             // 
+            this.buttonTexturiser.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturiser;
             this.buttonTexturiser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonTexturiser.Font = new System.Drawing.Font("Minecraft", 10F);
             this.buttonTexturiser.Location = new System.Drawing.Point(155, 384);
             this.buttonTexturiser.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonTexturiser.Name = "buttonTexturiser";
             this.buttonTexturiser.Size = new System.Drawing.Size(32, 32);
-            this.buttonTexturiser.TabIndex = 4;
+            this.buttonTexturiser.TabIndex = 3;
             this.toolTip1.SetToolTip(this.buttonTexturiser, "Texturiser");
             this.buttonTexturiser.UseVisualStyleBackColor = true;
             this.buttonTexturiser.Click += new System.EventHandler(this.ButtonTexturiserClick);
             // 
             // buttonFloodFill
             // 
+            this.buttonFloodFill.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.floodfill;
             this.buttonFloodFill.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonFloodFill.Location = new System.Drawing.Point(200, 384);
             this.buttonFloodFill.Name = "buttonFloodFill";
             this.buttonFloodFill.Size = new System.Drawing.Size(32, 32);
-            this.buttonFloodFill.TabIndex = 7;
+            this.buttonFloodFill.TabIndex = 4;
             this.toolTip1.SetToolTip(this.buttonFloodFill, "Flood fill");
             this.buttonFloodFill.UseVisualStyleBackColor = true;
             this.buttonFloodFill.Click += new System.EventHandler(this.ButtonFloodFillClick);
@@ -195,6 +211,51 @@ namespace MinecraftTextureEditorUI
             this.pictureBoxAlpha.TabStop = false;
             this.toolTip1.SetToolTip(this.pictureBoxAlpha, "Alpha");
             // 
+            // buttonRainbow
+            // 
+            this.buttonRainbow.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.rainbow;
+            this.buttonRainbow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonRainbow.Location = new System.Drawing.Point(20, 423);
+            this.buttonRainbow.Name = "buttonRainbow";
+            this.buttonRainbow.Size = new System.Drawing.Size(32, 32);
+            this.buttonRainbow.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.buttonRainbow, "Rainbow!");
+            this.buttonRainbow.UseVisualStyleBackColor = true;
+            this.buttonRainbow.Click += new System.EventHandler(this.ButtonRainbowClick);
+            // 
+            // buttonSize1
+            // 
+            this.buttonSize1.BackColor = System.Drawing.Color.Black;
+            this.buttonSize1.Location = new System.Drawing.Point(99, 517);
+            this.buttonSize1.Name = "buttonSize1";
+            this.buttonSize1.Size = new System.Drawing.Size(8, 8);
+            this.buttonSize1.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.buttonSize1, "1x1 Pixel");
+            this.buttonSize1.UseVisualStyleBackColor = false;
+            this.buttonSize1.Click += new System.EventHandler(this.BrushSizeClick);
+            // 
+            // buttonSize2
+            // 
+            this.buttonSize2.BackColor = System.Drawing.Color.Black;
+            this.buttonSize2.Location = new System.Drawing.Point(113, 513);
+            this.buttonSize2.Name = "buttonSize2";
+            this.buttonSize2.Size = new System.Drawing.Size(12, 12);
+            this.buttonSize2.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.buttonSize2, "2x2 Pixel");
+            this.buttonSize2.UseVisualStyleBackColor = false;
+            this.buttonSize2.Click += new System.EventHandler(this.BrushSizeClick);
+            // 
+            // buttonSize4
+            // 
+            this.buttonSize4.BackColor = System.Drawing.Color.Black;
+            this.buttonSize4.Location = new System.Drawing.Point(131, 505);
+            this.buttonSize4.Name = "buttonSize4";
+            this.buttonSize4.Size = new System.Drawing.Size(20, 20);
+            this.buttonSize4.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.buttonSize4, "4x4 Pixel");
+            this.buttonSize4.UseVisualStyleBackColor = false;
+            this.buttonSize4.Click += new System.EventHandler(this.BrushSizeClick);
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -208,16 +269,6 @@ namespace MinecraftTextureEditorUI
             this.label7.TabIndex = 5;
             this.label7.Text = "Drawing Tools";
             // 
-            // buttonRainbow
-            // 
-            this.buttonRainbow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.buttonRainbow.Location = new System.Drawing.Point(20, 423);
-            this.buttonRainbow.Name = "buttonRainbow";
-            this.buttonRainbow.Size = new System.Drawing.Size(32, 32);
-            this.buttonRainbow.TabIndex = 8;
-            this.buttonRainbow.UseVisualStyleBackColor = true;
-            this.buttonRainbow.Click += new System.EventHandler(this.buttonRainbow_Click);
-            // 
             // DrawingToolsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -225,6 +276,9 @@ namespace MinecraftTextureEditorUI
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.ClientSize = new System.Drawing.Size(251, 549);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonSize4);
+            this.Controls.Add(this.buttonSize2);
+            this.Controls.Add(this.buttonSize1);
             this.Controls.Add(this.buttonRainbow);
             this.Controls.Add(this.buttonFloodFill);
             this.Controls.Add(this.label7);
@@ -270,5 +324,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonFloodFill;
         private System.Windows.Forms.PictureBox pictureBoxAlpha;
         private System.Windows.Forms.Button buttonRainbow;
+        private System.Windows.Forms.Button buttonSize1;
+        private System.Windows.Forms.Button buttonSize2;
+        private System.Windows.Forms.Button buttonSize4;
     }
 }

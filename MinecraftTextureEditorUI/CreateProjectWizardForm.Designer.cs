@@ -40,14 +40,14 @@ namespace MinecraftTextureEditorUI
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageDeploy2 = new System.Windows.Forms.TabPage();
-            this.comboBoxVersion = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.buttonProjectPathBrowser = new System.Windows.Forms.Button();
             this.textBoxProjectPath = new System.Windows.Forms.TextBox();
+            this.buttonProjectPathBrowser = new System.Windows.Forms.Button();
+            this.comboBoxVersion = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.labelMetaFile = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.tabPageDeploy3 = new System.Windows.Forms.TabPage();
             this.labelProgress = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -210,38 +210,15 @@ namespace MinecraftTextureEditorUI
             this.tabPageDeploy2.Text = "Step 2";
             this.tabPageDeploy2.UseVisualStyleBackColor = true;
             // 
-            // comboBoxVersion
+            // textBoxProjectPath
             // 
-            this.comboBoxVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxVersion.FormattingEnabled = true;
-            this.comboBoxVersion.Location = new System.Drawing.Point(158, 100);
-            this.comboBoxVersion.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.comboBoxVersion.Name = "comboBoxVersion";
-            this.comboBoxVersion.Size = new System.Drawing.Size(437, 25);
-            this.comboBoxVersion.TabIndex = 8;
-            // 
-            // label9
-            // 
-            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F);
-            this.label9.ForeColor = System.Drawing.Color.Yellow;
-            this.label9.Location = new System.Drawing.Point(154, 213);
-            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(441, 83);
-            this.label9.TabIndex = 7;
-            this.label9.Text = "The project path is where the your new project will be edited. This usually would" +
-    " be in the %appdata%.minecraft folder under a separate sub-folder!";
-            // 
-            // label2
-            // 
-            this.label2.Font = new System.Drawing.Font("Minecraft", 9.75F);
-            this.label2.ForeColor = System.Drawing.Color.Yellow;
-            this.label2.Location = new System.Drawing.Point(154, 129);
-            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(433, 52);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Select which version you wish to base your new project on!";
+            this.textBoxProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxProjectPath.Location = new System.Drawing.Point(158, 180);
+            this.textBoxProjectPath.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.textBoxProjectPath.Name = "textBoxProjectPath";
+            this.textBoxProjectPath.Size = new System.Drawing.Size(392, 24);
+            this.textBoxProjectPath.TabIndex = 0;
             // 
             // buttonProjectPathBrowser
             // 
@@ -255,15 +232,26 @@ namespace MinecraftTextureEditorUI
             this.buttonProjectPathBrowser.UseVisualStyleBackColor = true;
             this.buttonProjectPathBrowser.Click += new System.EventHandler(this.ButtonProjectPathBrowserClick);
             // 
-            // textBoxProjectPath
+            // comboBoxVersion
             // 
-            this.textBoxProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxProjectPath.Location = new System.Drawing.Point(158, 180);
-            this.textBoxProjectPath.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.textBoxProjectPath.Name = "textBoxProjectPath";
-            this.textBoxProjectPath.Size = new System.Drawing.Size(392, 24);
-            this.textBoxProjectPath.TabIndex = 0;
+            this.comboBoxVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxVersion.FormattingEnabled = true;
+            this.comboBoxVersion.Location = new System.Drawing.Point(158, 100);
+            this.comboBoxVersion.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.comboBoxVersion.Name = "comboBoxVersion";
+            this.comboBoxVersion.Size = new System.Drawing.Size(437, 25);
+            this.comboBoxVersion.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Minecraft", 9.75F);
+            this.label2.ForeColor = System.Drawing.Color.Yellow;
+            this.label2.Location = new System.Drawing.Point(154, 129);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(433, 52);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Select which version you wish to base your new project on!";
             // 
             // labelMetaFile
             // 
@@ -301,6 +289,18 @@ namespace MinecraftTextureEditorUI
             this.label1.TabIndex = 0;
             this.label1.Text = "Project Path:";
             // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F);
+            this.label9.ForeColor = System.Drawing.Color.Yellow;
+            this.label9.Location = new System.Drawing.Point(154, 213);
+            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(441, 83);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "The project path is where the your new project will be edited. This usually would" +
+    " be in the %appdata%.minecraft folder under a separate sub-folder!";
+            // 
             // tabPageDeploy3
             // 
             this.tabPageDeploy3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
@@ -324,7 +324,7 @@ namespace MinecraftTextureEditorUI
             this.labelProgress.Name = "labelProgress";
             this.labelProgress.Size = new System.Drawing.Size(500, 100);
             this.labelProgress.TabIndex = 5;
-            this.labelProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelProgress.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label7
             // 

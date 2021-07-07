@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using static MinecraftTextureEditorAPI.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -69,6 +69,45 @@ namespace MinecraftTextureEditorUI
         }
 
         #region Private methods
+
+        /// <summary>
+        /// Tool has been selected. Inform other controls
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="toolType">The tooltype</param>
+        private void SelectTool(object sender, ToolType toolType)
+        {
+            if (CurrentEditor is null)
+            {
+                return;
+            }
+
+            if (sender.GetType().Equals(typeof(ToolStripMenuItem)))
+            {
+                var selectedMenuItem = (ToolStripMenuItem)sender;
+
+                // Reset other items
+                foreach (object item in selectedMenuItem.GetCurrentParent().Items)
+                {
+                    if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                    {
+                        ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+                        menuItem.Checked = false;
+                    }
+                }
+
+                selectedMenuItem.Checked = true;
+            }
+
+            CurrentEditor.ToolType = toolType;
+
+            if (DrawingTools is null)
+            {
+                return;
+            }
+
+            DrawingTools.CurrentToolType = toolType;
+        }
 
         /// <summary>
         /// Randomises the wallpaper
@@ -174,12 +213,12 @@ namespace MinecraftTextureEditorUI
 
             DrawingTools = new DrawingToolsForm { MdiParent = this };
 
-            TexturePicker = new TexturePickerForm(filename) { MdiParent = this };
-
             DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
-
             DrawingTools.Colour2Changed += DrawingToolsBackColourChanged;
             DrawingTools.Colour1Changed += DrawingToolsForeColourChanged;
+            DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
+
+            TexturePicker = new TexturePickerForm(filename) { MdiParent = this };
 
             TexturePicker.TextureClicked += TexturePickerTextureClicked;
 
@@ -192,6 +231,20 @@ namespace MinecraftTextureEditorUI
             DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
 
             TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
+        }
+
+        /// <summary>
+        /// Capture the brush size changed event from the Drawing tools window
+        /// </summary>
+        /// <param name="brushSize"></param>
+        private void DrawingToolsBrushSizeChanged(int brushSize)
+        {
+            if (CurrentEditor is null)
+            {
+                return;
+            }
+
+            CurrentEditor.BrushSize = brushSize;
         }
 
         /// <summary>
@@ -389,6 +442,28 @@ namespace MinecraftTextureEditorUI
             if (deploymentWizard.ShowDialog(this) == DialogResult.OK)
             {
                 MessageBox.Show("Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete");
+            }
+        }
+
+        /// <summary>
+        /// Display the options dialog
+        /// </summary>
+        private void ShowOptions()
+        {
+            var optionsForm = new OptionsForm();
+
+            if (optionsForm.ShowDialog(this) == DialogResult.OK)
+            {
+                if (optionsForm.HasSaved)
+                {
+                    toolStripStatusLabel.Text = "Restarting App...";
+
+                    Close();
+
+                    ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
+
+                    Process.Start(info);
+                }
             }
         }
 
@@ -776,21 +851,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void OptionsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            var optionsForm = new OptionsForm();
-
-            if (optionsForm.ShowDialog(this) == DialogResult.OK)
-            {
-                if (optionsForm.HasSaved)
-                {
-                    toolStripStatusLabel.Text = "Restarting App...";
-
-                    Close();
-
-                    ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
-
-                    Process.Start(info);
-                }
-            }
+            ShowOptions();
         }
 
         /// <summary>
@@ -839,6 +900,101 @@ namespace MinecraftTextureEditorUI
         private void ToolStripMenuItemDeploymentWizardClick(object sender, EventArgs e)
         {
             OpenDeploymentWizardForm();
+        }
+
+        /// <summary>
+        /// Clear the current texture
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            if (CurrentEditor is null)
+            {
+                return;
+            }
+
+            CurrentEditor.Clear();
+        }
+
+        /// <summary>
+        /// Texturiser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemTexturiserClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Texturiser);
+        }
+
+        /// <summary>
+        /// FLood fill
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemFloodFillClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.FloodFill);
+        }
+
+        /// <summary>
+        /// Rainbow!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemRainbowClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Rainbow);
+        }
+
+        /// <summary>
+        /// Eraser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemEraserClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Eraser);
+        }
+
+        /// <summary>
+        /// Pen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemDrawClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Pen);
+        }
+
+        /// <summary>
+        /// Colour picker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemColourPickerClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Dropper);
+        }
+
+        /// <summary>
+        /// Mirror X
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemMirrorXClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.MirrorX);
+        }
+
+        /// <summary>
+        /// Mirror Y
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemMirrorYClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.MirrorY);
         }
 
         #endregion Form events

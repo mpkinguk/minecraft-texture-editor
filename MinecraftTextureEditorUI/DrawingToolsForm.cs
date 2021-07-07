@@ -1,11 +1,10 @@
-﻿using MinecraftTextureEditorAPI;
-using MinecraftTextureEditorAPI.Helpers;
+﻿using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using static MinecraftTextureEditorAPI.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -19,14 +18,39 @@ namespace MinecraftTextureEditorUI
 
         public delegate void ForeColourChangedEventHandler(Color colour);
 
+        public delegate void BrushSizeChangedEventHandler(int brushSize);
+
         #endregion Public delegates
 
         #region Public properties
 
         /// <summary>
+        /// The brush size
+        /// </summary>
+        public int BrushSize { get { return _brushSize; } set { _brushSize = value; } }
+
+        /// <summary>
         /// The current tool type in use
         /// </summary>
-        public ToolType CurrentToolType { get; set; }
+        public ToolType CurrentToolType
+        {
+            get { return _currentToolType; }
+            set
+            {
+                _currentToolType = value;
+
+                var button = (Button)Controls[$"button{value}"];
+
+                if(button is null)
+                {
+                    return;
+                }
+
+                button.Focus();
+
+                Invalidate(true);
+            }
+        }
 
         /// <summary>
         /// The pen foreground colour
@@ -73,11 +97,19 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public event BackColourChangedEventHandler Colour2Changed;
 
+        /// <summary>
+        /// Back colour changed event
+        /// </summary>
+        public event BrushSizeChangedEventHandler BrushSizeChanged;
         #endregion Public events
 
         #region Private properties
 
         private int _alpha;
+
+        private int _brushSize;
+
+        private ToolType _currentToolType;
 
         #endregion Private properties
 
@@ -87,8 +119,6 @@ namespace MinecraftTextureEditorUI
         public DrawingToolsForm()
         {
             InitializeComponent();
-
-            LoadImages();
 
             DrawAlpha();
 
@@ -108,11 +138,37 @@ namespace MinecraftTextureEditorUI
 
             panelColour2.Click += PanelColourClick;
 
+            toolTip1.Draw += ToolTipDraw;
+
             Colour2 = Color.Black;
 
             Colour1 = Color.White;
 
+            _brushSize = 1;
+
             _alpha = 255;
+        }
+
+        private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
+        {
+            var g = e.Graphics;
+
+            using (StringFormat sf = new StringFormat())
+            {
+                e.DrawBackground();
+
+                // Top.
+                sf.LineAlignment = StringAlignment.Center;
+
+                // Top/Left.
+                sf.Alignment = StringAlignment.Center;
+
+                g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+
+                e.DrawBorder();
+            }
+
+            g.Flush();
         }
 
         #region Private methods
@@ -136,22 +192,31 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Pick a colour
+        /// Pick a colour, any colour :)
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PickColour(object pictureBox, MouseEventArgs e, ColourSelectionType colourSelectionType = ColourSelectionType.ColourWheel)
+        /// <param name="colourSelectionType">The colour selection type</param>
+        private void PickColour(object sender, MouseEventArgs e, ColourSelectionType colourSelectionType = ColourSelectionType.ColourWheel)
         {
             try
             {
                 var cursorPosition = e.Location;
 
-                var colour = DrawingHelper.GetColour((PictureBox)pictureBox, cursorPosition.X, cursorPosition.Y);
+                var pictureBox = (PictureBox)sender;
+
+                if (pictureBox.Image is null)
+                {
+                    return;
+                }
+
+                var colour = GetColour(pictureBox, cursorPosition.X, cursorPosition.Y);
 
                 if (colourSelectionType.Equals(ColourSelectionType.Alpha))
                 {
                     if (e.Button.Equals(MouseButtons.Left) || e.Button.Equals(MouseButtons.Right))
                     {
-                        _alpha = Convert.ToInt32(DrawingHelper.GetColour((PictureBox)pictureBox, cursorPosition.X, cursorPosition.Y).A).Clamp(0, 255);
+                        _alpha = Convert.ToInt32(GetColour(pictureBox, cursorPosition.X, cursorPosition.Y).A).Clamp(0, 255);
                     }
                 }
 
@@ -176,11 +241,11 @@ namespace MinecraftTextureEditorUI
 
                 switch (colourSelectionType)
                 {
-                    case ColourSelectionType.Saturation:
                     case ColourSelectionType.ColourWheel:
                         DrawSaturation(colour);
                         DrawAlpha();
                         break;
+
                     case ColourSelectionType.Alpha:
                         DrawAlpha();
                         break;
@@ -233,32 +298,6 @@ namespace MinecraftTextureEditorUI
             }
 
             pictureBoxAlpha.Image = tmp;
-        }
-
-        /// <summary>
-        /// Load images for buttons
-        /// </summary>
-        private void LoadImages()
-        {
-            pictureBoxColourPicker.Image = Properties.Resources.ColourWheel;
-
-            buttonEraser.BackgroundImage = Properties.Resources.Eraser;
-
-            buttonPen.BackgroundImage = Properties.Resources.Pen;
-
-            buttonDropper.BackgroundImage = Properties.Resources.dropper;
-
-            buttonMirrorX.BackgroundImage = Properties.Resources.mirrorx;
-
-            buttonMirrorY.BackgroundImage = Properties.Resources.mirrory;
-
-            buttonTexturiser.BackgroundImage = Properties.Resources.texturiser;
-
-            buttonFloodFill.BackgroundImage = Properties.Resources.floodfill;
-
-            buttonRainbow.BackgroundImage = Properties.Resources.rainbow;
-
-            Invalidate(true);
         }
 
         #endregion Private methods
@@ -403,7 +442,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="toolType"></param>
         private void OnToolTypeChanged(ToolType toolType)
         {
-            CurrentToolType = toolType;
+            _currentToolType = toolType;
             ToolTypeChanged?.Invoke(toolType);
         }
 
@@ -424,6 +463,15 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Brush size changed event
+        /// </summary>
+        /// <param name="brushSize"></param>
+        private void OnBrushSizeChanged(int brushSize)
+        {
+            BrushSizeChanged?.Invoke(brushSize);
+        }
+
+        /// <summary>
         /// Flood fill
         /// </summary>
         /// <param name="sender"></param>
@@ -438,13 +486,22 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonRainbow_Click(object sender, EventArgs e)
+        private void ButtonRainbowClick(object sender, EventArgs e)
         {
             OnToolTypeChanged(ToolType.Rainbow);
         }
 
         #endregion Form events
 
+        private void BrushSizeClick(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+
+            if (int.TryParse(button.Name[button.Name.Length - 1].ToString(), out int size))
+            {
+                OnBrushSizeChanged(size);
+            }
+        }
 
     }
 }

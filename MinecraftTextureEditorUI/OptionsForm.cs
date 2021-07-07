@@ -151,7 +151,8 @@ namespace MinecraftTextureEditorUI
                         DialogResult = DialogResult.Cancel;
                         break;
                 }
-            } else if (_hasSaved)
+            }
+            else if (_hasSaved)
             {
                 DialogResult = DialogResult.OK;
             }

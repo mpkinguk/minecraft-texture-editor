@@ -1,5 +1,4 @@
 ﻿using GenericUndoRedoManagerAPI;
-using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
@@ -7,7 +6,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static MinecraftTextureEditorAPI.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.FileHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -56,6 +56,21 @@ namespace MinecraftTextureEditorUI
                 _showTransparent = !_showTransparent;
                 BackgroundImage = _showTransparent ? Properties.Resources.transparentGrid : null;
                 RefreshDisplay();
+            }
+        }
+
+        /// <summary>
+        /// The current brush size
+        /// </summary>
+        public int BrushSize
+        {
+            get
+            {
+                return _brushSize;
+            }
+            set
+            {
+                _brushSize = value;
             }
         }
 
@@ -127,9 +142,16 @@ namespace MinecraftTextureEditorUI
 
         private Point _cursor;
 
+        private int _brushSize;
+
         private Pixel _lastRainbowPixel = new Pixel();
 
         private UndoManagerAction<Texture> _undoManager;
+
+        /// <summary>
+        /// Used for undo
+        /// </summary>
+        private List<Pixel> _currentPixels = new List<Pixel>();
 
         #endregion private variables
 
@@ -164,12 +186,14 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void Init(int width, int height)
         {
-            Texture = DrawingHelper.GetBlankTexture(width, height);
+            Texture = GetBlankTexture(width, height);
 
             _width = width;
             _height = height;
 
             _currentRainbowColour = 0;
+
+            _brushSize = 1;
 
             _undoManager = new UndoManagerAction<Texture>();
 
@@ -216,48 +240,64 @@ namespace MinecraftTextureEditorUI
                 case Keys.Delete:
                     if (e.KeyCode.Equals(Keys.Delete))
                     {
-                        var newTexture = DrawingHelper.GetBlankTexture(Texture.Width, Texture.Height);
-
-                        Texture = newTexture.Clone();
-
-                        AddItem();
-
-                        RefreshDisplay();
+                        Clear();
                     }
                     break;
+
                 case Keys.D1:
                 case Keys.NumPad1:
                     ToolType = ToolType.Pen;
                     break;
+
                 case Keys.D2:
                 case Keys.NumPad2:
                     ToolType = ToolType.Eraser;
                     break;
+
                 case Keys.D3:
                 case Keys.NumPad3:
                     ToolType = ToolType.Dropper;
                     break;
+
                 case Keys.D4:
                 case Keys.NumPad4:
                     ToolType = ToolType.Texturiser;
                     break;
+
                 case Keys.D5:
                 case Keys.NumPad5:
                     ToolType = ToolType.FloodFill;
                     break;
+
                 case Keys.D6:
                 case Keys.NumPad6:
                     ToolType = ToolType.Rainbow;
                     break;
+
                 case Keys.D7:
                 case Keys.NumPad7:
                     ToolType = ToolType.MirrorX;
                     break;
+
                 case Keys.D8:
                 case Keys.NumPad8:
                     ToolType = ToolType.MirrorY;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Clear the current texture
+        /// </summary>
+        public void Clear()
+        {
+            var newTexture = GetBlankTexture(Texture.Width, Texture.Height);
+
+            Texture = newTexture.Clone();
+
+            AddItem();
+
+            RefreshDisplay();
         }
 
         /// <summary>
@@ -267,50 +307,6 @@ namespace MinecraftTextureEditorUI
         private bool CursorOutOfBounds()
         {
             return (_cursor.X < 0 || _cursor.Y < 0 || _cursor.X >= pictureBoxImage.Width || _cursor.Y >= pictureBoxImage.Height);
-        }
-
-        /// <summary>
-        /// Stack-based floodfill routine
-        /// </summary>
-        /// <param name="currentColour">The current colour</param>
-        /// <param name="newColour">The new colour</param>
-        /// <param name="x">x</param>
-        /// <param name="y">y</param>
-        private void FloodFill(Color currentColour, Color newColour, int x, int y)
-        {
-            Stack<Point> pixels = new Stack<Point>();
-            pixels.Push(new Point(x, y));
-
-            if (Texture.PixelList.Any(o => o.PixelColour != currentColour))
-            {
-
-                // The *1.75F denotes the various offshoots from the main coordinates
-                while (pixels.Count > 0 && pixels.Count <= Convert.ToInt32(Texture.PixelList.Count * 1.75F))
-                {
-                    Point a = pixels.Pop();
-                    if (a.X >= 0 && a.X < Texture.Width &&
-                         a.Y >= 0 && a.Y < Texture.Height)//make sure we stay within bounds
-                    {
-
-                        var currentPixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(a.X) && o.Y.Equals(a.Y));
-
-                        if (currentPixel.PixelColour.Equals(currentColour) && currentColour != newColour)
-                        {
-                            currentPixel.PixelColour = newColour;
-                            pixels.Push(new Point(a.X - 1, a.Y));
-                            pixels.Push(new Point(a.X + 1, a.Y));
-                            pixels.Push(new Point(a.X, a.Y - 1));
-                            pixels.Push(new Point(a.X, a.Y + 1));
-                        }
-                    }
-                }
-            } else
-            {
-                foreach(var pixel in Texture.PixelList)
-                {
-                    pixel.PixelColour = newColour;
-                }
-            }
         }
 
         #endregion Private methods
@@ -340,7 +336,7 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        ///
+        /// Track focus of form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -448,122 +444,110 @@ namespace MinecraftTextureEditorUI
                 return;
             }
 
-            Pixel pixel = Texture.PixelList.FirstOrDefault(o => (o.X == (_cursor.X / Zoom)) && (o.Y == (_cursor.Y / Zoom)));
-
-            if (pixel is null)
+            if(_brushSize == 0)
             {
                 return;
             }
 
-            switch (e.Button)
+            for (var y = 0; y < BrushSize; y++)
             {
-                case MouseButtons.Left:
-                    switch (ToolType)
+                for (var x = 0; x < BrushSize; x++)
+                {
+                    if (((_cursor.X / Zoom) + x > Texture.Width - 1 || ((_cursor.Y / Zoom) + y > Texture.Height - 1)))
                     {
-                        case ToolType.Dropper:
-                            OnColourSelected(pixel.PixelColour, true);
-                            return;
+                        continue;
+                    }
 
-                        case ToolType.Eraser:
-                            colour = EraserColor;
+                    Pixel pixel = Texture.PixelList.FirstOrDefault(o => (o.X == (_cursor.X / Zoom) + x) && (o.Y == (_cursor.Y / Zoom) + y));
+
+                    if (pixel is null)
+                    {
+                        return;
+                    }
+
+                    switch (e.Button)
+                    {
+                        case MouseButtons.Left:
+                            switch (ToolType)
+                            {
+                                case ToolType.Dropper:
+                                    // Only require first pixel
+                                    OnColourSelected(pixel.PixelColour, true);
+                                    return;
+
+                                case ToolType.Eraser:
+                                    colour = EraserColor;
+                                    break;
+
+                                default:
+                                    colour = Colour1;
+                                    break;
+                            }
+                            break;
+
+                        case MouseButtons.Right:
+                            switch (ToolType)
+                            {
+                                case ToolType.Dropper:
+                                    // Only require first pixel
+                                    OnColourSelected(pixel.PixelColour, false);
+                                    return;
+
+                                case ToolType.Eraser:
+                                    colour = EraserColor;
+                                    break;
+
+                                default:
+                                    colour = Colour2;
+                                    break;
+                            }
                             break;
 
                         default:
-                            colour = Colour1;
-                            break;
-                    }
-                    break;
-
-                case MouseButtons.Right:
-                    switch (ToolType)
-                    {
-                        case ToolType.Dropper:
-                            OnColourSelected(pixel.PixelColour, false);
+                            RefreshDisplay();
                             return;
-
-                        case ToolType.Eraser:
-                            colour = EraserColor;
-                            break;
-
-                        default:
-                            colour = Colour2;
-                            break;
                     }
-                    break;
 
-                default:
-                    RefreshDisplay();
-                    return;
-            }
-
-            if (ToolType.Equals(ToolType.Rainbow))
-            {
-                colour = RainbowColours[_currentRainbowColour];
-
-                var moveNextColour = false;
-
-                if (e.Button.Equals(MouseButtons.Left))
-                {
-                    if (pixel.X != _lastRainbowPixel.X && pixel.Y != _lastRainbowPixel.Y)
+                    if (ToolType.Equals(ToolType.Rainbow))
                     {
-                        moveNextColour = true;
+                        colour = Rainbow(pixel, e.Button.Equals(MouseButtons.Left), ref _currentRainbowColour, ref _lastRainbowPixel);
                     }
-                } else if (e.Button.Equals(MouseButtons.Right))
-                {
-                    if (pixel.X != _lastRainbowPixel.X || pixel.Y != _lastRainbowPixel.Y)
+
+                    if (ToolType.Equals(ToolType.MirrorX))
                     {
-                        moveNextColour = true;
+                        Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
+
+                        inversePixel.PixelColour = colour;
+                    }
+                    else if (ToolType.Equals(ToolType.MirrorY))
+                    {
+                        Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
+
+                        inversePixel.PixelColour = colour;
+                    }
+
+                    if (ToolType.Equals(ToolType.Texturiser))
+                    {
+                        colour = Randomiser(colour);
+                    }
+
+                    if (ToolType.Equals(ToolType.FloodFill))
+                    {
+                        var currentColour = pixel.PixelColour;
+
+                        var floodX = pixel.X;
+
+                        var floodY = pixel.Y;
+
+                        FloodFill(currentColour, colour, floodX, floodY, Texture);
+
+                        return;
+                    }
+                    else
+                    {
+                        pixel.PixelColour = colour;
                     }
                 }
-
-                if (moveNextColour)
-                {
-                    _currentRainbowColour = _currentRainbowColour >= RainbowColours.Count - 1 ? 0 : _currentRainbowColour + 1;
-
-                    _lastRainbowPixel.X = pixel.X;
-                    _lastRainbowPixel.Y = pixel.Y;
-                }
-
-            }
-
-            if (ToolType.Equals(ToolType.MirrorX))
-            {
-                Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
-
-                inversePixel.PixelColour = colour;
-            }
-            else if (ToolType.Equals(ToolType.MirrorY))
-            {
-                Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
-
-                inversePixel.PixelColour = colour;
-            }
-
-            if (ToolType.Equals(ToolType.Texturiser))
-            {
-                var rnd = new Random();
-
-                var a = colour.A;
-                var r = (rnd.Next(-20, 20) + colour.R).Clamp(0, 255);
-                var g = (rnd.Next(-20, 20) + colour.G).Clamp(0, 255);
-                var b = (rnd.Next(-20, 20) + colour.B).Clamp(0, 255);
-
-                colour = Color.FromArgb(a, r, g, b);
-            }
-
-            if (ToolType.Equals(ToolType.FloodFill))
-            {
-                var currentColour = pixel.PixelColour;
-
-                var x = pixel.X;
-
-                var y = pixel.Y;
-
-                FloodFill(currentColour, colour, x, y);
-            }
-            else
-            {
-                pixel.PixelColour = colour;
             }
 
             HasChanged = true;
@@ -621,7 +605,7 @@ namespace MinecraftTextureEditorUI
 
                 FileName = fileName;
 
-                Texture = DrawingHelper.GetTextureFromImage(image);
+                Texture = GetTextureFromImage(image);
 
                 _undoManager = new UndoManagerAction<Texture>();
 
