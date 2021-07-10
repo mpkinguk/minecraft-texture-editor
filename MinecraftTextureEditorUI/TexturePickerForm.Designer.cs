@@ -31,12 +31,14 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listViewTextureList = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelTitle = new System.Windows.Forms.Label();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.buttonRefresh = new System.Windows.Forms.Button();
             this.flowLayoutPanelTextures = new System.Windows.Forms.FlowLayoutPanel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,7 +88,8 @@ namespace MinecraftTextureEditorUI
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(218, 24);
             this.textBoxFilter.TabIndex = 0;
-            this.textBoxFilter.KeyDown += new KeyEventHandler(this.TextBoxFilterKeyDown);
+            this.toolTip1.SetToolTip(this.textBoxFilter, "Type in your text and press enter to filter the textures!");
+            this.textBoxFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxFilterKeyDown);
             // 
             // buttonRefresh
             // 
@@ -97,6 +100,7 @@ namespace MinecraftTextureEditorUI
             this.buttonRefresh.Size = new System.Drawing.Size(120, 30);
             this.buttonRefresh.TabIndex = 1;
             this.buttonRefresh.Text = "&Refresh";
+            this.toolTip1.SetToolTip(this.buttonRefresh, "Click here to refresh your textures");
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.ButtonRefreshClick);
             // 
@@ -108,8 +112,14 @@ namespace MinecraftTextureEditorUI
             this.flowLayoutPanelTextures.Name = "flowLayoutPanelTextures";
             this.flowLayoutPanelTextures.Size = new System.Drawing.Size(337, 577);
             this.flowLayoutPanelTextures.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.flowLayoutPanelTextures, "Your textures :)");
             // 
-            // TexturePickerForm
+            // toolTip1
+            // 
+            this.toolTip1.OwnerDraw = true;
+            this.toolTip1.Draw += new DrawToolTipEventHandler(this.ToolTipDraw);
+            // 
+            // TexturePickerForms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -136,5 +146,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ListView listViewTextureList;
         private System.Windows.Forms.Label labelTitle;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelTextures;
+        private ToolTip toolTip1;
     }
 }

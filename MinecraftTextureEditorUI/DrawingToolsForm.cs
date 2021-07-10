@@ -149,6 +149,11 @@ namespace MinecraftTextureEditorUI
             _alpha = 255;
         }
 
+        /// <summary>
+        /// Override the tool tip drawing function
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
             var g = e.Graphics;
