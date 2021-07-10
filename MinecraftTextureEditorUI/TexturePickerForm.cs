@@ -58,6 +58,32 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Filter the images when enter is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBoxFilterKeyDown(object sender, KeyEventArgs e)
+        {
+            UpdateCursor(true);
+
+            if (e.KeyCode.Equals(Keys.Enter))
+            {
+                var textBox = (TextBox)sender;
+
+                flowLayoutPanelTextures.Visible = false;
+
+                foreach (Button item in flowLayoutPanelTextures.Controls)
+                {
+                    item.Visible = item.Text.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text);
+                }
+
+                flowLayoutPanelTextures.Visible = true;
+            }
+
+            UpdateCursor(false);
+        }
+
+        /// <summary>
         /// The constructor
         /// </summary>
         public TexturePickerForm(string currentPath)
@@ -94,16 +120,6 @@ namespace MinecraftTextureEditorUI
         private void OnTextureClicked(string filename)
         {
             TextureClicked?.Invoke(filename);
-        }
-
-        /// <summary>
-        /// Filter the items
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TextBoxFilterTextChanged(object sender, EventArgs e)
-        {
-            listViewTextureList.RedrawItems(0, listViewTextureList.Items.Count - 1, true);
         }
 
         /// <summary>
@@ -177,7 +193,7 @@ namespace MinecraftTextureEditorUI
 
             Files = await Task.Run(() => FileHelper.GetFiles(Path.Combine(CurrentPath, assetsPath, texturesPath), "*.png", true)).ConfigureAwait(false);
 
-            UpdateListView(Files);
+            UpdateFlowLayoutPanel(Files);
 
             UpdateText("Texture Picker");
         }
@@ -233,6 +249,123 @@ namespace MinecraftTextureEditorUI
             EndUpdate();
 
             UpdateCursor(false);
+        }
+
+
+        /// <summary>
+        /// Update the listview with files
+        /// </summary>
+        /// <param name="files"></param>
+        private void UpdateFlowLayoutPanel(List<string> files)
+        {
+            if (flowLayoutPanelTextures.InvokeRequired)
+            {
+                var d = new Action<List<string>>(UpdateFlowLayoutPanel);
+
+                Invoke(d, new object[] { files });
+            }
+            else
+            {
+                UpdateCursor(true);
+
+                flowLayoutPanelTextures.Visible = false;
+
+                flowLayoutPanelTextures.VerticalScroll.Enabled = true;
+
+                var itemSize = flowLayoutPanelTextures.ClientRectangle.Width / 5;
+
+                if (files is null)
+                {
+                    throw new ArgumentNullException(nameof(files));
+                }
+
+                int row = 0;
+                int col = 0;
+
+                foreach (var file in files)
+                {
+                    var fileInfo = new FileInfo(file);
+
+                    Bitmap tmp;
+
+                    var item = new Button() { Tag = file, Text = fileInfo.Name, Location = new Point(0, 0), Size = new Size(itemSize, itemSize) };
+
+                    item.Click += LoadTexture;
+                    item.Paint += ItemPaint;
+
+                    try
+                    {
+                        using (var image = (Image)FileHelper.LoadFile(file))
+                        {
+                            tmp = new Bitmap(image);
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        Debug.WriteLine(exc.Message);
+                        continue;
+                    }
+
+                    item.Image =  tmp;
+
+                    flowLayoutPanelTextures.Controls.Add(item);                  
+
+                    col++;
+                    
+                    if (col.Equals(5))
+                    {
+                        col = 0;
+                           
+                        row++;
+
+                        //tableLayoutPanelTextures.RowStyles.Add(new RowStyle(SizeType.Absolute, itemSize));
+                    }
+                }
+
+                flowLayoutPanelTextures.PerformLayout();
+
+                flowLayoutPanelTextures.Visible = true;
+
+                if (flowLayoutPanelTextures.HasChildren)
+                {
+                    flowLayoutPanelTextures.ScrollControlIntoView(flowLayoutPanelTextures.Controls[0]);
+                }
+
+                UpdateCursor(false);
+            }
+        }
+
+        /// <summary>
+        /// Paint the item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ItemPaint(object sender, PaintEventArgs e)
+        {
+            var button = (Button) sender;
+
+            var g = e.Graphics;
+
+            g.Clear(button.BackColor);
+
+            g.DrawImage(button.Image, button.ClientRectangle);
+
+            g.DrawString(button.Text, new Font(button.Font.Name, 6F), new SolidBrush(button.ForeColor), new Point(2, button.ClientRectangle.Height - 12));
+
+            g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, button.ClientRectangle);
+
+            g.Flush();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoadTexture(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+            OnTextureClicked(Convert.ToString(button.Tag));
         }
 
         #endregion Private methods
@@ -341,5 +474,10 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Threadsafe methods
+
+        private void textBoxFilter_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

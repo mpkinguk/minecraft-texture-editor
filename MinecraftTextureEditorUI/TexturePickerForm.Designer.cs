@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace MinecraftTextureEditorUI
 {
     partial class TexturePickerForm
@@ -34,19 +36,19 @@ namespace MinecraftTextureEditorUI
             this.labelTitle = new System.Windows.Forms.Label();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
             this.buttonRefresh = new System.Windows.Forms.Button();
+            this.flowLayoutPanelTextures = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listViewTextureList
             // 
-            this.listViewTextureList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewTextureList.Font = new System.Drawing.Font("Minecraft", 8F);
             this.listViewTextureList.HideSelection = false;
-            this.listViewTextureList.Location = new System.Drawing.Point(0, 56);
+            this.listViewTextureList.Location = new System.Drawing.Point(0, 585);
             this.listViewTextureList.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listViewTextureList.Name = "listViewTextureList";
             this.listViewTextureList.OwnerDraw = true;
-            this.listViewTextureList.Size = new System.Drawing.Size(337, 577);
+            this.listViewTextureList.Size = new System.Drawing.Size(337, 48);
             this.listViewTextureList.TabIndex = 1;
             this.listViewTextureList.UseCompatibleStateImageBehavior = false;
             // 
@@ -84,7 +86,7 @@ namespace MinecraftTextureEditorUI
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(218, 24);
             this.textBoxFilter.TabIndex = 0;
-            this.textBoxFilter.TextChanged += new System.EventHandler(this.TextBoxFilterTextChanged);
+            this.textBoxFilter.KeyDown += new KeyEventHandler(this.TextBoxFilterKeyDown);
             // 
             // buttonRefresh
             // 
@@ -98,12 +100,22 @@ namespace MinecraftTextureEditorUI
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.ButtonRefreshClick);
             // 
+            // flowLayoutPanelTextures
+            // 
+            this.flowLayoutPanelTextures.AutoScroll = true;
+            this.flowLayoutPanelTextures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanelTextures.Location = new System.Drawing.Point(0, 56);
+            this.flowLayoutPanelTextures.Name = "flowLayoutPanelTextures";
+            this.flowLayoutPanelTextures.Size = new System.Drawing.Size(337, 577);
+            this.flowLayoutPanelTextures.TabIndex = 4;
+            // 
             // TexturePickerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 633);
             this.ControlBox = false;
+            this.Controls.Add(this.flowLayoutPanelTextures);
             this.Controls.Add(this.listViewTextureList);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Minecraft", 10F);
@@ -123,5 +135,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListView listViewTextureList;
         private System.Windows.Forms.Label labelTitle;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelTextures;
     }
 }
