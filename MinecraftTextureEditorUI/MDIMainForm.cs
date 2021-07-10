@@ -589,7 +589,7 @@ namespace MinecraftTextureEditorUI
 
             CurrentEditor.HasChanged = true;
 
-            CurrentEditor.AddItem(CurrentEditor.Texture.PixelList);
+            CurrentEditor.AddItem();
 
             CurrentEditor.RefreshDisplay();
         }
@@ -632,7 +632,7 @@ namespace MinecraftTextureEditorUI
 
             CurrentEditor.HasChanged = true;
 
-            CurrentEditor.AddItem(data.PixelList);
+            CurrentEditor.AddItem();
 
             CurrentEditor.RefreshDisplay();
         }
