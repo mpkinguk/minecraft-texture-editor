@@ -31,5 +31,14 @@ namespace MinecraftTextureEditorAPI.Model
             X = 0;
             Y = 0;
         }
+
+        /// <summary>
+        /// Clone this pixel
+        /// </summary>
+        /// <returns></returns>
+        public Pixel Clone()
+        {
+            return new Pixel { PixelColour = PixelColour, X = X, Y = Y };
+        }
     }
 }

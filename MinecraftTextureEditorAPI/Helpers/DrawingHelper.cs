@@ -177,11 +177,8 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x">x</param>
         /// <param name="y">y</param>
         /// <param name="texture">The texture</param>
-        /// 
-        public static List<Pixel> FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
+        public static void FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
         {
-            var output = new List<Pixel>();
-
             Stack<Point> pixels = new Stack<Point>();
             pixels.Push(new Point(x, y));
 
@@ -199,10 +196,6 @@ namespace MinecraftTextureEditorAPI.Helpers
                         if (currentPixel.PixelColour.Equals(currentColour) && currentColour != newColour)
                         {
                             currentPixel.PixelColour = newColour;
-
-                            // Add to output for undo tracking
-                            output.Add(new Pixel() { PixelColour = newColour, X = currentPixel.X, Y = currentPixel.Y });
-
                             pixels.Push(new Point(a.X - 1, a.Y));
                             pixels.Push(new Point(a.X + 1, a.Y));
                             pixels.Push(new Point(a.X, a.Y - 1));
@@ -215,11 +208,9 @@ namespace MinecraftTextureEditorAPI.Helpers
             {
                 foreach (var pixel in texture.PixelList)
                 {
-                    output.Add(new Pixel() { PixelColour = newColour, X = pixel.X, Y = pixel.Y });
+                    pixel.PixelColour = newColour;
                 }
             }
-
-            return output;
         }
 
         /// <summary>
@@ -277,23 +268,6 @@ namespace MinecraftTextureEditorAPI.Helpers
             var newColour = Color.FromArgb(a, r, g, b);
 
             return newColour;
-        }
-
-        /// <summary>
-        /// Clones a pixel list
-        /// </summary>
-        /// <param name="pixelList">The pixel list</param>
-        /// <returns>List(Pixel)</returns>
-        public static List<Pixel> Clone(this List<Pixel> pixelList)
-        {
-            var output = new List<Pixel>();
-
-            foreach (Pixel item in pixelList)
-            {
-                output.Add(new Pixel { PixelColour = item.PixelColour, X = item.X, Y = item.Y });
-            }
-
-            return output;
         }
     }
 }
