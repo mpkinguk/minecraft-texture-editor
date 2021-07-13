@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using log4net;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 
 namespace MinecraftTextureEditorAPI.Helpers
 {
     public static class ConfigurationHelper
     {
+        public static ILog Log;
+
         /// <summary>
         /// Load a setting
         /// </summary>
@@ -40,9 +43,9 @@ namespace MinecraftTextureEditorAPI.Helpers
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
-            catch (ConfigurationErrorsException)
+            catch (ConfigurationErrorsException ex)
             {
-                Debug.WriteLine("Error writing app settings");
+                Log?.Debug(ex.Message);
             }
         }
 
@@ -54,12 +57,20 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             var result = new Dictionary<string, string>();
 
-            for (int i = 0; i < ConfigurationManager.AppSettings.Count; i++)
+            try
             {
-                result.Add(ConfigurationManager.AppSettings.Keys[i], ConfigurationManager.AppSettings[i]);
-            }
+                for (int i = 0; i < ConfigurationManager.AppSettings.Count; i++)
+                {
+                    result.Add(ConfigurationManager.AppSettings.Keys[i], ConfigurationManager.AppSettings[i]);
+                }
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return result;
+            }
         }
     }
 }

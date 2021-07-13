@@ -23,7 +23,8 @@ namespace MinecraftTextureEditorAPI.Helpers
             FloodFill,
             Rainbow,
             MirrorX,
-            MirrorY
+            MirrorY,
+            TransparencyLock
         }
 
         /// <summary>
@@ -177,32 +178,48 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x">x</param>
         /// <param name="y">y</param>
         /// <param name="texture">The texture</param>
-        public static void FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
+        public static double FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
         {
-            Stack<Point> pixels = new Stack<Point>();
-            pixels.Push(new Point(x, y));
+            var start = DateTime.Now;
 
-            if (texture.PixelList.Any(o => o.PixelColour != currentColour))
+            var width = texture.Width;
+            var height = texture.Height;
+
+            var pixelCount = Convert.ToInt32(texture.PixelList.Count * 1.75F);
+
+            Queue<Point> pixels = new Queue<Point>();
+            pixels.Enqueue(new Point(x, y));
+
+            Bitmap bmp = BitmapFromTexture(texture);
+
+            if (texture.PixelList.Any(o => !ColourMatch(o.PixelColour, currentColour)))
             {
                 // The *1.75F denotes the various offshoots from the main coordinates
-                while (pixels.Count > 0 && pixels.Count <= Convert.ToInt32(texture.PixelList.Count * 1.75F))
+                while (pixels.Count > 0 && pixels.Count <= pixelCount)
                 {
-                    Point a = pixels.Pop();
-                    if (a.X >= 0 && a.X < texture.Width &&
-                         a.Y >= 0 && a.Y < texture.Height)//make sure we stay within bounds
-                    {
-                        var currentPixel = texture.PixelList.FirstOrDefault(o => o.X.Equals(a.X) && o.Y.Equals(a.Y));
+                    Point a = pixels.Dequeue();
 
-                        if (currentPixel.PixelColour.Equals(currentColour) && currentColour != newColour)
+                    //make sure we stay within bounds
+                    if (InBounds(a.X, a.Y, width, height))
+                    {
+                        var currentPixelColour = bmp.GetPixel(a.X, a.Y);
+
+                        if (ColourMatch(currentPixelColour, currentColour) && currentColour != newColour)
                         {
-                            currentPixel.PixelColour = newColour;
-                            pixels.Push(new Point(a.X - 1, a.Y));
-                            pixels.Push(new Point(a.X + 1, a.Y));
-                            pixels.Push(new Point(a.X, a.Y - 1));
-                            pixels.Push(new Point(a.X, a.Y + 1));
+                            bmp.SetPixel(a.X, a.Y, newColour);
+
+                            //GetPixel(texture, a.X, a.Y).PixelColour = newColour;
+
+                            // Check bounds and colour before queuing next point
+                            pixels.Enqueue(new Point(a.X - 1, a.Y));
+                            pixels.Enqueue(new Point(a.X + 1, a.Y));
+                            pixels.Enqueue(new Point(a.X, a.Y - 1));
+                            pixels.Enqueue(new Point(a.X, a.Y + 1));
                         }
                     }
                 }
+
+                texture.PixelList = GetTextureFromImage(bmp).PixelList;
             }
             else
             {
@@ -211,6 +228,59 @@ namespace MinecraftTextureEditorAPI.Helpers
                     pixel.PixelColour = newColour;
                 }
             }
+
+            TimeSpan ts = DateTime.Now - start;
+
+            return ts.TotalSeconds;
+        }
+
+        /// <summary>
+        /// Returns a colour at the coordinates provided
+        /// </summary>
+        /// <param name="texture">The texture</param>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
+        /// <returns>Color</returns>
+        public static Color GetColour(Texture texture, int x, int y)
+        {
+            return GetPixel(texture, x, y).PixelColour;
+        }
+
+        /// <summary>
+        /// Returns a pixel at the coordinates provided
+        /// </summary>
+        /// <param name="texture">The texture</param>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
+        /// <returns>Pixel</returns>
+        public static Pixel GetPixel(Texture texture, int x, int y)
+        {
+            return texture.PixelList.FirstOrDefault(o => o.X.Equals(x) && o.Y.Equals(y));
+        }
+
+        /// <summary>
+        /// Is the point within the bounds of the texture
+        /// </summary>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
+        /// <param name="width">width</param>
+        /// <param name="height">height</param>
+        /// <returns>Bool</returns>
+        public static bool InBounds(int x, int y, int width, int height)
+        {
+            return (x >= 0 && x < width &&
+                         y >= 0 && y < height);
+        }
+
+        /// <summary>
+        /// Does the color match exactly
+        /// </summary>
+        /// <param name="a">Colour a</param>
+        /// <param name="b">Colour b</param>
+        /// <returns>Bool</returns>
+        public static bool ColourMatch(Color a, Color b)
+        {
+            return (a.ToArgb() & 0xffffff) == (b.ToArgb() & 0xffffff);
         }
 
         /// <summary>
@@ -260,14 +330,54 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             var rnd = new Random();
 
-            var a = colour.A;
-            var r = (rnd.Next(-30, 30) + colour.R).Clamp(0, 255);
-            var g = (rnd.Next(-30, 30) + colour.G).Clamp(0, 255);
-            var b = (rnd.Next(-30, 30) + colour.B).Clamp(0, 255);
+            var brightnessTransform = rnd.NextDouble().Clamp(0.4, 0.8);
 
-            var newColour = Color.FromArgb(a, r, g, b);
+            var newColour = ColourHelper.TransformBrightness(colour, ColourHelper.ColorTransformMode.Hsb, brightnessTransform);
 
             return newColour;
+        }
+
+        /// <summary>
+        /// Generate a bitmap from a texture
+        /// </summary>
+        /// <param name="texture">The texture</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap BitmapFromTexture(Texture texture)
+        {
+            var width = texture.Width;
+            var height = texture.Height;
+
+            var tmp = new Bitmap(width, height);
+            
+            foreach (Pixel pixel in texture.PixelList)
+            {
+                tmp.SetPixel(pixel.X, pixel.Y, pixel.PixelColour);
+            }
+
+            return tmp;
+        }
+
+        /// <summary>
+        /// Return true visibility of child object
+        /// </summary>
+        /// <param name="child">The child</param>
+        /// <param name="parent">The parent</param>
+        /// <returns>Bool</returns>
+        public static bool ChildReallyVisible(this Control child, Control parent)
+        {
+            var pos = parent.PointToClient(child.PointToScreen(Point.Empty));
+
+            //Test the top left
+            return (parent.GetChildAtPoint(pos) == child) ||
+
+            //Test the top right
+            (parent.GetChildAtPoint(new Point(pos.X + child.Width - 1, pos.Y)) == child) ||
+
+            //Test the bottom left
+            (parent.GetChildAtPoint(new Point(pos.X, pos.Y + child.Height - 1)) == child) ||
+
+            //Test the bottom right
+            (parent.GetChildAtPoint(new Point(pos.X + child.Width - 1, pos.Y + child.Height - 1)) == child);
         }
     }
 }

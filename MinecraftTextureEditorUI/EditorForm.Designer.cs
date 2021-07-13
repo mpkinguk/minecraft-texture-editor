@@ -50,7 +50,7 @@ namespace MinecraftTextureEditorUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(579, 740);
+            this.ClientSize = new System.Drawing.Size(417, 363);
             this.Controls.Add(this.pictureBoxImage);
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);

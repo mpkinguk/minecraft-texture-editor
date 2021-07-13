@@ -60,6 +60,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemRainbow = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMirrorX = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMirrorY = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemTransparencyLock = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDeploymentWizard = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCreateProjectWizard = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,7 +143,7 @@ namespace MinecraftTextureEditorUI
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.openToolStripMenuItem.Text = "&Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenFile);
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.LoadFile);
             // 
             // toolStripSeparator3
             // 
@@ -201,7 +202,7 @@ namespace MinecraftTextureEditorUI
             this.undoToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.undoToolStripMenuItem.Text = "&Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItemClick);
             // 
@@ -211,14 +212,14 @@ namespace MinecraftTextureEditorUI
             this.redoToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.redoToolStripMenuItem.Text = "&Redo";
             this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // cutToolStripMenuItem
             // 
@@ -226,7 +227,7 @@ namespace MinecraftTextureEditorUI
             this.cutToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cutToolStripMenuItem.Text = "Cu&t";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
             // 
@@ -236,7 +237,7 @@ namespace MinecraftTextureEditorUI
             this.copyToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyToolStripMenuItem.Text = "&Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             // 
@@ -246,14 +247,14 @@ namespace MinecraftTextureEditorUI
             this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pasteToolStripMenuItem.Text = "&Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearToolStripMenuItemClick);
             // 
@@ -273,7 +274,7 @@ namespace MinecraftTextureEditorUI
             this.toolBarToolStripMenuItem.CheckOnClick = true;
             this.toolBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.toolBarToolStripMenuItem.Name = "toolBarToolStripMenuItem";
-            this.toolBarToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.toolBarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.toolBarToolStripMenuItem.Text = "&Toolbar";
             this.toolBarToolStripMenuItem.Click += new System.EventHandler(this.ToolBarToolStripMenuItem_Click);
             // 
@@ -283,7 +284,7 @@ namespace MinecraftTextureEditorUI
             this.statusBarToolStripMenuItem.CheckOnClick = true;
             this.statusBarToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.statusBarToolStripMenuItem.Name = "statusBarToolStripMenuItem";
-            this.statusBarToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.statusBarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.statusBarToolStripMenuItem.Text = "&Status Bar";
             this.statusBarToolStripMenuItem.Click += new System.EventHandler(this.StatusBarToolStripMenuItem_Click);
             // 
@@ -298,6 +299,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemRainbow,
             this.toolStripMenuItemMirrorX,
             this.toolStripMenuItemMirrorY,
+            this.toolStripMenuItemTransparencyLock,
             this.toolStripSeparator10,
             this.toolStripMenuItemDeploymentWizard,
             this.toolStripMenuItemCreateProjectWizard,
@@ -374,6 +376,14 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY.Text = "Mirror Y";
             this.toolStripMenuItemMirrorY.Click += new System.EventHandler(this.ToolStripMenuItemMirrorYClick);
             // 
+            // toolStripMenuItemTransparencyLock
+            // 
+            this.toolStripMenuItemTransparencyLock.Name = "toolStripMenuItemTransparencyLock";
+            this.toolStripMenuItemTransparencyLock.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.toolStripMenuItemTransparencyLock.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItemTransparencyLock.Text = "Transparency Lock";
+            this.toolStripMenuItemTransparencyLock.Click += new System.EventHandler(this.ToolStripMenuItemTransparencyLockClick);
+            // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
@@ -421,14 +431,14 @@ namespace MinecraftTextureEditorUI
             // newWindowToolStripMenuItem
             // 
             this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newWindowToolStripMenuItem.Text = "&New Window";
             this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewEditorForm);
             // 
             // closeAllToolStripMenuItem
             // 
             this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeAllToolStripMenuItem.Text = "C&lose All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
             // 
@@ -445,7 +455,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "&About ...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
             // 
@@ -490,7 +500,7 @@ namespace MinecraftTextureEditorUI
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.openToolStripButton.Text = "Open";
-            this.openToolStripButton.Click += new System.EventHandler(this.OpenFile);
+            this.openToolStripButton.Click += new System.EventHandler(this.LoadFile);
             // 
             // saveToolStripButton
             // 
@@ -690,6 +700,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTexturiser;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFloodFill;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRainbow;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTransparencyLock;
     }
 }
 

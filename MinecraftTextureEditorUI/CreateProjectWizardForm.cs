@@ -1,4 +1,5 @@
-﻿using MinecraftTextureEditorAPI.Helpers;
+﻿using log4net;
+using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,18 +15,29 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public string CurrentPath { get; set; }
 
+        private readonly ILog _log;
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public CreateProjectWizardForm()
+        public CreateProjectWizardForm(ILog log)
         {
-            InitializeComponent();
+            _log = log;
 
-            tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
+            try
+            {
+                InitializeComponent();
 
-            PopulateVersions();
+                tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
 
-            textBoxProjectPath.Text = FileHelper.GetMineCraftFolder();
+                PopulateVersions();
+
+                textBoxProjectPath.Text = FileHelper.GetMineCraftFolder();
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         #region Form events
@@ -37,32 +49,39 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void TabControlSelectedIndexChanged(object sender, EventArgs e)
         {
-            var tabControl = (TabControl)sender;
-
-            var lastTab = tabControl.TabCount - 1;
-
-            switch (tabControl.SelectedIndex)
+            try
             {
-                case 0:
-                    buttonPrevious.Enabled = false;
-                    buttonNext.Enabled = true;
-                    buttonFinish.Enabled = false;
-                    break;
+                var tabControl = (TabControl)sender;
 
-                default:
-                    if (tabControl.SelectedIndex == lastTab)
-                    {
-                        buttonPrevious.Enabled = true;
-                        buttonNext.Enabled = false;
-                        buttonFinish.Enabled = true;
-                    }
-                    else
-                    {
-                        buttonPrevious.Enabled = true;
+                var lastTab = tabControl.TabCount - 1;
+
+                switch (tabControl.SelectedIndex)
+                {
+                    case 0:
+                        buttonPrevious.Enabled = false;
                         buttonNext.Enabled = true;
                         buttonFinish.Enabled = false;
-                    }
-                    break;
+                        break;
+
+                    default:
+                        if (tabControl.SelectedIndex == lastTab)
+                        {
+                            buttonPrevious.Enabled = true;
+                            buttonNext.Enabled = false;
+                            buttonFinish.Enabled = true;
+                        }
+                        else
+                        {
+                            buttonPrevious.Enabled = true;
+                            buttonNext.Enabled = true;
+                            buttonFinish.Enabled = false;
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -124,9 +143,10 @@ namespace MinecraftTextureEditorUI
                         break;
                 }
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                ShowErrorBox(exc.Message);
+                _log?.Debug(ex.Message);
+                ShowErrorBox(ex.Message);
             }
         }
 
@@ -150,7 +170,7 @@ namespace MinecraftTextureEditorUI
                     throw new FileNotFoundException($"Could not find .jar file for version {packVersion} in {packFile}");
                 }
 
-                var zipFileManager = new ZipFileManager();
+                var zipFileManager = new ZipFileManager(_log);
 
                 var result = await zipFileManager.UnZipFiles(packFile, projectFolder);
 
@@ -166,9 +186,10 @@ namespace MinecraftTextureEditorUI
                     DialogResult = DialogResult.Abort;
                 }
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                UpdateProgressLabel(exc.Message);
+                _log?.Debug(ex.Message);
+                UpdateProgressLabel(ex.Message);
             }
             finally
             {
@@ -183,9 +204,16 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonFinishClick(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
+            try
+            {
+                DialogResult = DialogResult.OK;
 
-            Close();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -195,9 +223,16 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
         {
-            string folder = FileHelper.OpenFolderName(FileHelper.GetMineCraftFolder());
+            try
+            {
+                string folder = FileHelper.OpenFolderName(FileHelper.GetMineCraftFolder());
 
-            textBoxProjectPath.Text = folder;
+                textBoxProjectPath.Text = folder;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         #endregion Form events
@@ -210,15 +245,19 @@ namespace MinecraftTextureEditorUI
         /// <param name="error">The error message</param>
         private void ShowErrorBox(string error)
         {
-            if (InvokeRequired)
+            try
             {
-                var d = new Action<string>(ShowErrorBox);
-                Invoke(d, new object[] { error });
+                if (InvokeRequired)
+                {
+                    var d = new Action<string>(ShowErrorBox);
+                    Invoke(d, new object[] { error });
+                }
+                else
+                {
+                    MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
-            {
-                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { _log?.Debug(ex.Message); }
         }
 
         /// <summary>
@@ -227,15 +266,19 @@ namespace MinecraftTextureEditorUI
         /// <param name="message">The message</param>
         private void UpdateProgressLabel(string message)
         {
-            if (labelProgress.InvokeRequired)
+            try
             {
-                var d = new Action<string>(UpdateProgressLabel);
-                Invoke(d, new object[] { message });
+                if (labelProgress.InvokeRequired)
+                {
+                    var d = new Action<string>(UpdateProgressLabel);
+                    Invoke(d, new object[] { message });
+                }
+                else
+                {
+                    labelProgress.Text = message;
+                }
             }
-            else
-            {
-                labelProgress.Text = message;
-            }
+            catch (Exception ex) { _log?.Debug(ex.Message); }
         }
 
         /// <summary>
@@ -243,15 +286,19 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void DisablePreviousButton()
         {
-            if (buttonPrevious.InvokeRequired)
+            try
             {
-                var d = new Action(DisablePreviousButton);
-                Invoke(d);
+                if (buttonPrevious.InvokeRequired)
+                {
+                    var d = new Action(DisablePreviousButton);
+                    Invoke(d);
+                }
+                else
+                {
+                    buttonPrevious.Enabled = false;
+                }
             }
-            else
-            {
-                buttonPrevious.Enabled = false;
-            }
+            catch (Exception ex) { _log?.Debug(ex.Message); }
         }
 
         /// <summary>
@@ -259,17 +306,24 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void IncrementTabControl()
         {
-            if (tabControlDeploy.InvokeRequired)
+            try
             {
-                var d = new Action(IncrementTabControl);
-                Invoke(d);
-            }
-            else
-            {
-                if (tabControlDeploy.SelectedIndex < tabControlDeploy.TabCount - 1)
+                if (tabControlDeploy.InvokeRequired)
                 {
-                    tabControlDeploy.SelectedIndex++;
+                    var d = new Action(IncrementTabControl);
+                    Invoke(d);
                 }
+                else
+                {
+                    if (tabControlDeploy.SelectedIndex < tabControlDeploy.TabCount - 1)
+                    {
+                        tabControlDeploy.SelectedIndex++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -278,18 +332,23 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void PopulateVersions()
         {
-            if (comboBoxVersion.InvokeRequired)
+            try
             {
-                var d = new Action(PopulateVersions);
-                Invoke(d);
+                if (comboBoxVersion.InvokeRequired)
+                {
+                    var d = new Action(PopulateVersions);
+                    Invoke(d);
+                }
+                else
+                {
+                    var versions = FileHelper.GetVersions();
+                    comboBoxVersion.Items.AddRange(versions);
+                    comboBoxVersion.SelectedIndex = 0;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var versions = FileHelper.GetVersions();
-
-                comboBoxVersion.Items.AddRange(versions);
-
-                comboBoxVersion.SelectedIndex = 0;
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -298,17 +357,24 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void DecrementTabControl()
         {
-            if (tabControlDeploy.InvokeRequired)
+            try
             {
-                var d = new Action(DecrementTabControl);
-                Invoke(d);
-            }
-            else
-            {
-                if (tabControlDeploy.SelectedIndex > 0)
+                if (tabControlDeploy.InvokeRequired)
                 {
-                    tabControlDeploy.SelectedIndex--;
+                    var d = new Action(DecrementTabControl);
+                    Invoke(d);
                 }
+                else
+                {
+                    if (tabControlDeploy.SelectedIndex > 0)
+                    {
+                        tabControlDeploy.SelectedIndex--;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -318,14 +384,21 @@ namespace MinecraftTextureEditorUI
         /// <param name="waiting"></param>
         private void UpdateCursor(bool waiting)
         {
-            if (InvokeRequired)
+            try
             {
-                var d = new Action<bool>(UpdateCursor);
-                Invoke(d, new object[] { waiting });
+                if (InvokeRequired)
+                {
+                    var d = new Action<bool>(UpdateCursor);
+                    Invoke(d, new object[] { waiting });
+                }
+                else
+                {
+                    Cursor = waiting ? Cursors.WaitCursor : Cursors.Default;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Cursor = waiting ? Cursors.WaitCursor : Cursors.Default;
+                _log?.Debug(ex.Message);
             }
         }
 

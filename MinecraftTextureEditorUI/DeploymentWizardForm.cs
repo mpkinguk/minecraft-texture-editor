@@ -1,7 +1,8 @@
-﻿using MinecraftTextureEditorAPI.Helpers;
+﻿using log4net;
+using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -21,11 +22,15 @@ namespace MinecraftTextureEditorUI
 
         private bool _unpack;
 
+        private readonly ILog _log;
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public DeploymentWizardForm()
+        public DeploymentWizardForm(ILog log)
         {
+            _log = log;
+
             InitializeComponent();
 
             tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
@@ -150,9 +155,10 @@ namespace MinecraftTextureEditorUI
                         break;
                 }
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                ShowErrorBox(exc.Message);
+                _log?.Debug(ex.Message);
+                ShowErrorBox(ex.Message);
             }
         }
 
@@ -182,9 +188,9 @@ namespace MinecraftTextureEditorUI
 
                 return true;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                _log?.Debug(ex.Message);
                 return false;
             }
         }
@@ -207,14 +213,14 @@ namespace MinecraftTextureEditorUI
 
                 var outputFile = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
-                var files = await Task.Run(() => FileHelper.GetFiles(filesPath, "*.*", true)).ConfigureAwait(false);
+                IList<string> files = await Task.Run(() => FileHelper.GetFiles(filesPath, "*.*", true)).ConfigureAwait(false);
                 files.Add(Path.Combine(DeploymentPath, "pack.mcmeta"));
 
                 UpdateProgressBarMin(0);
                 UpdateProgressBarValue(0);
                 UpdateProgressBarMax(files.Count);
 
-                var zipFileManager = new ZipFileManager();
+                var zipFileManager = new ZipFileManager(_log);
 
                 zipFileManager.FileProcessed += FileProcessed;
 
@@ -222,9 +228,9 @@ namespace MinecraftTextureEditorUI
 
                 return _deployed;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                _log?.Debug(ex.Message);
                 return false;
             }
             finally
@@ -261,16 +267,17 @@ namespace MinecraftTextureEditorUI
 
                 var input = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
-                var zipFileManager = new ZipFileManager();
+                var zipFileManager = new ZipFileManager(_log);
 
                 var result = await zipFileManager.UnZipFiles(input, resourcePackFolder);
 
                 UpdateProgressLabel(result ? "Deployment complete!" : "Zip file was not unpacked properly.");
                 _deployed = result;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                UpdateProgressLabel(exc.Message);
+                _log?.Debug(ex.Message);
+                UpdateProgressLabel(ex.Message);
             }
             finally
             {

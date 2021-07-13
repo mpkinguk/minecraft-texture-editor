@@ -39,11 +39,16 @@
     <ApplicationIcon>MinecraftTextureEditorIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Text.Json, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -160,6 +165,7 @@
     <AdditionalFiles Include="Fonts\MINECRAFT_FONT.TTF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -264,6 +270,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MinecraftTextureEditorIcon.ico" />
+    <None Include="Resources\texturewallpaper2.jpg" />
+    <None Include="Resources\destroy_stage_8.png" />
+    <None Include="Resources\destroy_stage_7.png" />
+    <None Include="Resources\destroy_stage_3.png" />
+    <None Include="Resources\destroy_stage_2.png" />
+    <None Include="Resources\destroy_stage_1.png" />
+    <None Include="Resources\destroy_stage_9.png" />
+    <None Include="Resources\destroy_stage_6.png" />
+    <None Include="Resources\destroy_stage_5.png" />
+    <None Include="Resources\destroy_stage_4.png" />
+    <None Include="Resources\destroy_stage_0.png" />
+    <None Include="Resources\lockoff.png" />
+    <None Include="Resources\lockon.png" />
     <None Include="Resources\rainbow.png" />
     <None Include="Resources\floodfill.png" />
   </ItemGroup>

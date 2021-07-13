@@ -1,10 +1,11 @@
-﻿using MinecraftTextureEditorAPI.Helpers;
+﻿using log4net;
+using MinecraftTextureEditorAPI.Helpers;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
+
 
 namespace MinecraftTextureEditorUI
 {
@@ -20,6 +21,8 @@ namespace MinecraftTextureEditorUI
 
         public delegate void BrushSizeChangedEventHandler(int brushSize);
 
+        public delegate void TransparencyLockChangedEventHandler(bool locked);
+
         #endregion Public delegates
 
         #region Public properties
@@ -27,7 +30,16 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The brush size
         /// </summary>
-        public int BrushSize { get { return _brushSize; } set { _brushSize = value; } }
+        public int BrushSize { 
+            get 
+            { 
+                return _brushSize; 
+            } 
+            set 
+            { 
+                _brushSize = value; 
+            } 
+        }
 
         /// <summary>
         /// The current tool type in use
@@ -38,6 +50,11 @@ namespace MinecraftTextureEditorUI
             set
             {
                 _currentToolType = value;
+
+                if (value.Equals(ToolType.TransparencyLock))
+                {
+                    return;
+                }
 
                 var button = (Button)Controls[$"button{value}"];
 
@@ -78,6 +95,19 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The transparency lock
+        /// </summary>
+        public bool TransparencyLock
+        {
+            get { return _transparencyLock; }
+            set
+            {
+                _transparencyLock = value;
+                UpdateTransparencyButton();
+            }
+        }
+
         #endregion Public properties
 
         #region Public events
@@ -101,6 +131,12 @@ namespace MinecraftTextureEditorUI
         /// Back colour changed event
         /// </summary>
         public event BrushSizeChangedEventHandler BrushSizeChanged;
+
+        /// <summary>
+        /// Back colour changed event
+        /// </summary>
+        public event TransparencyLockChangedEventHandler TransparencyLockChanged;
+
         #endregion Public events
 
         #region Private properties
@@ -111,42 +147,55 @@ namespace MinecraftTextureEditorUI
 
         private ToolType _currentToolType;
 
+        private bool _transparencyLock;
+
+        private readonly ILog _log;
+
         #endregion Private properties
 
         /// <summary>
         /// The constructor
         /// </summary>
-        public DrawingToolsForm()
+        public DrawingToolsForm(ILog log)
         {
-            InitializeComponent();
+            _log = log;
 
-            DrawAlpha();
+            try
+            {
+                InitializeComponent();
 
-            pictureBoxColourPicker.MouseDown += PictureBoxColourPicker_MouseDown;
+                DrawAlpha();
 
-            pictureBoxColourPicker.MouseMove += PictureBoxColourPicker_MouseMove;
+                pictureBoxColourPicker.MouseDown += PictureBoxColourPicker_MouseDown;
 
-            pictureBoxGamma.MouseDown += PictureBoxSaturationMouseDown;
+                pictureBoxColourPicker.MouseMove += PictureBoxColourPicker_MouseMove;
 
-            pictureBoxGamma.MouseMove += PictureBoxSaturationMouseMove;
+                pictureBoxGamma.MouseDown += PictureBoxSaturationMouseDown;
 
-            pictureBoxAlpha.MouseDown += PictureBoxAlphaMouseDown;
+                pictureBoxGamma.MouseMove += PictureBoxSaturationMouseMove;
 
-            pictureBoxAlpha.MouseMove += PictureBoxAlphaMouseMove;
+                pictureBoxAlpha.MouseDown += PictureBoxAlphaMouseDown;
 
-            panelColour1.Click += PanelColourClick;
+                pictureBoxAlpha.MouseMove += PictureBoxAlphaMouseMove;
 
-            panelColour2.Click += PanelColourClick;
+                panelColour1.Click += PanelColourClick;
 
-            toolTip1.Draw += ToolTipDraw;
+                panelColour2.Click += PanelColourClick;
 
-            Colour2 = Color.Black;
+                toolTip1.Draw += ToolTipDraw;
 
-            Colour1 = Color.White;
+                Colour2 = Color.Black;
 
-            _brushSize = 1;
+                Colour1 = Color.White;
 
-            _alpha = 255;
+                _brushSize = 1;
+
+                _alpha = 255;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -156,24 +205,31 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
-            var g = e.Graphics;
-
-            using (StringFormat sf = new StringFormat())
+            try
             {
-                e.DrawBackground();
+                var g = e.Graphics;
 
-                // Top.
-                sf.LineAlignment = StringAlignment.Center;
+                using (StringFormat sf = new StringFormat())
+                {
+                    e.DrawBackground();
 
-                // Top/Left.
-                sf.Alignment = StringAlignment.Center;
+                    // Top.
+                    sf.LineAlignment = StringAlignment.Center;
 
-                g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+                    // Top/Left.
+                    sf.Alignment = StringAlignment.Center;
 
-                e.DrawBorder();
+                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+
+                    e.DrawBorder();
+                }
+
+                g.Flush();
             }
-
-            g.Flush();
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         #region Private methods
@@ -190,9 +246,9 @@ namespace MinecraftTextureEditorUI
 
                 DrawSaturation(colour);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -256,9 +312,9 @@ namespace MinecraftTextureEditorUI
                         break;
                 };
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -268,18 +324,25 @@ namespace MinecraftTextureEditorUI
         /// <param name="colour">Base colour</param>
         private void DrawSaturation(Color colour)
         {
-            var tmp = new Bitmap(pictureBoxGamma.ClientSize.Width, pictureBoxGamma.ClientSize.Height);
-
-            var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), Color.Black, colour, LinearGradientMode.Horizontal);
-            var gradient2 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), colour, Color.White, LinearGradientMode.Horizontal);
-
-            using (var g = Graphics.FromImage(tmp))
+            try
             {
-                g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
-                g.FillRectangle(gradient2, new Rectangle(pictureBoxGamma.ClientSize.Width / 2, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
-            }
+                var tmp = new Bitmap(pictureBoxGamma.ClientSize.Width, pictureBoxGamma.ClientSize.Height);
 
-            pictureBoxGamma.Image = tmp;
+                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), Color.Black, colour, LinearGradientMode.Horizontal);
+                var gradient2 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), colour, Color.White, LinearGradientMode.Horizontal);
+
+                using (var g = Graphics.FromImage(tmp))
+                {
+                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
+                    g.FillRectangle(gradient2, new Rectangle(pictureBoxGamma.ClientSize.Width / 2, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
+                }
+
+                pictureBoxGamma.Image = tmp;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -287,22 +350,37 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void DrawAlpha()
         {
-            var tmp = new Bitmap(pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height);
-
-            var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height), Color.FromArgb(0, Color.Black), Color.Black, LinearGradientMode.Horizontal);
-
-            using (var g = Graphics.FromImage(tmp))
+            try
             {
-                g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height));
+                var tmp = new Bitmap(pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height);
 
-                var x1 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour1.A);
-                var x2 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour2.A);
+                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height), Color.FromArgb(0, Color.Black), Color.Black, LinearGradientMode.Horizontal);
 
-                g.DrawLine(new Pen(Color.Yellow, 2F), x1, 0, x1, pictureBoxAlpha.ClientSize.Width);
-                g.DrawLine(new Pen(Color.Red, 2F), x2, 0, x2, pictureBoxAlpha.ClientSize.Width);
+                using (var g = Graphics.FromImage(tmp))
+                {
+                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height));
+
+                    var x1 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour1.A);
+                    var x2 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour2.A);
+
+                    g.DrawLine(new Pen(Color.Yellow, 2F), x1, 0, x1, pictureBoxAlpha.ClientSize.Width);
+                    g.DrawLine(new Pen(Color.Red, 2F), x2, 0, x2, pictureBoxAlpha.ClientSize.Width);
+                }
+
+                pictureBoxAlpha.Image = tmp;
             }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+        }
 
-            pictureBoxAlpha.Image = tmp;
+        /// <summary>
+        /// Update the transparency lock button
+        /// </summary>
+        private void UpdateTransparencyButton()
+        {
+            buttonLockTransparency.Image = TransparencyLock ? Properties.Resources.lockon : Properties.Resources.lockoff;
         }
 
         #endregion Private methods
@@ -470,10 +548,21 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Brush size changed event
         /// </summary>
-        /// <param name="brushSize"></param>
+        /// <param name="brushSize">The brush size</param>
         private void OnBrushSizeChanged(int brushSize)
         {
+            BrushSize = brushSize;
+
             BrushSizeChanged?.Invoke(brushSize);
+        }
+
+        /// <summary>
+        /// Transparency lock changed event
+        /// </summary>
+        /// <param name="locked">Locked</param>
+        private void OnTransparencyLockChanged(bool locked)
+        {
+            TransparencyLockChanged?.Invoke(locked);
         }
 
         /// <summary>
@@ -496,17 +585,49 @@ namespace MinecraftTextureEditorUI
             OnToolTypeChanged(ToolType.Rainbow);
         }
 
-        #endregion Form events
-
-        private void BrushSizeClick(object sender, EventArgs e)
+        /// <summary>
+        /// Brush size
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonBrushSizeClick(object sender, EventArgs e)
         {
-            var button = (Button)sender;
-
-            if (int.TryParse(button.Name[button.Name.Length - 1].ToString(), out int size))
+            try
             {
-                OnBrushSizeChanged(size);
+                var button = (Button)sender;
+
+                if (int.TryParse(button.Name[button.Name.Length - 1].ToString(), out int size))
+                {
+                    OnBrushSizeChanged(size);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Transaparency lock
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonLockTransparencyClick(object sender, EventArgs e)
+        {
+            try
+            {
+                _transparencyLock = !_transparencyLock;
+
+                UpdateTransparencyButton();
+
+                OnTransparencyLockChanged(TransparencyLock);
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+        }
+
+        #endregion Form events
     }
 }

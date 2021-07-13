@@ -47,6 +47,7 @@ namespace MinecraftTextureEditorUI
             this.buttonSize1 = new System.Windows.Forms.Button();
             this.buttonSize2 = new System.Windows.Forms.Button();
             this.buttonSize4 = new System.Windows.Forms.Button();
+            this.buttonLockTransparency = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColourPicker)).BeginInit();
@@ -232,7 +233,7 @@ namespace MinecraftTextureEditorUI
             this.buttonSize1.TabIndex = 10;
             this.toolTip1.SetToolTip(this.buttonSize1, "1x1 Pixel");
             this.buttonSize1.UseVisualStyleBackColor = false;
-            this.buttonSize1.Click += new System.EventHandler(this.BrushSizeClick);
+            this.buttonSize1.Click += new System.EventHandler(this.ButtonBrushSizeClick);
             // 
             // buttonSize2
             // 
@@ -243,7 +244,7 @@ namespace MinecraftTextureEditorUI
             this.buttonSize2.TabIndex = 11;
             this.toolTip1.SetToolTip(this.buttonSize2, "2x2 Pixel");
             this.buttonSize2.UseVisualStyleBackColor = false;
-            this.buttonSize2.Click += new System.EventHandler(this.BrushSizeClick);
+            this.buttonSize2.Click += new System.EventHandler(this.ButtonBrushSizeClick);
             // 
             // buttonSize4
             // 
@@ -254,7 +255,19 @@ namespace MinecraftTextureEditorUI
             this.buttonSize4.TabIndex = 12;
             this.toolTip1.SetToolTip(this.buttonSize4, "4x4 Pixel");
             this.buttonSize4.UseVisualStyleBackColor = false;
-            this.buttonSize4.Click += new System.EventHandler(this.BrushSizeClick);
+            this.buttonSize4.Click += new System.EventHandler(this.ButtonBrushSizeClick);
+            // 
+            // buttonLockTransparency
+            // 
+            this.buttonLockTransparency.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.lockoff;
+            this.buttonLockTransparency.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonLockTransparency.Location = new System.Drawing.Point(110, 423);
+            this.buttonLockTransparency.Name = "buttonLockTransparency";
+            this.buttonLockTransparency.Size = new System.Drawing.Size(32, 32);
+            this.buttonLockTransparency.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.buttonLockTransparency, "Lock the transparency");
+            this.buttonLockTransparency.UseVisualStyleBackColor = true;
+            this.buttonLockTransparency.Click += new System.EventHandler(this.ButtonLockTransparencyClick);
             // 
             // label7
             // 
@@ -276,6 +289,7 @@ namespace MinecraftTextureEditorUI
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.ClientSize = new System.Drawing.Size(251, 549);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonLockTransparency);
             this.Controls.Add(this.buttonSize4);
             this.Controls.Add(this.buttonSize2);
             this.Controls.Add(this.buttonSize1);
@@ -327,5 +341,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonSize1;
         private System.Windows.Forms.Button buttonSize2;
         private System.Windows.Forms.Button buttonSize4;
+        private System.Windows.Forms.Button buttonLockTransparency;
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using log4net;
+using System;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -6,28 +8,40 @@ namespace MinecraftTextureEditorUI
 {
     partial class AboutForm : Form
     {
+        private readonly ILog _log;
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public AboutForm()
+        public AboutForm(ILog log)
         {
-            InitializeComponent();
+            _log = log;
 
-            // Reduce display flicker
-            SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+            try
+            {
 
-            labelProductName.Text = AssemblyTitle;
-            labelVersion.Text = $"Version {AssemblyVersion}";
-            labelCopyright.Text = AssemblyCopyright;
-            labelCompanyName.Text = $"Produced by {AssemblyCompany}";
-            labelDescription.Text = AssemblyDescription;
+                InitializeComponent();
 
-            labelDescription.Paint += LabelPaint;
-            labelProductName.Paint += LabelPaint;
-            labelVersion.Paint += LabelPaint;
-            labelCopyright.Paint += LabelPaint;
-            labelCompanyName.Paint += LabelPaint;
-            labelAbout.Paint += LabelPaint;
+                // Reduce display flicker
+                SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+
+                labelProductName.Text = AssemblyTitle;
+                labelVersion.Text = $"Version {AssemblyVersion}";
+                labelCopyright.Text = AssemblyCopyright;
+                labelCompanyName.Text = $"Produced by {AssemblyCompany}";
+                labelDescription.Text = AssemblyDescription;
+
+                labelDescription.Paint += LabelPaint;
+                labelProductName.Paint += LabelPaint;
+                labelVersion.Paint += LabelPaint;
+                labelCopyright.Paint += LabelPaint;
+                labelCompanyName.Paint += LabelPaint;
+                labelAbout.Paint += LabelPaint;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -37,17 +51,24 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void LabelPaint(object sender, PaintEventArgs e)
         {
-            var label = (PictureBox)sender;
+            try
+            {
+                var label = (PictureBox)sender;
 
-            var g = e.Graphics;
+                var g = e.Graphics;
 
-            var shadowRectangle = new Rectangle(1, 1, e.ClipRectangle.Width, e.ClipRectangle.Height);
+                var shadowRectangle = new Rectangle(1, 1, e.ClipRectangle.Width, e.ClipRectangle.Height);
 
-            g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
+                g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
 
-            g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), e.ClipRectangle);
+                g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), e.ClipRectangle);
 
-            g.Flush();
+                g.Flush();
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         #region Assembly Attribute Accessors

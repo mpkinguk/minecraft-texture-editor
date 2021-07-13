@@ -73,6 +73,106 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_0 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_1 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_2 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_3 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_4 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_5 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_6 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_7 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_8 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_8", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap destroy_stage_9 {
+            get {
+                object obj = ResourceManager.GetObject("destroy_stage_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap dropper {
             get {
                 object obj = ResourceManager.GetObject("dropper", resourceCulture);
@@ -106,6 +206,26 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap grid {
             get {
                 object obj = ResourceManager.GetObject("grid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap lockoff {
+            get {
+                object obj = ResourceManager.GetObject("lockoff", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap lockon {
+            get {
+                object obj = ResourceManager.GetObject("lockon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -186,6 +306,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap texturewallpaper {
             get {
                 object obj = ResourceManager.GetObject("texturewallpaper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap texturewallpaper2 {
+            get {
+                object obj = ResourceManager.GetObject("texturewallpaper2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -21,6 +22,21 @@ namespace ZipFileManagerAPI
 
         #endregion Public events
 
+        #region private properties
+
+        private readonly ILog _log;
+
+        #endregion private properties
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="log"></param>
+        public ZipFileManager(ILog log)
+        {
+            _log = log;
+        }
+
         /// <summary>
         /// Create zip files from individual files
         /// </summary>
@@ -28,7 +44,7 @@ namespace ZipFileManagerAPI
         /// <param name="path">The path</param>
         /// <param name="fileNames">The filenames to zip</param>
         /// <returns>bool</returns>
-        public async Task<bool> ZipFiles(string outputFilename, string path, List<string> fileNames)
+        public async Task<bool> ZipFiles(string outputFilename, string path, IList<string> fileNames)
         {
             try
             {
@@ -54,18 +70,18 @@ namespace ZipFileManagerAPI
 
                             OnFileProcessed($"Adding {file}...");
                         }
-                        catch (Exception exc)
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine(exc.Message);
+                            Debug.WriteLine(ex.Message);
                             return false;
                         }
                     }
                 }
                 return true;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                _log?.Debug(ex.Message);
                 return false;
             }
         }
@@ -124,17 +140,15 @@ namespace ZipFileManagerAPI
 
                     return true;
                 }
-                catch (Exception exc)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine(exc.Message);
-
+                    _log?.Debug(ex.Message);
                     return false;
                 }
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
-
+                _log?.Debug(ex.Message);
                 return false;
             }
         }

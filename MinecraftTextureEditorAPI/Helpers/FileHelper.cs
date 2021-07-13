@@ -1,6 +1,6 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,6 +11,8 @@ namespace MinecraftTextureEditorAPI.Helpers
 {
     public static class FileHelper
     {
+        public static ILog Log { get; set; }
+
         /// <summary>
         /// Get files
         /// </summary>
@@ -18,20 +20,29 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="searchPatterns">Search patterns</param>
         /// <param name="searchAllDirectories">Search all directories</param>
         /// <returns>List(string)</returns>
-        public static List<string> GetFiles(string path, string searchPatterns, bool searchAllDirectories)
+        public static IList<string> GetFiles(string path, string searchPatterns, bool searchAllDirectories)
         {
-            var files = Enumerable.Empty<string>();
-
-            var wildCardSplit = searchPatterns.Split(';');
-
-            foreach (var wildCard in wildCardSplit)
+            try
             {
-                var result = SafeFileEnumerator.EnumerateFiles(path, wildCard, searchAllDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
-                files = files.Concat(result);
+                var files = Enumerable.Empty<string>();
+
+                var wildCardSplit = searchPatterns.Split(';');
+
+                foreach (var wildCard in wildCardSplit)
+                {
+                    var result = SafeFileEnumerator.EnumerateFiles(path, wildCard, searchAllDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+
+                    files = files.Concat(result);
+                }
+
+                return files.ToList();
             }
-
-            return files.ToList();
+            catch(Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return new List<string>();
+            }
         }
 
         /// <summary>
@@ -41,16 +52,24 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>Image</returns>
         public static object LoadFile(string fileName = "")
         {
-            fileName = string.IsNullOrEmpty(fileName) ? OpenFileName() : fileName;
-
-            if (string.IsNullOrWhiteSpace(fileName))
+            try
             {
-                return null;
+                fileName = string.IsNullOrEmpty(fileName) ? OpenFileName() : fileName;
+
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    return null;
+                }
+
+                var image = new Bitmap(fileName);
+
+                return image;
             }
-
-            var image = new Bitmap(fileName);
-
-            return image;
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return new List<string>();
+            }
         }
 
         /// <summary>
@@ -73,9 +92,9 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                 return true;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                Log?.Debug(ex.Message);
                 return false;
             }
         }
@@ -118,9 +137,9 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                 return true;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                Debug.WriteLine(exc.Message);
+                Log?.Debug(ex.Message);
                 return false;
             }
         }
@@ -131,27 +150,35 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>Folder name</returns>
         public static string OpenFolderName(string selectedPath = "")
         {
-            using (var dialog = new FolderBrowserDialog())
+            try
             {
-                dialog.SelectedPath = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Personal) : selectedPath;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                using (var dialog = new FolderBrowserDialog())
                 {
-                    var folderName = dialog.SelectedPath;
+                    dialog.SelectedPath = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Personal) : selectedPath;
 
-                    if (Directory.Exists(folderName))
+                    if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        return folderName;
+                        var folderName = dialog.SelectedPath;
+
+                        if (Directory.Exists(folderName))
+                        {
+                            return folderName;
+                        }
+                        else
+                        {
+                            return string.Empty;
+                        }
                     }
                     else
                     {
                         return string.Empty;
                     }
                 }
-                else
-                {
-                    return string.Empty;
-                }
+            }
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return selectedPath;
             }
         }
 
@@ -161,6 +188,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>File name</returns>
         public static string OpenFileName(string selectedPath = "")
         {
+            try { 
             using (var dialog = new OpenFileDialog())
             {
                 dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Personal) : selectedPath;
@@ -183,6 +211,12 @@ namespace MinecraftTextureEditorAPI.Helpers
                     return string.Empty;
                 }
             }
+            }
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return selectedPath;
+            }
         }
 
         /// <summary>
@@ -191,20 +225,28 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>File name</returns>
         public static string SaveFileName(string selectedPath = "")
         {
-            using (var dialog = new SaveFileDialog())
+            try
             {
-                dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Personal) : selectedPath;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                using (var dialog = new SaveFileDialog())
                 {
-                    var filename = dialog.FileName;
+                    dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.Personal) : selectedPath;
 
-                    return filename;
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        var filename = dialog.FileName;
+
+                        return filename;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
                 }
-                else
-                {
-                    return string.Empty;
-                }
+            }
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return selectedPath;
             }
         }
 
@@ -224,16 +266,24 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>object[]</returns>
         public static object[] GetVersions()
         {
-            var path = Path.Combine((string)GetMineCraftFolder().Clone(), "Versions");
-
-            if (!Directory.Exists(path))
+            try
             {
-                throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                var path = Path.Combine((string)GetMineCraftFolder().Clone(), "Versions");
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
+
+                return list.ToArray<object>();
             }
-
-            var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
-
-            return list.ToArray<object>();
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return new object[0];
+            }
         }
 
         /// <summary>
@@ -242,14 +292,22 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>string</returns>
         public static string GetMineCraftFolder()
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft");
-
-            if (!Directory.Exists(path))
+            try
             {
-                throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-            }
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft");
 
-            return path;
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Debug(ex.Message);
+                return string.Empty;
+            }
         }
     }
 }

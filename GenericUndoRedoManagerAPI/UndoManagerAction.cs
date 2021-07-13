@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,11 @@ namespace GenericUndoRedoManagerAPI
     public class UndoManagerAction<T> : IDisposable
     {
         /// <summary>
+        /// The current item
+        /// </summary>
+        public T CurrentItem { get; set; }
+
+        /// <summary>
         /// Private Undo stack
         /// </summary>
         private Stack<T> UndoStack;
@@ -21,15 +27,17 @@ namespace GenericUndoRedoManagerAPI
         private Stack<T> RedoStack;
 
         /// <summary>
-        /// The current item
+        /// The log4net logger
         /// </summary>
-        public T CurrentItem { get; set; }
+        private readonly ILog _log;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public UndoManagerAction()
+        public UndoManagerAction(ILog log)
         {
+            _log = log;
+
             UndoStack = new Stack<T>();
             RedoStack = new Stack<T>();
         }
@@ -39,9 +47,16 @@ namespace GenericUndoRedoManagerAPI
         /// </summary>
         public void Clear()
         {
-            UndoStack.Clear();
-            RedoStack.Clear();
-            CurrentItem = default;
+            try
+            {
+                UndoStack.Clear();
+                RedoStack.Clear();
+                CurrentItem = default;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -50,12 +65,19 @@ namespace GenericUndoRedoManagerAPI
         /// <param name="item">T</param>
         public void AddItem(T item)
         {
-            if (CurrentItem != null)
+            try
             {
-                UndoStack.Push(CurrentItem);
+                if (CurrentItem != null)
+                {
+                    UndoStack.Push(CurrentItem);
+                }
+                CurrentItem = item;
+                RedoStack.Clear();
             }
-            CurrentItem = item;
-            RedoStack.Clear();
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -64,9 +86,17 @@ namespace GenericUndoRedoManagerAPI
         /// <returns>T</returns>
         public T Undo()
         {
-            RedoStack.Push(CurrentItem);
-            CurrentItem = UndoStack.Pop();
-            return CurrentItem;
+            try
+            {
+                RedoStack.Push(CurrentItem);
+                CurrentItem = UndoStack.Pop();
+                return CurrentItem;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+                return default;
+            }
         }
 
         /// <summary>
@@ -75,9 +105,17 @@ namespace GenericUndoRedoManagerAPI
         /// <returns>T</returns>
         public T Redo()
         {
-            UndoStack.Push(CurrentItem);
-            CurrentItem = RedoStack.Pop();
-            return CurrentItem;
+            try
+            {
+                UndoStack.Push(CurrentItem);
+                CurrentItem = RedoStack.Pop();
+                return CurrentItem;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+                return default;
+            }
         }
 
         /// <summary>
@@ -110,10 +148,17 @@ namespace GenericUndoRedoManagerAPI
 
         public void Dispose()
         {
-            Clear();
+            try
+            {
+                Clear();
 
-            UndoStack = null;
-            RedoStack = null;
+                UndoStack = null;
+                RedoStack = null;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
     }
 }

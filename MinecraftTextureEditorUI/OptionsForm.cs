@@ -1,4 +1,6 @@
-﻿using MinecraftTextureEditorAPI.Helpers;
+﻿using log4net;
+using MinecraftTextureEditorAPI.Helpers;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -36,13 +38,17 @@ namespace MinecraftTextureEditorUI
 
         private bool _hasSaved;
 
+        private readonly ILog _log;
+
         #endregion Private properties
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public OptionsForm()
+        public OptionsForm(ILog log)
         {
+            _log = log;
+
             InitializeComponent();
 
             Load += OptionsForm_Load;
@@ -57,13 +63,20 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void SaveSettings()
         {
-            foreach (Control control in Controls.OfType<TextBox>())
+            try
             {
-                var key = (string)control.Tag;
-                ConfigurationHelper.SaveSetting(key, control.Text);
-            }
+                foreach (Control control in Controls.OfType<TextBox>())
+                {
+                    var key = (string)control.Tag;
+                    ConfigurationHelper.SaveSetting(key, control.Text);
+                }
 
-            _hasSaved = true;
+                _hasSaved = true;
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -71,44 +84,51 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void LoadSettings()
         {
-            var x = 20; int y = 60;
-
-            var inc = 30;
-
-            TextInfo textInfo = new CultureInfo("en-GB", false).TextInfo;
-
-            foreach (var setting in ConfigurationHelper.GetAllSettings())
+            try
             {
-                var label = new Label()
+                var x = 20; int y = 60;
+
+                var inc = 30;
+
+                TextInfo textInfo = new CultureInfo("en-GB", false).TextInfo;
+
+                foreach (var setting in ConfigurationHelper.GetAllSettings())
                 {
-                    Text = textInfo.ToTitleCase(setting.Key),
-                    Name = $"label{setting.Key}",
-                    Font = new Font("Minecraft", 10F),
-                    ForeColor = Color.Yellow,
-                    BackColor = Color.FromKnownColor(KnownColor.Transparent),
-                    Location = new Point(x, y),
-                    AutoSize = true
-                };
+                    var label = new Label()
+                    {
+                        Text = textInfo.ToTitleCase(setting.Key),
+                        Name = $"label{setting.Key}",
+                        Font = new Font("Minecraft", 10F),
+                        ForeColor = Color.Yellow,
+                        BackColor = Color.FromKnownColor(KnownColor.Transparent),
+                        Location = new Point(x, y),
+                        AutoSize = true
+                    };
 
-                y += inc;
+                    y += inc;
 
-                var textBox = new TextBox
-                {
-                    Name = $"textBox{setting.Key}",
-                    Text = setting.Value,
-                    Size = new Size(ClientRectangle.Width - x * 2, 21),
-                    Font = new Font("Minecraft", 10F),
-                    Location = new Point(x, y),
-                    Tag = setting.Key,
-                    Anchor = AnchorStyles.Left & AnchorStyles.Top & AnchorStyles.Right
-                };
+                    var textBox = new TextBox
+                    {
+                        Name = $"textBox{setting.Key}",
+                        Text = setting.Value,
+                        Size = new Size(ClientRectangle.Width - x * 2, 21),
+                        Font = new Font("Minecraft", 10F),
+                        Location = new Point(x, y),
+                        Tag = setting.Key,
+                        Anchor = AnchorStyles.Left & AnchorStyles.Top & AnchorStyles.Right
+                    };
 
-                textBox.TextChanged += TextBoxTextChanged;
+                    textBox.TextChanged += TextBoxTextChanged;
 
-                Controls.Add(label);
-                Controls.Add(textBox);
+                    Controls.Add(label);
+                    Controls.Add(textBox);
 
-                y += inc;
+                    y += inc;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -133,28 +153,35 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void OptionsFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_hasChanged && !_hasSaved)
+            try
             {
-                switch (MessageBox.Show(this, "Some options have been changed.\nDo you wish to save your settings?", "Save settings?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                if (_hasChanged && !_hasSaved)
                 {
-                    case DialogResult.Yes:
-                        SaveSettings();
-                        DialogResult = DialogResult.OK;
-                        break;
+                    switch (MessageBox.Show(this, "Some options have been changed.\nDo you wish to save your settings?", "Save settings?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                    {
+                        case DialogResult.Yes:
+                            SaveSettings();
+                            DialogResult = DialogResult.OK;
+                            break;
 
-                    case DialogResult.No:
-                        DialogResult = DialogResult.OK;
-                        break;
+                        case DialogResult.No:
+                            DialogResult = DialogResult.OK;
+                            break;
 
-                    case DialogResult.Cancel:
-                        e.Cancel = true;
-                        DialogResult = DialogResult.Cancel;
-                        break;
+                        case DialogResult.Cancel:
+                            e.Cancel = true;
+                            DialogResult = DialogResult.Cancel;
+                            break;
+                    }
+                }
+                else if (_hasSaved)
+                {
+                    DialogResult = DialogResult.OK;
                 }
             }
-            else if (_hasSaved)
+            catch (Exception ex)
             {
-                DialogResult = DialogResult.OK;
+                _log?.Debug(ex.Message);
             }
         }
 

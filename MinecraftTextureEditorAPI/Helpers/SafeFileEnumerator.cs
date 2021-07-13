@@ -1,6 +1,6 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -11,6 +11,8 @@ namespace MinecraftTextureEditorAPI.Helpers
     /// </summary>
     public static class SafeFileEnumerator
     {
+        public static ILog Log;
+
         /// <summary>
         /// Enumerate directories
         /// </summary>
@@ -30,9 +32,9 @@ namespace MinecraftTextureEditorAPI.Helpers
                 }
                 return directories.Concat(Directory.EnumerateDirectories(parentDirectory, searchPattern));
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
             {
-                Debug.Print(ex.Message);
+                Log?.Debug(ex.Message);
                 return Enumerable.Empty<string>();
             }
         }
@@ -56,9 +58,9 @@ namespace MinecraftTextureEditorAPI.Helpers
                 }
                 return dirFiles.Concat(Directory.EnumerateFiles(path, searchPattern));
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
             {
-                Debug.Print(ex.Message);
+                Log?.Debug(ex.Message);
                 return Enumerable.Empty<string>();
             }
         }

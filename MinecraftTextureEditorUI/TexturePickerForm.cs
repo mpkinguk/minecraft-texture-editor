@@ -1,7 +1,7 @@
-﻿using MinecraftTextureEditorAPI.Helpers;
+﻿using log4net;
+using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,11 +11,26 @@ namespace MinecraftTextureEditorUI
 {
     public partial class TexturePickerForm : Form
     {
+        #region Public delegates
+
         /// <summary>
         /// The texture clicked event delegate
         /// </summary>
         /// <param name="filename"></param>
         public delegate void TextureClickedEventHandler(string filename);
+
+        #endregion Public delegates
+
+        #region Events
+
+        /// <summary>
+        /// The texture clicked event
+        /// </summary>
+        public event TextureClickedEventHandler TextureClicked;
+
+        #endregion Events
+
+        #region Public properties
 
         public bool FromWizard { get; set; }
 
@@ -32,26 +47,158 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The list of files we can edit
         /// </summary>
-        public List<string> Files { get; set; }
+        public IList<string> Files { get; set; }
 
-        /// <summary>
-        /// The texture clicked event
-        /// </summary>
-        public event TextureClickedEventHandler TextureClicked;
+        #endregion Public properties
+
+        #region Private properties
 
         private string _currentPath;
 
         private int _itemSize;
 
+        private readonly List<Image> _images;
+
+        private int _imageCounter = 0;
+
+        private bool _loading;
+
+        private readonly ILog _log;
+
+        #endregion Private properties
+
         /// <summary>
         /// The constructor
         /// </summary>
-        public TexturePickerForm()
+        public TexturePickerForm(string currentPath, ILog log)
         {
-            InitializeComponent();
+            _log = log;
 
-            LoadTextures();
+            try
+            {
+                InitializeComponent();
+
+                _images = new List<Image>
+                {
+                    Properties.Resources.destroy_stage_0,
+                    Properties.Resources.destroy_stage_1,
+                    Properties.Resources.destroy_stage_2,
+                    Properties.Resources.destroy_stage_3,
+                    Properties.Resources.destroy_stage_4,
+                    Properties.Resources.destroy_stage_5,
+                    Properties.Resources.destroy_stage_6,
+                    Properties.Resources.destroy_stage_7,
+                    Properties.Resources.destroy_stage_8,
+                    Properties.Resources.destroy_stage_9
+                };
+
+                Paint += TexturePickerFormPaint;
+
+                _currentPath = currentPath;
+
+                // Reduce display flicker
+                SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
+
+        /// <summary>
+        /// Paints block breaking image when loading
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TexturePickerFormPaint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+
+            g.DrawImage(Properties.Resources.texturewallpaper2, e.ClipRectangle.X, e.ClipRectangle.Y);
+
+            if (_loading)
+            {
+                g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
+            } 
+
+            g.Flush();
+        }
+
+        #region Public methods
+
+        /// <summary>
+        /// Load the textures
+        /// </summary>
+        /// <param name="refresh">Refresh only?</param>
+        public async void LoadTextures(bool refresh = false)
+        {
+            try
+            {
+                var settingsPath = ConfigurationHelper.LoadSetting("MinecraftDefaultFolder");
+                var assetsPath = ConfigurationHelper.LoadSetting("AssetsFolder");
+                var texturesPath = ConfigurationHelper.LoadSetting("TexturesFolder");
+
+                // Only grab it from settings once
+                CurrentPath = string.IsNullOrEmpty(CurrentPath) ? settingsPath : CurrentPath;
+
+                if (!refresh && !FromWizard)
+                {
+                    CurrentPath = FileHelper.OpenFolderName(CurrentPath);
+                }
+
+                // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
+                if (string.IsNullOrEmpty(CurrentPath))
+                {
+                    _log.Debug("No path selected to load textures. Exiting application");
+                    Application.Exit();
+                    return;
+                }
+
+                UpdateText("Loading textures...");
+
+                _loading = true;
+
+                _itemSize = (flowLayoutPanelTextures.ClientRectangle.Width / 6);
+
+                Files = await Task.Run(() => FileHelper.GetFiles(Path.Combine(CurrentPath, assetsPath, texturesPath), "*.png", true)).ConfigureAwait(false);
+
+                if (Files.Count > 0)
+                {
+                    await UpdateFlowLayoutPanel(Files).ConfigureAwait(false);
+                }
+
+                _loading = false;
+
+                UpdateText("Texture Picker");
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Refresh a given image
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        public void RefreshImage(string filename)
+        {
+            foreach (var item in flowLayoutPanelTextures.Controls)
+            {
+                var button = (Button)item;
+
+                var imageFilename = (string)button.Tag;
+                if (imageFilename.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    button.Image = (Image)FileHelper.LoadFile(imageFilename);
+                    return;
+                }
+            }
+        }
+
+        #endregion Public methods
+
+        #region Private form events
 
         /// <summary>
         /// Override the tool tip drawing function
@@ -60,24 +207,31 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
-            var g = e.Graphics;
-
-            using (StringFormat sf = new StringFormat())
+            try
             {
-                e.DrawBackground();
+                var g = e.Graphics;
 
-                // Top.
-                sf.LineAlignment = StringAlignment.Center;
+                using (StringFormat sf = new StringFormat())
+                {
+                    e.DrawBackground();
 
-                // Top/Left.
-                sf.Alignment = StringAlignment.Center;
+                    // Top.
+                    sf.LineAlignment = StringAlignment.Center;
 
-                g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+                    // Top/Left.
+                    sf.Alignment = StringAlignment.Center;
 
-                e.DrawBorder();
+                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+
+                    e.DrawBorder();
+                }
+
+                g.Flush();
             }
-
-            g.Flush();
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
@@ -85,40 +239,30 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TextBoxFilterKeyDown(object sender, KeyEventArgs e)
+        private async void TextBoxFilterKeyDown(object sender, KeyEventArgs e)
         {
-            UpdateCursor(true);
-
-            if (e.KeyCode.Equals(Keys.Enter))
+            try
             {
-                var textBox = (TextBox)sender;
+                UpdateCursor(true);
 
-                flowLayoutPanelTextures.Visible = false;
-
-                foreach (Button item in flowLayoutPanelTextures.Controls)
+                if (e.KeyCode.Equals(Keys.Enter))
                 {
-                    item.Visible = item.Text.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text);
+                    var textBox = (TextBox)sender;
+
+                    var text = (string)textBox.Text.Clone();
+
+                    await Task.Run(() => FilterImages(text)).ConfigureAwait(false);
                 }
-
-                flowLayoutPanelTextures.Visible = true;
             }
-
-            UpdateCursor(false);
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+            finally
+            {
+                UpdateCursor(false);
+            }
         }
-
-        /// <summary>
-        /// The constructor
-        /// </summary>
-        public TexturePickerForm(string currentPath)
-        {
-            InitializeComponent();
-
-            _currentPath = currentPath;
-
-            LoadTextures();
-        }
-
-        #region Form events
 
         /// <summary>
         /// Fire the texture clicked event
@@ -139,63 +283,29 @@ namespace MinecraftTextureEditorUI
             LoadTextures(true);
         }
 
-        #endregion Form events
-
-        #region Private methods
-
-        /// <summary>
-        /// Load the textures
-        /// </summary>
-        /// <param name="refresh">Refresh only?</param>
-        private async void LoadTextures(bool refresh = false)
-        {
-            var settingsPath = ConfigurationHelper.LoadSetting("MinecraftDefaultFolder");
-            var assetsPath = ConfigurationHelper.LoadSetting("AssetsFolder");
-            var texturesPath = ConfigurationHelper.LoadSetting("TexturesFolder");
-
-            // Only grab it from settings once
-            CurrentPath = string.IsNullOrEmpty(CurrentPath) ? settingsPath : CurrentPath;
-
-            if (!refresh && !FromWizard)
-            {
-                CurrentPath = FileHelper.OpenFolderName(CurrentPath);
-            }
-
-            // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
-            if (string.IsNullOrEmpty(CurrentPath))
-            {
-                Application.Exit();
-                return;
-            }
-
-            UpdateText("Loading textures...");
-
-            _itemSize = flowLayoutPanelTextures.ClientRectangle.Width / 5;
-
-            Files = await Task.Run(() => FileHelper.GetFiles(Path.Combine(CurrentPath, assetsPath, texturesPath), "*.png", true)).ConfigureAwait(false);
-
-            await UpdateFlowLayoutPanel(Files).ConfigureAwait(false);
-
-            UpdateText("Texture Picker");
-        }
-
         /// <summary>
         /// Update the listview with files
         /// </summary>
         /// <param name="files">The files</param>
-        private async Task UpdateFlowLayoutPanel(List<string> files)
+        private async Task UpdateFlowLayoutPanel(IList<string> files)
         {
-            if (files is null || files.Count.Equals(0))
+            try
             {
-                throw new ArgumentNullException(nameof(files));
-            }
+                if (files is null || files.Count.Equals(0))
+                {
+                    throw new ArgumentNullException(nameof(files));
+                }
 
-            UpdateCursor(true);
+                UpdateCursor(true);
 
-            await Task.Run(() =>
-            {               
+                PrepareFlowLayoutPanel();
+
                 int row = 0;
                 int col = 0;
+
+                int inc = 0;
+
+                var items = new List<Control>();
 
                 foreach (var file in files)
                 {
@@ -203,7 +313,7 @@ namespace MinecraftTextureEditorUI
 
                     Bitmap tmp;
 
-                    var itemText = fileInfo.Name.Length > 8 ? $"{fileInfo.Name.Substring(0, 8)}..." : fileInfo.Name;
+                    var itemText = fileInfo.Name.Length > 6 ? $"{fileInfo.Name.Substring(0, 7)}..." : fileInfo.Name;
 
                     var item = new Button() { Tag = file, Text = itemText, Location = new Point(0, 0), Size = new Size(_itemSize, _itemSize), Font = new Font("Minecraft", 6F) };
 
@@ -219,17 +329,33 @@ namespace MinecraftTextureEditorUI
                             tmp = new Bitmap(image);
                         }
                     }
-                    catch (Exception exc)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine(exc.Message);
+                        _log.Debug(ex.Message);
                         continue;
                     }
 
                     item.Image = tmp;
 
-                    AddFlowLayoutTexture(item);
+                    items.Add(item);
 
                     col++;
+
+                    inc++;
+
+                    // Update block breaking graphic
+                    if (inc.Equals(100))
+                    {
+                        inc = 0;
+                        _imageCounter++;
+
+                        if (_imageCounter.Equals(10))
+                        {
+                            _imageCounter = 0;
+                        }
+
+                        ThreadsafeInvalidate();
+                    }
 
                     if (col.Equals(5))
                     {
@@ -239,12 +365,18 @@ namespace MinecraftTextureEditorUI
                     }
                 }
 
+                await Task.Run(()=>AddFlowLayoutTexture(items)).ConfigureAwait(false);
+
                 FinishLayout();
-
-            });
-
-            UpdateCursor(false);
-
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+            finally
+            {
+                UpdateCursor(false);
+            }
         }
 
         /// <summary>
@@ -254,25 +386,33 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ItemPaint(object sender, PaintEventArgs e)
         {
-            var button = (Button)sender;
+            try
+            {
+                var button = (Button)sender;
 
-            var g = e.Graphics;
+                var g = e.Graphics;
 
-            g.Clear(button.BackColor);
+                g.Clear(Color.LightGray);
 
-            var rectangle = new Rectangle(button.ClientRectangle.Width / 6, button.ClientRectangle.Height / 6, button.ClientRectangle.Width / 6 * 4, button.ClientRectangle.Height / 6 * 4);
+                var rectangle = new Rectangle(button.ClientRectangle.Width / 6, button.ClientRectangle.Height / 6, button.ClientRectangle.Width / 6 * 4, button.ClientRectangle.Height / 6 * 4);
 
-            g.DrawImage(button.Image, rectangle);
+                g.DrawImage(button.Image, rectangle);
 
-            g.DrawString(button.Text, new Font(button.Font.Name, 6F), new SolidBrush(button.ForeColor), new Point(2, button.ClientRectangle.Height - 12));
+                g.DrawString(button.Text, new Font(button.Font.Name, 6F), new SolidBrush(button.ForeColor), new Point(2, button.ClientRectangle.Height - 12));
 
-            g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0,0,button.ClientRectangle.Width-1, button.ClientRectangle.Height -1));
+                g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0, 0, button.ClientRectangle.Width - 1, button.ClientRectangle.Height - 1));
 
-            g.Flush();
+                g.Flush();
+
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
         }
 
         /// <summary>
-        ///
+        /// Load a texture
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -282,7 +422,7 @@ namespace MinecraftTextureEditorUI
             OnTextureClicked(Convert.ToString(button.Tag));
         }
 
-        #endregion Private methods
+        #endregion Private form events
 
         #region Threadsafe methods
 
@@ -291,24 +431,29 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void FinishLayout()
         {
-            if (flowLayoutPanelTextures.InvokeRequired)
+            try
             {
-                var d = new Action(FinishLayout);
-
-                Invoke(d);
-            }
-            else
-            {
-
-                flowLayoutPanelTextures.PerformLayout();
-
-                flowLayoutPanelTextures.Visible = true;
-
-                if (flowLayoutPanelTextures.HasChildren)
+                if (flowLayoutPanelTextures.InvokeRequired)
                 {
-                    flowLayoutPanelTextures.ScrollControlIntoView(flowLayoutPanelTextures.Controls[0]);
-                }
+                    var d = new Action(FinishLayout);
 
+                    Invoke(d);
+                }
+                else
+                {
+                    flowLayoutPanelTextures.PerformLayout();
+
+                    if (flowLayoutPanelTextures.HasChildren)
+                    {
+                        flowLayoutPanelTextures.ScrollControlIntoView(flowLayoutPanelTextures.Controls[0]);
+                    }
+
+                    flowLayoutPanelTextures.Visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -317,19 +462,26 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void PrepareFlowLayoutPanel()
         {
-            if (flowLayoutPanelTextures.InvokeRequired)
+            try
             {
-                Action d = new Action(PrepareFlowLayoutPanel);
+                if (flowLayoutPanelTextures.InvokeRequired)
+                {
+                    Action d = new Action(PrepareFlowLayoutPanel);
 
-                Invoke(d);
+                    Invoke(d);
+                }
+                else
+                {
+                    flowLayoutPanelTextures.Visible = false;
+
+                    flowLayoutPanelTextures.VerticalScroll.Enabled = true;
+
+                    flowLayoutPanelTextures.Controls.Clear();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                flowLayoutPanelTextures.Visible = false;
-
-                flowLayoutPanelTextures.VerticalScroll.Enabled = true;
-
-                flowLayoutPanelTextures.Controls.Clear();
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -339,14 +491,44 @@ namespace MinecraftTextureEditorUI
         /// <param name="waiting"></param>
         private void UpdateCursor(bool waiting)
         {
-            if (InvokeRequired)
+            try
             {
-                var d = new Action<bool>(UpdateCursor);
-                Invoke(d, new object[] { waiting });
+                if (InvokeRequired)
+                {
+                    var d = new Action<bool>(UpdateCursor);
+                    Invoke(d, new object[] { waiting });
+                }
+                else
+                {
+                    Cursor = waiting ? Cursors.WaitCursor : Cursors.Default;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Cursor = waiting ? Cursors.WaitCursor : Cursors.Default;
+                _log?.Debug(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Threadsafe method for invalidating/redrawing the form
+        /// </summary>
+        private void ThreadsafeInvalidate()
+        {
+            try
+            {
+                if (InvokeRequired)
+                {
+                    var d = new Action(ThreadsafeInvalidate);
+                    Invoke(d);
+                }
+                else
+                {
+                    Invalidate(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -356,14 +538,21 @@ namespace MinecraftTextureEditorUI
         /// <param name="text"></param>
         private void UpdateText(string text)
         {
-            if (labelTitle.InvokeRequired)
+            try
             {
-                var d = new Action<string>(UpdateText);
-                Invoke(d, new object[] { text });
+                if (labelTitle.InvokeRequired)
+                {
+                    var d = new Action<string>(UpdateText);
+                    Invoke(d, new object[] { text });
+                }
+                else
+                {
+                    labelTitle.Text = text;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                labelTitle.Text = text;
+                _log?.Debug(ex.Message);
             }
         }
 
@@ -371,18 +560,48 @@ namespace MinecraftTextureEditorUI
         /// Threadsafe method for adding new controls to the flow panel
         /// </summary>
         /// <param name="item"></param>
-        private void AddFlowLayoutTexture(Control item)
+        private void AddFlowLayoutTexture(List<Control> items)
+        {
+            try
+            {
+                if (flowLayoutPanelTextures.InvokeRequired)
+                {
+                    Action<List<Control>> d = new Action<List<Control>>(AddFlowLayoutTexture);
+
+                    Invoke(d, new object[] { items });
+                }
+                else
+                {
+                    flowLayoutPanelTextures.Controls.AddRange(items.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Debug(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Threadsafe method for filtering the images
+        /// </summary>
+        /// <param name="text"></param>
+        private void FilterImages(string text)
         {
             if (flowLayoutPanelTextures.InvokeRequired)
             {
-                Action<Control> d = new Action<Control>(AddFlowLayoutTexture);
-
-                Invoke(d, new object[] { item });
+                var d = new Action<string>(FilterImages);
+                Invoke(d, new object[] { text });
             }
             else
             {
-                flowLayoutPanelTextures.Controls.Add(item);
+                flowLayoutPanelTextures.Visible = false;
 
+                foreach (Button item in flowLayoutPanelTextures.Controls)
+                {
+                    item.Visible = item.Text.Contains(text) || string.IsNullOrEmpty(text);
+                }
+
+                flowLayoutPanelTextures.Visible = true;
             }
         }
 
