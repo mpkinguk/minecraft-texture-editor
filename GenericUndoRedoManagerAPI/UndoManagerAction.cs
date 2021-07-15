@@ -55,7 +55,7 @@ namespace GenericUndoRedoManagerAPI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -76,7 +76,7 @@ namespace GenericUndoRedoManagerAPI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -94,7 +94,7 @@ namespace GenericUndoRedoManagerAPI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return default;
             }
         }
@@ -113,7 +113,7 @@ namespace GenericUndoRedoManagerAPI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return default;
             }
         }
@@ -157,7 +157,7 @@ namespace GenericUndoRedoManagerAPI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
     }

@@ -154,6 +154,7 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.labelWidth);
             this.Controls.Add(this.labelImageResolution);
             this.Controls.Add(this.buttonOK);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "ResolutionForm";

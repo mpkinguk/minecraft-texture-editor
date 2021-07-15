@@ -34,7 +34,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return Enumerable.Empty<string>();
             }
         }
@@ -60,7 +60,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return Enumerable.Empty<string>();
             }
         }

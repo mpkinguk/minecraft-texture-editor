@@ -82,7 +82,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -137,7 +137,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -179,7 +179,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -234,7 +234,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -283,7 +283,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -371,7 +371,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -424,7 +424,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -451,7 +451,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -470,7 +470,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -529,7 +529,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -552,7 +552,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -568,16 +568,13 @@ namespace MinecraftTextureEditorUI
                 {
                     if (optionsForm.HasSaved)
                     {
-                        toolStripStatusLabel.Text = "Restarting App...";
-                        Close();
-                        ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
-                        Process.Start(info);
+                        RestartApplication();
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -606,7 +603,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message);
+                _log.Error(ex.Message);
             }
         }
 
@@ -632,7 +629,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message);
+                _log.Error(ex.Message);
             }
         }
 
@@ -659,9 +656,21 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Restart the application
+        /// </summary>
+        public void RestartApplication()
+        {
+            toolStripStatusLabel.Text = "Restarting App...";
+            Close();
+            ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
+            Process.Start(info);
+        }
+
 
         #endregion Private methods
 
@@ -695,7 +704,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -740,7 +749,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -795,7 +804,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -816,7 +825,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -950,7 +959,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message);
+                _log.Error(ex.Message);
             }
         }
 
@@ -1014,7 +1023,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message);
+                _log.Error(ex.Message);
             }
         }
 
@@ -1055,7 +1064,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message);
+                _log.Error(ex.Message);
             }
         }
 
@@ -1147,6 +1156,27 @@ namespace MinecraftTextureEditorUI
         private void ToolStripMenuItemTransparencyLockClick(object sender, EventArgs e)
         {
             SelectTool(sender, ToolType.TransparencyLock);
+        }
+
+
+        /// <summary>
+        /// New Image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewImageToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            ShowNewEditorForm(sender, e);
+        }
+
+        /// <summary>
+        /// New Project
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            RestartApplication();
         }
 
         #endregion Form events

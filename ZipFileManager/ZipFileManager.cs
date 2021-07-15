@@ -57,31 +57,26 @@ namespace ZipFileManagerAPI
                 {
                     foreach (var file in fileNames)
                     {
-                        try
-                        {
-                            using (var t = Task.Run(() =>
-                            {
-                                var newPath = file.Replace(path, "");
-                                zip.CreateEntryFromFile(file, newPath, CompressionLevel.Optimal);
-                            }))
-                            {
-                                await t.ConfigureAwait(false);
-                            }
 
-                            OnFileProcessed($"Adding {file}...");
-                        }
-                        catch (Exception ex)
+                        using (var t = Task.Run(() =>
                         {
-                            Debug.WriteLine(ex.Message);
-                            return false;
+                            var newPath = file.Replace(path, "");
+                            zip.CreateEntryFromFile(file, newPath, CompressionLevel.Optimal);
+                        }))
+                        {
+                            await t.ConfigureAwait(false);
                         }
+
+                        OnFileProcessed($"Adding {file}...");
                     }
+
                 }
+
                 return true;
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return false;
             }
         }
@@ -111,44 +106,36 @@ namespace ZipFileManagerAPI
 
                 var outputFolder = Path.Combine(outputPath, archiveFolderName);
 
-                try
+                // run async so we free up the UI
+                using (var t = Task.Run(() =>
                 {
-                    // run async so we free up the UI
-                    using (var t = Task.Run(() =>
+                    if (fileInfo.Extension.ToLower() == "zip")
                     {
-                        if (fileInfo.Extension.ToLower() == "zip")
-                        {
-                            ZipFile.ExtractToDirectory(inputFilename, outputFolder);
-                        }
-                        else
-                        {
-                            string zPath = @"7zip\7za.exe"; //add to proj and set CopyToOuputDir
+                        ZipFile.ExtractToDirectory(inputFilename, outputFolder);
+                    }
+                    else
+                    {
+                        string zPath = @"7zip\7za.exe"; //add to proj and set CopyToOuputDir
 
                             ProcessStartInfo processInfo = new ProcessStartInfo
-                            {
-                                WindowStyle = ProcessWindowStyle.Hidden,
-                                FileName = zPath,
-                                Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", inputFilename, outputFolder)
-                            };
-                            Process x = Process.Start(processInfo);
-                            x.WaitForExit();
-                        }
-                    }))
-                    {
-                        await t.ConfigureAwait(false);
+                        {
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            FileName = zPath,
+                            Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", inputFilename, outputFolder)
+                        };
+                        Process x = Process.Start(processInfo);
+                        x.WaitForExit();
                     }
-
-                    return true;
-                }
-                catch (Exception ex)
+                }))
                 {
-                    _log?.Debug(ex.Message);
-                    return false;
+                    await t.ConfigureAwait(false);
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return false;
             }
         }

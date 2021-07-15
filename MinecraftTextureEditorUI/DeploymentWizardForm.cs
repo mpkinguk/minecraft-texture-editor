@@ -16,7 +16,11 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The deployment path
         /// </summary>
-        public string DeploymentPath { get; set; }
+        public string DeploymentPath 
+        { 
+            get; 
+            set; 
+        }
 
         private bool _deployed;
 
@@ -157,7 +161,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 ShowErrorBox(ex.Message);
             }
         }
@@ -190,7 +194,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return false;
             }
         }
@@ -230,7 +234,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 return false;
             }
             finally
@@ -246,6 +250,11 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Upack a zip file
+        /// </summary>
+        /// <param name="packName">The pack name</param>
+        /// <returns>Task</returns>
         private async Task UnpackZipFile(string packName)
         {
             try
@@ -276,7 +285,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 UpdateProgressLabel(ex.Message);
             }
             finally

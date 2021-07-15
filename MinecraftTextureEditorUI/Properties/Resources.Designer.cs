@@ -173,6 +173,16 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap diamond_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("diamond_pickaxe", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap dropper {
             get {
                 object obj = ResourceManager.GetObject("dropper", resourceCulture);
@@ -203,9 +213,29 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap golden_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("golden_pickaxe", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap grid {
             get {
                 object obj = ResourceManager.GetObject("grid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap iron_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("iron_pickaxe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +276,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap mirrory {
             get {
                 object obj = ResourceManager.GetObject("mirrory", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap netherite_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("netherite_pickaxe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -296,6 +336,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap steve {
             get {
                 object obj = ResourceManager.GetObject("steve", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap stone_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("stone_pickaxe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -416,6 +466,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap wizarddeploy {
             get {
                 object obj = ResourceManager.GetObject("wizarddeploy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wooden_pickaxe {
+            get {
+                object obj = ResourceManager.GetObject("wooden_pickaxe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

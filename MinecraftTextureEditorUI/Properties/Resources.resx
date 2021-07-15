@@ -151,6 +151,9 @@
   <data name="destroy_stage_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\destroy_stage_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="diamond_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\diamond_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="dropper" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\dropper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -160,8 +163,14 @@
   <data name="floodfill" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\floodfill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="golden_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\golden_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="grid" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\grid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="iron_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\iron_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="lockoff" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\lockoff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -174,6 +183,9 @@
   </data>
   <data name="mirrory" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mirrory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="netherite_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\netherite_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Pen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -189,6 +201,9 @@
   </data>
   <data name="steve" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\steve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stone_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stone_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="texturewallpaper" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\texturewallpaper.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -225,5 +240,8 @@
   </data>
   <data name="wizarddeploy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\wizarddeploy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wooden_pickaxe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\wooden_pickaxe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

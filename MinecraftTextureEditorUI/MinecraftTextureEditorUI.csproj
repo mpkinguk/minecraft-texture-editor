@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -307,6 +307,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MinecraftTextureEditorIcon.ico" />
+    <None Include="Resources\wooden_pickaxe.png" />
+    <None Include="Resources\stone_pickaxe.png" />
+    <None Include="Resources\netherite_pickaxe.png" />
+    <None Include="Resources\iron_pickaxe.png" />
+    <None Include="Resources\golden_pickaxe.png" />
+    <None Include="Resources\diamond_pickaxe.png" />
     <None Include="Resources\texturewallpaper2.jpg" />
     <None Include="Resources\destroy_stage_8.png" />
     <None Include="Resources\destroy_stage_7.png" />

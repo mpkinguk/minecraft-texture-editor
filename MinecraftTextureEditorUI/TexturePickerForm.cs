@@ -2,8 +2,10 @@
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -101,7 +103,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -160,7 +162,20 @@ namespace MinecraftTextureEditorUI
 
                 _itemSize = (flowLayoutPanelTextures.ClientRectangle.Width / 6);
 
-                Files = await Task.Run(() => FileHelper.GetFiles(Path.Combine(CurrentPath, assetsPath, texturesPath), "*.png", true)).ConfigureAwait(false);
+                var assetsDirectorySearch = Directory.GetDirectories(CurrentPath, "assets", SearchOption.AllDirectories).ToList();
+
+                if (!assetsDirectorySearch.Any())
+                {
+                    MessageBox.Show("This path does not contain an asset folder. Please choose a different path");
+
+                    MDIMainForm parent = (MDIMainForm)Parent;
+
+                    parent.RestartApplication();
+                }
+
+                string directory = assetsDirectorySearch.FirstOrDefault();
+
+                Files = await Task.Run(() => FileHelper.GetFiles(directory, "*.png", true)).ConfigureAwait(false);
 
                 if (Files.Count > 0)
                 {
@@ -173,7 +188,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -230,7 +245,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -256,7 +271,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
             finally
             {
@@ -331,7 +346,7 @@ namespace MinecraftTextureEditorUI
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug(ex.Message);
+                        _log.Error(ex.Message);
                         continue;
                     }
 
@@ -371,7 +386,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
             finally
             {
@@ -407,7 +422,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -453,7 +468,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -481,7 +496,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -505,7 +520,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -528,7 +543,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -552,7 +567,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -577,7 +592,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 

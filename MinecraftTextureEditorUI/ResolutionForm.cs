@@ -52,7 +52,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -76,7 +76,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -98,7 +98,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -118,7 +118,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 

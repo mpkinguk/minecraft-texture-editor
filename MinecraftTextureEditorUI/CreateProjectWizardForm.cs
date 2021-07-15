@@ -36,7 +36,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -81,7 +81,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -145,7 +145,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 ShowErrorBox(ex.Message);
             }
         }
@@ -188,7 +188,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
                 UpdateProgressLabel(ex.Message);
             }
             finally
@@ -212,7 +212,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -231,7 +231,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -257,7 +257,10 @@ namespace MinecraftTextureEditorUI
                     MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex) { _log?.Debug(ex.Message); }
+            catch (Exception ex) 
+            {
+                _log?.Error(ex.Message); 
+            }
         }
 
         /// <summary>
@@ -278,7 +281,10 @@ namespace MinecraftTextureEditorUI
                     labelProgress.Text = message;
                 }
             }
-            catch (Exception ex) { _log?.Debug(ex.Message); }
+            catch (Exception ex) 
+            { 
+                _log?.Error(ex.Message); 
+            }
         }
 
         /// <summary>
@@ -298,7 +304,10 @@ namespace MinecraftTextureEditorUI
                     buttonPrevious.Enabled = false;
                 }
             }
-            catch (Exception ex) { _log?.Debug(ex.Message); }
+            catch (Exception ex) 
+            { 
+                _log?.Error(ex.Message); 
+            }
         }
 
         /// <summary>
@@ -323,7 +332,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -348,7 +357,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -374,7 +383,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
@@ -398,7 +407,7 @@ namespace MinecraftTextureEditorUI
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 

@@ -393,6 +393,7 @@ namespace MinecraftTextureEditorUI
             this.ClientSize = new System.Drawing.Size(639, 450);
             this.Controls.Add(this.tabControlDeploy);
             this.Controls.Add(this.panel1);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);

@@ -126,7 +126,6 @@ namespace MinecraftTextureEditorUI
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.steve;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(725, 446);
             this.ControlBox = false;
@@ -137,6 +136,7 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.labelAbout);
             this.Controls.Add(this.labelProductName);
             this.Controls.Add(this.okButton);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);

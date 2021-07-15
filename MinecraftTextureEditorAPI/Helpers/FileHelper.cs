@@ -67,7 +67,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return new List<string>();
             }
         }
@@ -94,7 +94,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return false;
             }
         }
@@ -139,7 +139,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return false;
             }
         }
@@ -177,7 +177,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return selectedPath;
             }
         }
@@ -214,7 +214,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return selectedPath;
             }
         }
@@ -245,7 +245,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return selectedPath;
             }
         }
@@ -281,7 +281,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return new object[0];
             }
         }
@@ -305,7 +305,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
             catch (Exception ex)
             {
-                Log?.Debug(ex.Message);
+                Log?.Error(ex.Message);
                 return string.Empty;
             }
         }

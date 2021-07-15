@@ -1,6 +1,8 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -9,6 +11,16 @@ namespace MinecraftTextureEditorUI
     partial class AboutForm : Form
     {
         private readonly ILog _log;
+
+        private readonly List<Point> _points = new List<Point>();
+
+        private readonly List<Point> _directions = new List<Point>();
+
+        private readonly List<Image> _images = new List<Image>();
+
+        private float _angle = 1F;
+
+        private readonly Timer _timer = new Timer();
 
         /// <summary>
         /// Constructor
@@ -19,11 +31,52 @@ namespace MinecraftTextureEditorUI
 
             try
             {
+                _timer.Interval = 33;
+                _timer.Tick += TimerTick;
+
+                _images = new List<Image> {
+                    Properties.Resources.wooden_pickaxe,
+                    Properties.Resources.stone_pickaxe,
+                    Properties.Resources.iron_pickaxe,
+                    Properties.Resources.golden_pickaxe,
+                    Properties.Resources.diamond_pickaxe,
+                    Properties.Resources.netherite_pickaxe
+                };
+
+                Random rnd = new Random();
+
+                for (int i = 0; i < 6; i++)
+                {
+                    var x = rnd.Next(ClientRectangle.Width - 32);
+                    var y = rnd.Next(ClientRectangle.Height - 32);
+
+                    _points.Add(new Point(x, y));
+
+                    var dX = 0;
+                    var dY = 0;
+
+                    while (dX.Equals(0) || dY.Equals(0))
+                    {
+                        dX = rnd.Next(-5, 5);
+                        dY = rnd.Next(-5, 5);
+                    }
+
+                    _directions.Add(new Point(dX, dY));
+                }
 
                 InitializeComponent();
 
                 // Reduce display flicker
-                SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+                SetStyle(
+                    ControlStyles.AllPaintingInWmPaint & 
+                    ControlStyles.UserPaint & 
+                    ControlStyles.OptimizedDoubleBuffer & 
+                    ControlStyles.SupportsTransparentBackColor & 
+                    ControlStyles.ResizeRedraw, true);
+
+                Paint += AboutFormPaint;
+
+                FormClosing += AboutFormFormClosing;
 
                 labelProductName.Text = AssemblyTitle;
                 labelVersion.Text = $"Version {AssemblyVersion}";
@@ -31,44 +84,113 @@ namespace MinecraftTextureEditorUI
                 labelCompanyName.Text = $"Produced by {AssemblyCompany}";
                 labelDescription.Text = AssemblyDescription;
 
-                labelDescription.Paint += LabelPaint;
-                labelProductName.Paint += LabelPaint;
-                labelVersion.Paint += LabelPaint;
-                labelCopyright.Paint += LabelPaint;
-                labelCompanyName.Paint += LabelPaint;
-                labelAbout.Paint += LabelPaint;
+                labelDescription.Visible = false;
+                labelProductName.Visible = false;
+                labelVersion.Visible = false;
+                labelCopyright.Visible = false;
+                labelCompanyName.Visible = false;
+                labelAbout.Visible = false;
+
+                _timer.Start();
             }
             catch (Exception ex)
             {
-                _log?.Debug(ex.Message);
+                _log?.Error(ex.Message);
             }
         }
 
-        /// <summary>
-        /// Override the paint commands of each 'Label' so we can add shadows!
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LabelPaint(object sender, PaintEventArgs e)
+        private void AboutFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            try
+            _timer.Stop();
+        }
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            _angle += 5F;
+
+            if (_angle > 360F)
             {
-                var label = (PictureBox)sender;
-
-                var g = e.Graphics;
-
-                var shadowRectangle = new Rectangle(1, 1, e.ClipRectangle.Width, e.ClipRectangle.Height);
-
-                g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
-
-                g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), e.ClipRectangle);
-
-                g.Flush();
+                _angle = 0;
             }
-            catch (Exception ex)
+
+            for (int i = 0; i < _images.Count; i++)
             {
-                _log?.Debug(ex.Message);
+                var x = _points[i].X;
+                var y = _points[i].Y;
+                var dX = _directions[i].X;
+                var dY = _directions[i].Y;
+
+                if (x + dX > ClientRectangle.Width - 16 || x + dX < Math.Abs(dX))
+                {
+                    dX = -dX;
+                }
+
+                if (y + dY > ClientRectangle.Height - 16 || y + dY < Math.Abs(dY))
+                {
+                    dY = -dY;
+                }
+
+                x += dX;
+                y += dY;
+
+                _directions[i] = new Point(dX, dY);
+                _points[i] = new Point(x, y);
             }
+
+            Invalidate(true);
+        }
+
+        private void AboutFormPaint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+
+            g.DrawImage(Properties.Resources.steve, ClientRectangle);
+
+            for (int i = 0; i < _images.Count; i++)
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                var newBitmap = RotateImage((Bitmap)_images[i], _angle);
+                
+                g.DrawImage(newBitmap, _points[i].X, _points[i].Y, 15, 15);
+
+            }
+
+            foreach (Control control in Controls)
+            {
+                if (control.GetType().Equals(typeof(PictureBox)))
+                {
+                    var label = (PictureBox)control;
+
+                    var rectangle = new Rectangle(label.Left, label.Top, label.Width, label.Height);
+                    var shadowRectangle = new Rectangle(rectangle.X + 1, rectangle.Y + 1, rectangle.Width, rectangle.Height);
+
+                    g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
+
+                    g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), rectangle);
+                }
+            }
+
+            g.Flush();
+        }
+
+        // Your method, not mine.
+        private Bitmap RotateImage(Bitmap b, float angle)
+        {
+            //Create a new empty bitmap to hold rotated image.
+            Bitmap returnBitmap = new Bitmap(b.Width, b.Height);
+            //Make a graphics object from the empty bitmap.
+            Graphics g = Graphics.FromImage(returnBitmap);
+            //move rotation point to center of image.
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
+            //Rotate.        
+            g.RotateTransform(angle);
+            //Move image back.
+            g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
+            //Draw passed in image onto graphics object.
+            g.DrawImage(b, new Point(0, 0));
+            return returnBitmap;
         }
 
         #region Assembly Attribute Accessors
