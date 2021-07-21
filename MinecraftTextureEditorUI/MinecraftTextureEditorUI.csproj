@@ -151,6 +151,7 @@
     <Compile Include="ResolutionForm.Designer.cs">
       <DependentUpon>ResolutionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="State.cs" />
     <Compile Include="TexturePickerForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,8 +1,8 @@
-﻿using log4net;
+﻿using Constants = MinecraftTextureEditorAPI.Constants;
+using log4net;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -42,11 +42,6 @@ namespace MinecraftTextureEditorUI
         public string CurrentTexture { get; set; }
 
         /// <summary>
-        /// The current path
-        /// </summary>
-        public string CurrentPath { get { return _currentPath; } set { _currentPath = value; } }
-
-        /// <summary>
         /// The list of files we can edit
         /// </summary>
         public IList<string> Files { get; set; }
@@ -54,8 +49,6 @@ namespace MinecraftTextureEditorUI
         #endregion Public properties
 
         #region Private properties
-
-        private string _currentPath;
 
         private int _itemSize;
 
@@ -72,7 +65,7 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The constructor
         /// </summary>
-        public TexturePickerForm(string currentPath, ILog log)
+        public TexturePickerForm(ILog log)
         {
             _log = log;
 
@@ -95,8 +88,6 @@ namespace MinecraftTextureEditorUI
                 };
 
                 Paint += TexturePickerFormPaint;
-
-                _currentPath = currentPath;
 
                 // Reduce display flicker
                 SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
@@ -136,20 +127,18 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var settingsPath = ConfigurationHelper.LoadSetting("MinecraftDefaultFolder");
-                var assetsPath = ConfigurationHelper.LoadSetting("AssetsFolder");
-                var texturesPath = ConfigurationHelper.LoadSetting("TexturesFolder");
+                var defaultProjectPath = Path.Combine(FileHelper.GetDefaultProjectFolder());
 
                 // Only grab it from settings once
-                CurrentPath = string.IsNullOrEmpty(CurrentPath) ? settingsPath : CurrentPath;
+                State.CurrentPath = string.IsNullOrEmpty(State.CurrentPath) ? defaultProjectPath : State.CurrentPath;
 
                 if (!refresh && !FromWizard)
                 {
-                    CurrentPath = FileHelper.OpenFolderName(CurrentPath);
+                    State.CurrentPath = FileHelper.SelectFolder(State.CurrentPath);
                 }
 
                 // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
-                if (string.IsNullOrEmpty(CurrentPath))
+                if (string.IsNullOrEmpty(State.CurrentPath))
                 {
                     _log.Debug("No path selected to load textures. Exiting application");
                     Application.Exit();
@@ -160,25 +149,34 @@ namespace MinecraftTextureEditorUI
 
                 _loading = true;
 
-                _itemSize = (flowLayoutPanelTextures.ClientRectangle.Width / 6);
+                var assetsDirectorySearch = Directory.GetDirectories(State.CurrentPath, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
 
-                var assetsDirectorySearch = Directory.GetDirectories(CurrentPath, "assets", SearchOption.AllDirectories).ToList();
+                string directory = string.Empty;
 
                 if (!assetsDirectorySearch.Any())
                 {
-                    MessageBox.Show("This path does not contain an asset folder. Please choose a different path");
+                    if (State.CurrentPath.Contains(Constants.AssetsFolder))
+                    {
+                        directory = State.CurrentPath;
+                    }
+                    else
+                    {
+                        MessageBox.Show("This path does not contain an asset folder. Please choose a different path");
 
-                    MDIMainForm parent = (MDIMainForm)Parent;
-
-                    parent.RestartApplication();
+                        LoadTextures(refresh);
+                    }
                 }
-
-                string directory = assetsDirectorySearch.FirstOrDefault();
+                else
+                {
+                    directory = assetsDirectorySearch.FirstOrDefault();
+                }
 
                 Files = await Task.Run(() => FileHelper.GetFiles(directory, "*.png", true)).ConfigureAwait(false);
 
                 if (Files.Count > 0)
                 {
+                    _itemSize = 32;
+
                     await UpdateFlowLayoutPanel(Files).ConfigureAwait(false);
                 }
 

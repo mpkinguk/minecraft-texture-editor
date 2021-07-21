@@ -10,11 +10,6 @@ namespace MinecraftTextureEditorUI
 {
     public partial class CreateProjectWizardForm : Form
     {
-        /// <summary>
-        /// The deployment path
-        /// </summary>
-        public string CurrentPath { get; set; }
-
         private readonly ILog _log;
 
         /// <summary>
@@ -178,7 +173,7 @@ namespace MinecraftTextureEditorUI
 
                 if (result)
                 {
-                    CurrentPath = Path.Combine(projectFolder, packFile);
+                    State.CurrentPath = Path.Combine(projectFolder, packFile);
                     DialogResult = DialogResult.OK;
                 }
                 else
@@ -225,7 +220,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                string folder = FileHelper.OpenFolderName(FileHelper.GetMineCraftFolder());
+                string folder = FileHelper.SelectFolder(FileHelper.GetMineCraftFolder());
 
                 textBoxProjectPath.Text = folder;
             }

@@ -356,28 +356,5 @@ namespace MinecraftTextureEditorAPI.Helpers
 
             return tmp;
         }
-
-        /// <summary>
-        /// Return true visibility of child object
-        /// </summary>
-        /// <param name="child">The child</param>
-        /// <param name="parent">The parent</param>
-        /// <returns>Bool</returns>
-        public static bool ChildReallyVisible(this Control child, Control parent)
-        {
-            var pos = parent.PointToClient(child.PointToScreen(Point.Empty));
-
-            //Test the top left
-            return (parent.GetChildAtPoint(pos) == child) ||
-
-            //Test the top right
-            (parent.GetChildAtPoint(new Point(pos.X + child.Width - 1, pos.Y)) == child) ||
-
-            //Test the bottom left
-            (parent.GetChildAtPoint(new Point(pos.X, pos.Y + child.Height - 1)) == child) ||
-
-            //Test the bottom right
-            (parent.GetChildAtPoint(new Point(pos.X + child.Width - 1, pos.Y + child.Height - 1)) == child);
-        }
     }
 }

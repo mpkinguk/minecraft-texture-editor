@@ -4,6 +4,7 @@ using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,15 +14,6 @@ namespace MinecraftTextureEditorUI
 {
     public partial class DeploymentWizardForm : Form
     {
-        /// <summary>
-        /// The deployment path
-        /// </summary>
-        public string DeploymentPath 
-        { 
-            get; 
-            set; 
-        }
-
         private bool _deployed;
 
         private bool _unpack;
@@ -175,7 +167,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var fileName = Path.Combine(DeploymentPath, "pack.mcmeta");
+                var fileName = Path.Combine(State.CurrentPath, "pack.mcmeta");
 
                 var pack = new Pack() { Description = description, Format = format };
 
@@ -210,15 +202,14 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(true);
 
-                var resourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder");
-                var assetsPath = ConfigurationHelper.LoadSetting("AssetsFolder");
+                var filesPath = State.CurrentPath;
 
-                var filesPath = Path.Combine(DeploymentPath, assetsPath);
+                var resourcePackFolder = FileHelper.GetResourcePackFolder();
 
                 var outputFile = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
                 IList<string> files = await Task.Run(() => FileHelper.GetFiles(filesPath, "*.*", true)).ConfigureAwait(false);
-                files.Add(Path.Combine(DeploymentPath, "pack.mcmeta"));
+                files.Add(Path.Combine(State.CurrentPath, "pack.mcmeta"));
 
                 UpdateProgressBarMin(0);
                 UpdateProgressBarValue(0);
@@ -228,7 +219,7 @@ namespace MinecraftTextureEditorUI
 
                 zipFileManager.FileProcessed += FileProcessed;
 
-                _deployed = await zipFileManager.ZipFiles(outputFile, DeploymentPath, files).ConfigureAwait(false);
+                _deployed = await zipFileManager.ZipFiles(outputFile, State.CurrentPath, files).ConfigureAwait(false);
 
                 return _deployed;
             }
@@ -268,11 +259,11 @@ namespace MinecraftTextureEditorUI
 
                 if (!_deployed)
                 {
-                    UpdateProgressLabel("Zip file was not deployed properly. Aborting unpacking.");
+                    UpdateProgressLabel("Zip file was not deployed correctly. Aborting unpacking.");
                     return;
                 }
 
-                var resourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder");
+                var resourcePackFolder = FileHelper.GetResourcePackFolder();
 
                 var input = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
