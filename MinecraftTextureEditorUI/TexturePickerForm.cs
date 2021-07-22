@@ -175,7 +175,7 @@ namespace MinecraftTextureEditorUI
 
                 if (Files.Count > 0)
                 {
-                    _itemSize = 32;
+                    _itemSize = 48;
 
                     await UpdateFlowLayoutPanel(Files).ConfigureAwait(false);
                 }

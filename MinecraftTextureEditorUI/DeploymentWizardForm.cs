@@ -18,6 +18,8 @@ namespace MinecraftTextureEditorUI
 
         private bool _unpack;
 
+        private bool _onlyTextures;
+
         private readonly ILog _log;
 
         /// <summary>
@@ -32,6 +34,9 @@ namespace MinecraftTextureEditorUI
             tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
 
             PopulateVersions();
+
+            _unpack = checkBoxUnpackZipFile.Checked;
+            _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
         }
 
         #region Form events
@@ -124,12 +129,51 @@ namespace MinecraftTextureEditorUI
                             throw new Exception("Could not create meta file");
                         }
 
+                        IncrementTabControl();
+
+                        break;
+                    case 2:
+                        IncrementTabControl();
+
                         // Clone to prevent threading issues
                         string PackName = (string)textBoxPackName.Text.Clone();
 
-                        IncrementTabControl();
+                        var resourcePackFolder = FileHelper.GetResourcePackFolder();
 
-                        _deployed = await CreatePackZipFile(PackName).ConfigureAwait(false);
+                        var outputFile = Path.Combine(resourcePackFolder, string.Concat(PackName, ".zip"));
+
+                        var unpackDirectory = outputFile.Replace(".zip", "");
+
+                        if (File.Exists(outputFile))
+                        {
+                            switch (MessageBox.Show(this, "This pack already exists. Create a backup?", "Warning", MessageBoxButtons.YesNoCancel))
+                            {
+                                case DialogResult.Yes:
+                                    File.Move(outputFile, $"{outputFile}.bak");
+                                    if(_unpack)
+                                    {
+                                        if (Directory.Exists(unpackDirectory))
+                                        {
+                                            Directory.Move(unpackDirectory, $"{unpackDirectory}_bak");
+                                        }
+                                    }
+                                    break;
+                                case DialogResult.No:
+                                    File.Delete(outputFile);
+                                    if (_unpack)
+                                    {
+                                        if (Directory.Exists(unpackDirectory))
+                                        {
+                                            Directory.Delete(unpackDirectory);
+                                        }
+                                    }
+                                    break;
+                                case DialogResult.Cancel:
+                                    throw new OperationCanceledException("Operation cancelled");
+                            }
+                        }
+
+                        _deployed = await CreatePackZipFile(outputFile).ConfigureAwait(false);
 
                         if (!_deployed)
                         {
@@ -140,13 +184,14 @@ namespace MinecraftTextureEditorUI
                             if (_unpack)
                             {
                                 UpdateProgressLabel("Unpacking zip file to resource pack folder...");
-                                await UnpackZipFile(PackName).ConfigureAwait(false);
-                                IncrementTabControl();
+                                await UnpackZipFile(PackName).ConfigureAwait(false);                                
                             }
                         }
+
+                        IncrementTabControl();
                         break;
 
-                    case 0:
+                    default:
                         IncrementTabControl();
                         break;
                 }
@@ -194,9 +239,9 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Create a new pack file in the resources folder
         /// </summary>
-        /// <param name="packName">The zip file name</param>
+        /// <param name="outputFile">The output file name</param>
         /// <returns>bool</returns>
-        private async Task<bool> CreatePackZipFile(string packName)
+        private async Task<bool> CreatePackZipFile(string outputFile)
         {
             try
             {
@@ -204,11 +249,8 @@ namespace MinecraftTextureEditorUI
 
                 var filesPath = State.CurrentPath;
 
-                var resourcePackFolder = FileHelper.GetResourcePackFolder();
-
-                var outputFile = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
-
-                IList<string> files = await Task.Run(() => FileHelper.GetFiles(filesPath, "*.*", true)).ConfigureAwait(false);
+                var files = await Task.Run(() => FileHelper.GetFiles(filesPath, _onlyTextures ? "*.png" : "*.*", true)).ConfigureAwait(false);
+                
                 files.Add(Path.Combine(State.CurrentPath, "pack.mcmeta"));
 
                 UpdateProgressBarMin(0);
@@ -250,8 +292,6 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                UpdateCursor(true);
-
                 if (!_unpack)
                 {
                     return;
@@ -262,6 +302,8 @@ namespace MinecraftTextureEditorUI
                     UpdateProgressLabel("Zip file was not deployed correctly. Aborting unpacking.");
                     return;
                 }
+
+                UpdateCursor(true);
 
                 var resourcePackFolder = FileHelper.GetResourcePackFolder();
 
@@ -304,7 +346,16 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void CheckBoxCheckedChanged(object sender, EventArgs e)
         {
-            _unpack = checkBoxUnpackZipFile.Checked;
+            var checkBox = (CheckBox)sender;
+            switch (checkBox.Name) 
+            {
+                case nameof(checkBoxUnpackZipFile):
+                    _unpack = checkBoxUnpackZipFile.Checked;
+                    break;
+                case nameof(checkBoxOnlyIncludeTextures):
+                    _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
+                    break;
+            }
         }
 
         #endregion Form events

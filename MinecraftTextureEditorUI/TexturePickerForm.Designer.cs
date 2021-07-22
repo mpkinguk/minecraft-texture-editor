@@ -54,7 +54,7 @@ namespace MinecraftTextureEditorUI
             this.flowLayoutPanelTextures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanelTextures.Location = new System.Drawing.Point(0, 56);
             this.flowLayoutPanelTextures.Name = "flowLayoutPanelTextures";
-            this.flowLayoutPanelTextures.Size = new System.Drawing.Size(337, 483);
+            this.flowLayoutPanelTextures.Size = new System.Drawing.Size(344, 483);
             this.flowLayoutPanelTextures.TabIndex = 4;
             this.toolTip1.SetToolTip(this.flowLayoutPanelTextures, "Your textures :)");
             // 
@@ -65,7 +65,7 @@ namespace MinecraftTextureEditorUI
             this.textBoxFilter.Location = new System.Drawing.Point(0, 32);
             this.textBoxFilter.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.textBoxFilter.Name = "textBoxFilter";
-            this.textBoxFilter.Size = new System.Drawing.Size(218, 24);
+            this.textBoxFilter.Size = new System.Drawing.Size(225, 24);
             this.textBoxFilter.TabIndex = 0;
             this.toolTip1.SetToolTip(this.textBoxFilter, "Type in your text and press enter to filter the textures!");
             this.textBoxFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxFilterKeyDown);
@@ -73,7 +73,7 @@ namespace MinecraftTextureEditorUI
             // buttonRefresh
             // 
             this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRefresh.Location = new System.Drawing.Point(217, 27);
+            this.buttonRefresh.Location = new System.Drawing.Point(224, 27);
             this.buttonRefresh.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(120, 30);
@@ -93,7 +93,7 @@ namespace MinecraftTextureEditorUI
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(337, 56);
+            this.panel1.Size = new System.Drawing.Size(344, 56);
             this.panel1.TabIndex = 3;
             // 
             // labelTitle
@@ -112,7 +112,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(337, 539);
+            this.ClientSize = new System.Drawing.Size(344, 539);
             this.ControlBox = false;
             this.Controls.Add(this.flowLayoutPanelTextures);
             this.Controls.Add(this.panel1);
@@ -120,8 +120,8 @@ namespace MinecraftTextureEditorUI
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.MaximumSize = new System.Drawing.Size(353, 578);
-            this.MinimumSize = new System.Drawing.Size(353, 200);
+            this.MaximumSize = new System.Drawing.Size(360, 578);
+            this.MinimumSize = new System.Drawing.Size(360, 200);
             this.Name = "TexturePickerForm";
             this.Text = " ";
             this.panel1.ResumeLayout(false);
