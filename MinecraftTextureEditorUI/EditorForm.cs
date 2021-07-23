@@ -617,8 +617,11 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public void RefreshDisplay()
         {
-            pictureBoxImage.Width = Texture.Width * Zoom;
-            pictureBoxImage.Height = Texture.Height * Zoom;
+            if (Texture.PixelList.Count > 0)
+            {
+                pictureBoxImage.Width = Texture.Width * Zoom;
+                pictureBoxImage.Height = Texture.Height * Zoom;
+            }
 
             pictureBoxImage.Invalidate(true);
         }

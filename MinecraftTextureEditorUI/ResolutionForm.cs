@@ -89,7 +89,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                ImageHeight = Convert.ToInt32(comboBoxWidth.Text);
+                ImageWidth = Convert.ToInt32(comboBoxWidth.Text);
 
                 if (_squareImage && comboBoxHeight.SelectedIndex != comboBoxWidth.SelectedIndex)
                 {
@@ -111,10 +111,23 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                ImageHeight = Convert.ToInt32(comboBoxHeight.Text);
-                ImageWidth = Convert.ToInt32(comboBoxWidth.Text);
+                var button = (Button)sender;
 
-                DialogResult = DialogResult.OK;
+                switch (button.Name)
+                {
+                    case (nameof(buttonOK)):
+                        ImageHeight = Convert.ToInt32(comboBoxHeight.Text);
+                        ImageWidth = Convert.ToInt32(comboBoxWidth.Text);
+
+                        DialogResult = DialogResult.OK;
+                        break;
+
+                    case (nameof(buttonCancel)):
+                        DialogResult = DialogResult.Cancel;
+                        break;
+                }
+
+                Close();
             }
             catch (Exception ex)
             {

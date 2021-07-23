@@ -152,8 +152,11 @@ namespace GenericUndoRedoManagerAPI
             {
                 Clear();
 
-                UndoStack = null;
-                RedoStack = null;
+                UndoStack.Clear();
+                RedoStack.Clear();
+
+                // The only way to get rid of all the undos/redos
+                GC.Collect();
             }
             catch (Exception ex)
             {

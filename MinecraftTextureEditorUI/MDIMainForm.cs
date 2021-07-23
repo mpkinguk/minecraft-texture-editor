@@ -370,10 +370,16 @@ namespace MinecraftTextureEditorUI
                 {
                     using (ResolutionForm resolutionForm = new ResolutionForm(_log))
                     {
-                        resolutionForm.ShowDialog(this);
+                        if (resolutionForm.ShowDialog(this).Equals(DialogResult.OK))
+                        {
 
-                        width = resolutionForm.ImageWidth;
-                        height = resolutionForm.ImageHeight;
+                            width = resolutionForm.ImageWidth;
+                            height = resolutionForm.ImageHeight;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                 }
 

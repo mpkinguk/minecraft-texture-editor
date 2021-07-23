@@ -1,5 +1,4 @@
-﻿using Constants = MinecraftTextureEditorAPI.Constants;
-using log4net;
+﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Constants = MinecraftTextureEditorAPI.Constants;
 
 namespace MinecraftTextureEditorUI
 {
@@ -112,7 +112,7 @@ namespace MinecraftTextureEditorUI
             if (_loading)
             {
                 g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
-            } 
+            }
 
             g.Flush();
         }
@@ -149,7 +149,7 @@ namespace MinecraftTextureEditorUI
 
                 _loading = true;
 
-                var assetsDirectorySearch = Directory.GetDirectories(State.CurrentPath, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
+                var assetsDirectorySearch = SafeFileEnumerator.EnumerateDirectories(State.CurrentPath, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
 
                 string directory = string.Empty;
 
@@ -168,7 +168,28 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    directory = assetsDirectorySearch.FirstOrDefault();
+                    if (assetsDirectorySearch.Count.Equals(1))
+                    {
+                        directory = assetsDirectorySearch.FirstOrDefault();
+                    }
+                    else
+                    {
+                        using (var form = new AssetPickerForm(_log, assetsDirectorySearch))
+                        {
+                            if (form.ShowDialog(this).Equals(DialogResult.OK))
+                            {
+                                directory = form.Asset;
+
+                                // Otherwise CurrentPath will just be set to the root folder,
+                                // which creates all sorts of fun when deploying... :o|
+                                State.CurrentPath = directory;
+                            }
+                            else
+                            {
+                                throw new OperationCanceledException("No asset chosen");
+                            }
+                        }
+                    }
                 }
 
                 Files = await Task.Run(() => FileHelper.GetFiles(directory, "*.png", true)).ConfigureAwait(false);
@@ -181,12 +202,16 @@ namespace MinecraftTextureEditorUI
                 }
 
                 _loading = false;
-
-                UpdateText("Texture Picker");
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
+
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                UpdateText("Texture Picker");
             }
         }
 
@@ -378,7 +403,7 @@ namespace MinecraftTextureEditorUI
                     }
                 }
 
-                await Task.Run(()=>AddFlowLayoutTexture(items)).ConfigureAwait(false);
+                await Task.Run(() => AddFlowLayoutTexture(items)).ConfigureAwait(false);
 
                 FinishLayout();
             }
@@ -416,7 +441,6 @@ namespace MinecraftTextureEditorUI
                 g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0, 0, button.ClientRectangle.Width - 1, button.ClientRectangle.Height - 1));
 
                 g.Flush();
-
             }
             catch (Exception ex)
             {

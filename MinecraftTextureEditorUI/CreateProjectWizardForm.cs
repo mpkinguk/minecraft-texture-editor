@@ -27,7 +27,7 @@ namespace MinecraftTextureEditorUI
 
                 PopulateVersions();
 
-                textBoxProjectPath.Text = FileHelper.GetMineCraftFolder();
+                textBoxProjectPath.Text = FileHelper.GetDefaultProjectFolder();
             }
             catch (Exception ex)
             {
@@ -57,7 +57,6 @@ namespace MinecraftTextureEditorUI
                         buttonNext.Enabled = true;
                         buttonFinish.Enabled = false;
                         break;
-
                     default:
                         if (tabControl.SelectedIndex == lastTab)
                         {
@@ -110,6 +109,13 @@ namespace MinecraftTextureEditorUI
                         {
                             throw new ArgumentException("Version is empty or not selected");
                         }
+
+                        IncrementTabControl();
+
+                        break;
+
+                    case 2:
+
                         if (string.IsNullOrEmpty(textBoxProjectPath.Text))
                         {
                             throw new ArgumentException("Project path is empty");
@@ -118,16 +124,25 @@ namespace MinecraftTextureEditorUI
                         {
                             throw new ArgumentException("Project path is invalid");
                         }
+                        if (string.IsNullOrEmpty(textBoxPackName.Text))
+                        {
+                            throw new ArgumentException("Pack Name is empty");
+                        }
 
                         // Clone to prevent threading issues
                         var packVersion = (string)comboBoxVersion.Text.Clone();
+
+                        var packName = (string)textBoxPackName.Text.Clone();
+
                         var projectPath = (string)textBoxProjectPath.Text.Clone();
+
+                        var newProjectPath = Path.Combine(projectPath, packName);
 
                         IncrementTabControl();
 
                         UpdateProgressLabel("Unpacking minecraft version file to project folder...");
 
-                        await UnpackZipFile(packVersion, projectPath).ConfigureAwait(false);
+                        await UnpackZipFile(packVersion, newProjectPath).ConfigureAwait(false);
 
                         IncrementTabControl();
 

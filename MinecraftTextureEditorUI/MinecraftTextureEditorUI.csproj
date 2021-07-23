@@ -145,6 +145,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssetPickerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssetPickerForm.Designer.cs">
+      <DependentUpon>AssetPickerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ResolutionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,6 +198,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="AssetPickerForm.resx">
+      <DependentUpon>AssetPickerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResolutionForm.resx">
       <DependentUpon>ResolutionForm.cs</DependentUpon>
     </EmbeddedResource>

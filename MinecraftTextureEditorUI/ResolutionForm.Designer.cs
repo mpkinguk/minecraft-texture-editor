@@ -36,16 +36,17 @@ namespace MinecraftTextureEditorUI
             this.comboBoxWidth = new System.Windows.Forms.ComboBox();
             this.comboBoxHeight = new System.Windows.Forms.ComboBox();
             this.checkBoxSquareImage = new System.Windows.Forms.CheckBox();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOK.Location = new System.Drawing.Point(315, 198);
+            this.buttonOK.Location = new System.Drawing.Point(297, 198);
             this.buttonOK.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(152, 35);
+            this.buttonOK.Size = new System.Drawing.Size(80, 35);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "&OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -140,6 +141,19 @@ namespace MinecraftTextureEditorUI
             this.checkBoxSquareImage.UseVisualStyleBackColor = false;
             this.checkBoxSquareImage.CheckedChanged += new System.EventHandler(this.CheckBoxSquareImageCheckedChanged);
             // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCancel.Location = new System.Drawing.Point(387, 198);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(80, 35);
+            this.buttonCancel.TabIndex = 1;
+            this.buttonCancel.Text = "&Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonOKClick);
+            // 
             // ResolutionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -153,6 +167,7 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.labelHeight);
             this.Controls.Add(this.labelWidth);
             this.Controls.Add(this.labelImageResolution);
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
@@ -173,5 +188,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ComboBox comboBoxWidth;
         private System.Windows.Forms.ComboBox comboBoxHeight;
         private System.Windows.Forms.CheckBox checkBoxSquareImage;
+        private System.Windows.Forms.Button buttonCancel;
     }
 }
