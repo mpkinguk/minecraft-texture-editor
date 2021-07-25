@@ -2,9 +2,7 @@
 using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -366,12 +364,13 @@ namespace MinecraftTextureEditorUI
         /// Threadsafe method for displaying error messagebox
         /// </summary>
         /// <param name="error">The error message</param>
-        private void ShowErrorBox(string error)
+        private void ShowErrorBox(string error, string caption = "Error")
         {
             if (InvokeRequired)
             {
-                var d = new Action<string>(ShowErrorBox);
-                Invoke(d, new object[] { error });
+                //var d = new Action<string>(ShowErrorBox);
+                BeginInvoke((MethodInvoker)delegate { ShowErrorBox(error, caption); });
+                //Invoke(d, new object[] { error });
             }
             else
             {
