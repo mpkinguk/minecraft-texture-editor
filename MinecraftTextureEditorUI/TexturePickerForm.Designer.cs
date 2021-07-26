@@ -120,7 +120,9 @@ namespace MinecraftTextureEditorUI
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(360, 578);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(360, 200);
             this.Name = "TexturePickerForm";
             this.Text = " ";

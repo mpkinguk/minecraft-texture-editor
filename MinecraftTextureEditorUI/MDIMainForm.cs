@@ -232,7 +232,7 @@ namespace MinecraftTextureEditorUI
                     State.DrawingTools.Close();
                 }
 
-                State.TexturePicker = new TexturePickerForm(_log) { MdiParent = this };
+                State.TexturePicker = new TexturePickerForm(_log) { MdiParent = this, Visible = false };
 
                 State.TexturePicker.TextureClicked += TexturePickerTextureClicked;
 
@@ -240,7 +240,9 @@ namespace MinecraftTextureEditorUI
 
                 State.TexturePicker.Show();
 
-                State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this };
+                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
+
+                State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this, Visible = false };
 
                 State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
                 State.DrawingTools.Colour2Changed += DrawingToolsBackColourChanged;
@@ -251,8 +253,6 @@ namespace MinecraftTextureEditorUI
                 State.DrawingTools.Show();
 
                 State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
-
-                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
             }
             catch (Exception ex)
             {

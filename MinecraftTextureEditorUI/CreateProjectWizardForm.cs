@@ -235,7 +235,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                string folder = FileHelper.SelectFolder(FileHelper.GetMineCraftFolder());
+                string folder = FileHelper.SelectFolder(textBoxProjectPath.Text);
 
                 textBoxProjectPath.Text = folder;
             }
@@ -422,5 +422,15 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Threadsafe methods
+
+        ///// <summary>
+        ///// Get the folder
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
+        //{
+        //    textBoxProjectPath.Text = FileHelper.SelectFolder(textBoxProjectPath.Text);
+        //}
     }
 }

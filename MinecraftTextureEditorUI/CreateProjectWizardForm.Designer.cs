@@ -44,23 +44,23 @@ namespace MinecraftTextureEditorUI
             this.label2 = new System.Windows.Forms.Label();
             this.labelMetaFile = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.tabPageCreate4 = new System.Windows.Forms.TabPage();
-            this.labelProgress = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.tabPageCreate3 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxPackName = new System.Windows.Forms.TextBox();
+            this.labelPackName = new System.Windows.Forms.Label();
             this.textBoxProjectPath = new System.Windows.Forms.TextBox();
             this.buttonProjectPathBrowser = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.labelPackName = new System.Windows.Forms.Label();
-            this.textBoxPackName = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.tabPageCreate4 = new System.Windows.Forms.TabPage();
+            this.labelProgress = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControlDeploy.SuspendLayout();
             this.tabPageCreate1.SuspendLayout();
             this.tabPageCreate2.SuspendLayout();
-            this.tabPageCreate4.SuspendLayout();
             this.tabPageCreate3.SuspendLayout();
+            this.tabPageCreate4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -257,6 +257,104 @@ namespace MinecraftTextureEditorUI
             this.label3.TabIndex = 0;
             this.label3.Text = "Version:";
             // 
+            // tabPageCreate3
+            // 
+            this.tabPageCreate3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
+            this.tabPageCreate3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.tabPageCreate3.Controls.Add(this.label10);
+            this.tabPageCreate3.Controls.Add(this.textBoxPackName);
+            this.tabPageCreate3.Controls.Add(this.labelPackName);
+            this.tabPageCreate3.Controls.Add(this.textBoxProjectPath);
+            this.tabPageCreate3.Controls.Add(this.buttonProjectPathBrowser);
+            this.tabPageCreate3.Controls.Add(this.label1);
+            this.tabPageCreate3.Controls.Add(this.label9);
+            this.tabPageCreate3.Location = new System.Drawing.Point(4, 26);
+            this.tabPageCreate3.Name = "tabPageCreate3";
+            this.tabPageCreate3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCreate3.Size = new System.Drawing.Size(631, 368);
+            this.tabPageCreate3.TabIndex = 3;
+            this.tabPageCreate3.Text = "Step 3";
+            this.tabPageCreate3.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Yellow;
+            this.label10.Location = new System.Drawing.Point(8, 8);
+            this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(165, 20);
+            this.label10.TabIndex = 14;
+            this.label10.Text = "New Pack details";
+            // 
+            // textBoxPackName
+            // 
+            this.textBoxPackName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPackName.Location = new System.Drawing.Point(157, 129);
+            this.textBoxPackName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.textBoxPackName.Name = "textBoxPackName";
+            this.textBoxPackName.Size = new System.Drawing.Size(438, 24);
+            this.textBoxPackName.TabIndex = 13;
+            // 
+            // labelPackName
+            // 
+            this.labelPackName.AutoSize = true;
+            this.labelPackName.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelPackName.ForeColor = System.Drawing.Color.Yellow;
+            this.labelPackName.Location = new System.Drawing.Point(33, 129);
+            this.labelPackName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelPackName.Name = "labelPackName";
+            this.labelPackName.Size = new System.Drawing.Size(92, 17);
+            this.labelPackName.TabIndex = 12;
+            this.labelPackName.Text = "Pack Name:";
+            // 
+            // textBoxProjectPath
+            // 
+            this.textBoxProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxProjectPath.Location = new System.Drawing.Point(158, 197);
+            this.textBoxProjectPath.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.textBoxProjectPath.Name = "textBoxProjectPath";
+            this.textBoxProjectPath.Size = new System.Drawing.Size(384, 24);
+            this.textBoxProjectPath.TabIndex = 8;
+            // 
+            // buttonProjectPathBrowser
+            // 
+            this.buttonProjectPathBrowser.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonProjectPathBrowser.Location = new System.Drawing.Point(560, 191);
+            this.buttonProjectPathBrowser.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.buttonProjectPathBrowser.Name = "buttonProjectPathBrowser";
+            this.buttonProjectPathBrowser.Size = new System.Drawing.Size(35, 35);
+            this.buttonProjectPathBrowser.TabIndex = 10;
+            this.buttonProjectPathBrowser.Text = "...";
+            this.buttonProjectPathBrowser.UseVisualStyleBackColor = true;
+            this.buttonProjectPathBrowser.Click += new System.EventHandler(this.ButtonProjectPathBrowserClick);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Yellow;
+            this.label1.Location = new System.Drawing.Point(33, 200);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(118, 17);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Project Path:";
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F);
+            this.label9.ForeColor = System.Drawing.Color.Yellow;
+            this.label9.Location = new System.Drawing.Point(154, 230);
+            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(441, 45);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "The project path is where the your new project will be edited. ";
+            // 
             // tabPageCreate4
             // 
             this.tabPageCreate4.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
@@ -294,103 +392,6 @@ namespace MinecraftTextureEditorUI
             this.label7.TabIndex = 3;
             this.label7.Text = "Project Creation Progress";
             // 
-            // tabPageCreate3
-            // 
-            this.tabPageCreate3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
-            this.tabPageCreate3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.tabPageCreate3.Controls.Add(this.label10);
-            this.tabPageCreate3.Controls.Add(this.textBoxPackName);
-            this.tabPageCreate3.Controls.Add(this.labelPackName);
-            this.tabPageCreate3.Controls.Add(this.textBoxProjectPath);
-            this.tabPageCreate3.Controls.Add(this.buttonProjectPathBrowser);
-            this.tabPageCreate3.Controls.Add(this.label1);
-            this.tabPageCreate3.Controls.Add(this.label9);
-            this.tabPageCreate3.Location = new System.Drawing.Point(4, 26);
-            this.tabPageCreate3.Name = "tabPageCreate3";
-            this.tabPageCreate3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCreate3.Size = new System.Drawing.Size(631, 368);
-            this.tabPageCreate3.TabIndex = 3;
-            this.tabPageCreate3.Text = "Step 3";
-            this.tabPageCreate3.UseVisualStyleBackColor = true;
-            // 
-            // textBoxProjectPath
-            // 
-            this.textBoxProjectPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxProjectPath.Location = new System.Drawing.Point(158, 197);
-            this.textBoxProjectPath.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.textBoxProjectPath.Name = "textBoxProjectPath";
-            this.textBoxProjectPath.Size = new System.Drawing.Size(384, 24);
-            this.textBoxProjectPath.TabIndex = 8;
-            // 
-            // buttonProjectPathBrowser
-            // 
-            this.buttonProjectPathBrowser.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonProjectPathBrowser.Location = new System.Drawing.Point(560, 191);
-            this.buttonProjectPathBrowser.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.buttonProjectPathBrowser.Name = "buttonProjectPathBrowser";
-            this.buttonProjectPathBrowser.Size = new System.Drawing.Size(35, 35);
-            this.buttonProjectPathBrowser.TabIndex = 10;
-            this.buttonProjectPathBrowser.Text = "...";
-            this.buttonProjectPathBrowser.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Yellow;
-            this.label1.Location = new System.Drawing.Point(33, 200);
-            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 17);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Project Path:";
-            // 
-            // label9
-            // 
-            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F);
-            this.label9.ForeColor = System.Drawing.Color.Yellow;
-            this.label9.Location = new System.Drawing.Point(154, 230);
-            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(441, 45);
-            this.label9.TabIndex = 11;
-            this.label9.Text = "The project path is where the your new project will be edited. ";
-            // 
-            // labelPackName
-            // 
-            this.labelPackName.AutoSize = true;
-            this.labelPackName.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPackName.ForeColor = System.Drawing.Color.Yellow;
-            this.labelPackName.Location = new System.Drawing.Point(33, 129);
-            this.labelPackName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.labelPackName.Name = "labelPackName";
-            this.labelPackName.Size = new System.Drawing.Size(92, 17);
-            this.labelPackName.TabIndex = 12;
-            this.labelPackName.Text = "Pack Name:";
-            // 
-            // textBoxPackName
-            // 
-            this.textBoxPackName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPackName.Location = new System.Drawing.Point(157, 129);
-            this.textBoxPackName.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.textBoxPackName.Name = "textBoxPackName";
-            this.textBoxPackName.Size = new System.Drawing.Size(438, 24);
-            this.textBoxPackName.TabIndex = 13;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.ForeColor = System.Drawing.Color.Yellow;
-            this.label10.Location = new System.Drawing.Point(8, 8);
-            this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(165, 20);
-            this.label10.TabIndex = 14;
-            this.label10.Text = "New Pack details";
-            // 
             // CreateProjectWizardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -410,10 +411,10 @@ namespace MinecraftTextureEditorUI
             this.tabPageCreate1.PerformLayout();
             this.tabPageCreate2.ResumeLayout(false);
             this.tabPageCreate2.PerformLayout();
-            this.tabPageCreate4.ResumeLayout(false);
-            this.tabPageCreate4.PerformLayout();
             this.tabPageCreate3.ResumeLayout(false);
             this.tabPageCreate3.PerformLayout();
+            this.tabPageCreate4.ResumeLayout(false);
+            this.tabPageCreate4.PerformLayout();
             this.ResumeLayout(false);
 
         }

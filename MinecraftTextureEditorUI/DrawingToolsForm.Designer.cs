@@ -311,6 +311,8 @@ namespace MinecraftTextureEditorUI
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "DrawingToolsForm";
             this.Text = " ";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).EndInit();

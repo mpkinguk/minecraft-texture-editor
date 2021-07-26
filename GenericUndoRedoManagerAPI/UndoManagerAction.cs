@@ -19,12 +19,12 @@ namespace GenericUndoRedoManagerAPI
         /// <summary>
         /// Private Undo stack
         /// </summary>
-        private Stack<T> UndoStack;
+        private readonly Stack<T> UndoStack;
 
         /// <summary>
         /// Private Redo stack
         /// </summary>
-        private Stack<T> RedoStack;
+        private readonly Stack<T> RedoStack;
 
         /// <summary>
         /// The log4net logger
