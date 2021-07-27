@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
@@ -12,10 +13,21 @@ namespace MinecraftTextureEditorUI
 {
     public partial class MDIMainForm : Form
     {
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
+
         #region Private properties
 
         private readonly ILog _log;
         private bool _skipResolutionCheck;
+
+        private PerformanceCounter _cpuCounter;
+        private PerformanceCounter _ramCounter;
+
+        private System.Timers.Timer _timer;
+
+        private long _totalRam;
 
         #endregion Private properties
 
@@ -51,12 +63,43 @@ namespace MinecraftTextureEditorUI
                 // Reduce display flicker
                 SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
 
+                UpdateLabels();
+
                 RandomiseWallpaper();
+
+                GetPhysicallyInstalledSystemMemory(out _totalRam);
+
+                _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+                toolStripProgressBarCpu.Maximum = 100;
+                toolStripProgressBarCpu.Value = 0;
+
+                // Make this MB
+                toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
+                toolStripProgressBarRam.Value = 0;
+
+                _timer = new System.Timers.Timer();
+
+                _timer.Interval = 1200;
+
+                _timer.Elapsed += _timerElapsed;
+
+                _timer.Start();
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
             }
+        }
+        /// <summary>
+        /// Timer elapsed event for updating cpu and ram usage bars
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            UpdateProgressBars();
         }
 
         #region Private methods
@@ -66,6 +109,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public void RestartApplication()
         {
+            _timer?.Stop();
             Close();
             ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
             Process.Start(info);
@@ -246,6 +290,8 @@ namespace MinecraftTextureEditorUI
                 ShowNewEditorForm(this, new EventArgs());
                 State.Editor.LoadFile(fileName);
                 _skipResolutionCheck = false;
+
+                UpdateLabels();
             }
             catch (Exception ex)
             {
@@ -689,7 +735,14 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void UpdateLabels()
         {
-            toolStripStatusLabel.Text = $"Current texture is {State.Editor.Text}";
+            if (State.Editor is null)
+            {
+                toolStripStatusLabel.Text = $"No editor selected";
+            }
+            else
+            {
+                toolStripStatusLabel.Text = $"Current texture is {State.Editor.Text}";
+            }
             toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}";
             toolStripBrushSizeLabel.Text = $"Brush = {State.BrushSize} px";
         }
@@ -747,6 +800,8 @@ namespace MinecraftTextureEditorUI
             State.Editor = null;
 
             CheckUndos();
+
+            UpdateLabels();
         }
 
         /// <summary>
@@ -1158,5 +1213,27 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Form events
+
+        #region Threadsafe Mehods
+
+        /// <summary>
+        /// Update the progress bars safely
+        /// </summary>
+        private void UpdateProgressBars()
+        {
+            if (toolStrip.InvokeRequired)
+            {
+                var d = new Action(UpdateProgressBars);
+
+                Invoke(d);
+            }
+            else
+            {
+                toolStripProgressBarCpu.Value = (int)_cpuCounter.NextValue();
+                toolStripProgressBarRam.Value = (int)_totalRam / 1024 - (int)_ramCounter.NextValue();
+            }
+        }
+
+        #endregion Threadsafe Methods
     }
 }

@@ -17,7 +17,7 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// The  brush size
         /// </summary>
-        public static int BrushSize;
+        public static int BrushSize = 1;
 
         /// <summary>
         /// The  colour 1

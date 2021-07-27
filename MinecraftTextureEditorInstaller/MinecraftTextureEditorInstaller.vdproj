@@ -64,25 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -225,6 +207,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BD7E0FACD32C4462A5FBA27DF57FCDB7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -304,7 +298,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -352,12 +346,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D3FD4711F328DA20C0B4965AE35ADD44"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -370,6 +358,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -377,18 +371,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_1BB980EF5BD9845CB5ECE421831A7507"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -425,12 +407,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_07CA1AE228D8F2215C3EAB4D5A3612E4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -490,6 +466,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -1001,11 +985,6 @@
             "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B8CEAD70B09E57AA7115F71773EB9CFC"
-                    {
-                    "Name" = "8:System.Buffers.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Buffers.dll"
             "TargetName" = "8:"
