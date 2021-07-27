@@ -49,23 +49,6 @@ namespace MinecraftTextureEditorUI
         #region Private form events
 
         /// <summary>
-        /// Capture the width combo box selection change event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComboBoxAssetSelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                Asset = comboBoxAsset.Text;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Capture the OK button click event
         /// </summary>
         /// <param name="sender"></param>
@@ -96,6 +79,22 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Capture the width combo box selection change event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxAssetSelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Asset = comboBoxAsset.Text;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
         #endregion Private form events
     }
 }

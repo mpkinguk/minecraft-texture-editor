@@ -9,9 +9,79 @@ using System.Windows.Forms;
 
 namespace MinecraftTextureEditorAPI.Helpers
 {
+    /// <summary>
+    /// FileHelper class
+    /// </summary>
     public static class FileHelper
     {
+        #region Public properties
+
+        /// <summary>
+        /// Log
+        /// </summary>
         public static ILog Log { get; set; }
+
+        #endregion Public properties
+
+        #region Public methods
+
+        /// <summary>
+        /// Return the file details for a given filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static FileInfo FileDetails(this string filename)
+        {
+            return File.Exists(filename) ? new FileInfo(filename) : null;
+        }
+
+        /// <summary>
+        /// Returns the default assets folder
+        /// </summary>
+        /// <returns>string</returns>
+        public static string GetAssetsFolder()
+        {
+            try
+            {
+                var path = Path.Combine(GetMineCraftFolder(), Constants.AssetsFolder);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the default project folder (Documents)
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDefaultProjectFolder()
+        {
+            try
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have a valid Documents folder before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return string.Empty;
+            }
+        }
 
         /// <summary>
         /// Get files
@@ -46,6 +116,104 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
+        /// Returns the default minecraft folder
+        /// </summary>
+        /// <returns>string</returns>
+        public static string GetMineCraftFolder()
+        {
+            try
+            {
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.MinecraftFolder);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Returns the default assets folder
+        /// </summary>
+        /// <returns>string</returns>
+        public static string GetResourcePackFolder()
+        {
+            try
+            {
+                var path = Path.Combine(GetMineCraftFolder(), Constants.ResourcePackFolder);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of version folders from the default minecraft folder
+        /// </summary>
+        /// <returns>object[]</returns>
+        public static object[] GetVersions()
+        {
+            try
+            {
+                var path = GetVersionsFolder();
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
+
+                return list.ToArray<object>();
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return new object[0];
+            }
+        }
+
+        /// <summary>
+        /// Returns the default minecraft folder
+        /// </summary>
+        /// <returns>string</returns>
+        public static string GetVersionsFolder()
+        {
+            try
+            {
+                var path = Path.Combine(GetMineCraftFolder(), Constants.VersionsFolder);
+
+                if (!Directory.Exists(path))
+                {
+                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
+                }
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Try and load an image
         /// </summary>
         /// <param name="fileName">The filename</param>
@@ -76,6 +244,44 @@ namespace MinecraftTextureEditorAPI.Helpers
             {
                 Log?.Error(ex.Message);
                 return new List<string>();
+            }
+        }
+
+        /// <summary>
+        /// Get a filename to open using a file dialog box
+        /// </summary>
+        /// <returns>File name</returns>
+        public static string OpenFileName(string selectedPath = "")
+        {
+            try
+            {
+                using (var dialog = new OpenFileDialog())
+                {
+                    dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) : selectedPath;
+
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        var filename = dialog.FileName;
+
+                        if (File.Exists(filename))
+                        {
+                            return filename;
+                        }
+                        else
+                        {
+                            return string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return selectedPath;
             }
         }
 
@@ -162,6 +368,37 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
+        /// Get a filename to save using a file dialog box
+        /// </summary>
+        /// <returns>File name</returns>
+        public static string SaveFileName(string selectedPath = "")
+        {
+            try
+            {
+                using (var dialog = new SaveFileDialog())
+                {
+                    dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) : selectedPath;
+
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        var filename = dialog.FileName;
+
+                        return filename;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return selectedPath;
+            }
+        }
+
+        /// <summary>
         /// Get a folder name using a folder browser dialog box
         /// </summary>
         /// <param name="selectedPath">The selected path</param>
@@ -201,229 +438,6 @@ namespace MinecraftTextureEditorAPI.Helpers
                 return selectedPath;
             }
         }
-
-        /// <summary>
-        /// Get a filename to open using a file dialog box
-        /// </summary>
-        /// <returns>File name</returns>
-        public static string OpenFileName(string selectedPath = "")
-        {
-            try { 
-            using (var dialog = new OpenFileDialog())
-            {
-                dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) : selectedPath;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    var filename = dialog.FileName;
-
-                    if (File.Exists(filename))
-                    {
-                        return filename;
-                    }
-                    else
-                    {
-                        return string.Empty;
-                    }
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return selectedPath;
-            }
-        }
-
-        /// <summary>
-        /// Get a filename to save using a file dialog box
-        /// </summary>
-        /// <returns>File name</returns>
-        public static string SaveFileName(string selectedPath = "")
-        {
-            try
-            {
-                using (var dialog = new SaveFileDialog())
-                {
-                    dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) : selectedPath;
-
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                    {
-                        var filename = dialog.FileName;
-
-                        return filename;
-                    }
-                    else
-                    {
-                        return string.Empty;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return selectedPath;
-            }
-        }
-
-        /// <summary>
-        /// Return the file details for a given filename
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        public static FileInfo FileDetails(this string filename)
-        {
-            return File.Exists(filename) ? new FileInfo(filename) : null;
-        }
-
-        /// <summary>
-        /// Gets a list of version folders from the default minecraft folder
-        /// </summary>
-        /// <returns>object[]</returns>
-        public static object[] GetVersions()
-        {
-            try
-            {
-                var path = GetVersionsFolder();
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-                }
-
-                var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
-
-                return list.ToArray<object>();
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return new object[0];
-            }
-        }
-
-        /// <summary>
-        /// Returns the default assets folder
-        /// </summary>
-        /// <returns>string</returns>
-        public static string GetAssetsFolder()
-        {
-            try
-            {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.AssetsFolder);
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-                }
-
-                return path;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Returns the default assets folder
-        /// </summary>
-        /// <returns>string</returns>
-        public static string GetResourcePackFolder()
-        {
-            try
-            {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.ResourcePackFolder);
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-                }
-
-                return path;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Returns the default minecraft folder
-        /// </summary>
-        /// <returns>string</returns>
-        public static string GetVersionsFolder()
-        {
-            try
-            {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.VersionsFolder);
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-                }
-
-                return path;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Returns the default minecraft folder
-        /// </summary>
-        /// <returns>string</returns>
-        public static string GetMineCraftFolder()
-        {
-            try
-            {
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.MinecraftFolder);
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have installed minecraft before running this wizard");
-                }
-
-                return path;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Returns the default project folder (Documents)
-        /// </summary>
-        /// <returns></returns>
-        public static string GetDefaultProjectFolder()
-        {
-            try
-            {
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-                if (!Directory.Exists(path))
-                {
-                    throw new DirectoryNotFoundException($"{path} not found. Please ensure you have a valid Documents folder before running this wizard");
-                }
-
-                return path;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return string.Empty;
-            }
-        }
+        #endregion Public methods
     }
 }

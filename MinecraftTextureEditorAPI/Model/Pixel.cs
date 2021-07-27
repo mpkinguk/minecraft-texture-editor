@@ -7,6 +7,8 @@ namespace MinecraftTextureEditorAPI.Model
     /// </summary>
     public class Pixel
     {
+        #region Properties
+
         /// <summary>
         /// Pixel colour
         /// </summary>
@@ -22,6 +24,8 @@ namespace MinecraftTextureEditorAPI.Model
         /// </summary>
         public int Y { get; set; }
 
+        #endregion Properties
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -32,6 +36,8 @@ namespace MinecraftTextureEditorAPI.Model
             Y = 0;
         }
 
+        #region Public methods
+
         /// <summary>
         /// Clone this pixel
         /// </summary>
@@ -40,5 +46,7 @@ namespace MinecraftTextureEditorAPI.Model
         {
             return new Pixel { PixelColour = PixelColour, X = X, Y = Y };
         }
+
+        #endregion Public methods
     }
 }

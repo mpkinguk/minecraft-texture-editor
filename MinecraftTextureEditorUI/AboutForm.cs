@@ -10,17 +10,13 @@ namespace MinecraftTextureEditorUI
 {
     partial class AboutForm : Form
     {
-        private readonly ILog _log;
-
-        private readonly List<Point> _points = new List<Point>();
-
         private readonly List<Point> _directions = new List<Point>();
-
         private readonly List<Image> _images = new List<Image>();
+        private readonly ILog _log;
+        private readonly List<Point> _points = new List<Point>();
+        private readonly Timer _timer = new Timer();
 
         private float _angle = 1F;
-
-        private readonly Timer _timer = new Timer();
 
         /// <summary>
         /// Constructor
@@ -68,10 +64,10 @@ namespace MinecraftTextureEditorUI
 
                 // Reduce display flicker
                 SetStyle(
-                    ControlStyles.AllPaintingInWmPaint & 
-                    ControlStyles.UserPaint & 
-                    ControlStyles.OptimizedDoubleBuffer & 
-                    ControlStyles.SupportsTransparentBackColor & 
+                    ControlStyles.AllPaintingInWmPaint &
+                    ControlStyles.UserPaint &
+                    ControlStyles.OptimizedDoubleBuffer &
+                    ControlStyles.SupportsTransparentBackColor &
                     ControlStyles.ResizeRedraw, true);
 
                 Paint += AboutFormPaint;
@@ -99,11 +95,51 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        #region Private form events
+
         private void AboutFormFormClosing(object sender, FormClosingEventArgs e)
         {
             _timer.Stop();
         }
 
+        private void AboutFormPaint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+
+            g.DrawImage(Properties.Resources.steve, ClientRectangle);
+
+            for (int i = 0; i < _images.Count; i++)
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                var newBitmap = RotateBitmap((Bitmap)_images[i], _angle);
+
+                g.DrawImage(newBitmap, _points[i].X, _points[i].Y, 15, 15);
+            }
+
+            foreach (Control control in Controls)
+            {
+                if (control.GetType().Equals(typeof(PictureBox)))
+                {
+                    var label = (PictureBox)control;
+
+                    var rectangle = new Rectangle(label.Left, label.Top, label.Width, label.Height);
+                    var shadowRectangle = new Rectangle(rectangle.X + 1, rectangle.Y + 1, rectangle.Width, rectangle.Height);
+
+                    g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
+
+                    g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), rectangle);
+                }
+            }
+
+            g.Flush();
+        }
+
+        /// <summary>
+        /// Timer tick event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerTick(object sender, EventArgs e)
         {
             _angle += 5F;
@@ -140,89 +176,77 @@ namespace MinecraftTextureEditorUI
             Invalidate(true);
         }
 
-        private void AboutFormPaint(object sender, PaintEventArgs e)
+        #endregion Private form events
+
+        #region Private methods
+
+        /// <summary>
+        /// Rotate the bitmap
+        /// </summary>
+        /// <param name="bitmap">The bitmap</param>
+        /// <param name="angle">The angle</param>
+        /// <returns>Bitmap</returns>
+        private Bitmap RotateBitmap(Bitmap bitmap, float angle)
         {
-            var g = e.Graphics;
+            var w = bitmap.Width;
+            var h = bitmap.Height;
 
-            g.DrawImage(Properties.Resources.steve, ClientRectangle);
-
-            for (int i = 0; i < _images.Count; i++)
-            {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-
-                var newBitmap = RotateImage((Bitmap)_images[i], _angle);
-                
-                g.DrawImage(newBitmap, _points[i].X, _points[i].Y, 15, 15);
-
-            }
-
-            foreach (Control control in Controls)
-            {
-                if (control.GetType().Equals(typeof(PictureBox)))
-                {
-                    var label = (PictureBox)control;
-
-                    var rectangle = new Rectangle(label.Left, label.Top, label.Width, label.Height);
-                    var shadowRectangle = new Rectangle(rectangle.X + 1, rectangle.Y + 1, rectangle.Width, rectangle.Height);
-
-                    g.DrawString(label.Text, label.Font, Brushes.Black, shadowRectangle);
-
-                    g.DrawString(label.Text, label.Font, new SolidBrush(label.ForeColor), rectangle);
-                }
-            }
-
-            g.Flush();
-        }
-
-        // Your method, not mine.
-        private Bitmap RotateImage(Bitmap b, float angle)
-        {
             //Create a new empty bitmap to hold rotated image.
-            Bitmap returnBitmap = new Bitmap(b.Width, b.Height);
+            var returnBitmap = new Bitmap(w, h);
+
             //Make a graphics object from the empty bitmap.
-            Graphics g = Graphics.FromImage(returnBitmap);
+            var g = Graphics.FromImage(returnBitmap);
+
             //move rotation point to center of image.
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
-            //Rotate.        
+
+            var x = w / 2F;
+            var y = h / 2F;
+
+            g.TranslateTransform(x, y);
+            //Rotate.
             g.RotateTransform(angle);
             //Move image back.
-            g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
+            g.TranslateTransform(-x, -y);
             //Draw passed in image onto graphics object.
-            g.DrawImage(b, new Point(0, 0));
+            g.DrawImage(bitmap, new Point(0, 0));
+
             return returnBitmap;
         }
+
+        #endregion Private methods
 
         #region Assembly Attribute Accessors
 
         /// <summary>
-        /// The assembly title
+        /// The assembly company
         /// </summary>
-        public string AssemblyTitle
+        public string AssemblyCompany
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-                if (attributes.Length > 0)
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+                if (attributes.Length == 0)
                 {
-                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
-                    if (titleAttribute.Title != "")
-                    {
-                        return titleAttribute.Title;
-                    }
+                    return "";
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+                return ((AssemblyCompanyAttribute)attributes[0]).Company;
             }
         }
 
         /// <summary>
-        /// The assembly version
+        /// The assembly copyright
         /// </summary>
-        public string AssemblyVersion
+        public string AssemblyCopyright
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+                if (attributes.Length == 0)
+                {
+                    return "";
+                }
+                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
             }
         }
 
@@ -259,34 +283,33 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// The assembly copyright
+        /// The assembly title
         /// </summary>
-        public string AssemblyCopyright
+        public string AssemblyTitle
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+                if (attributes.Length > 0)
                 {
-                    return "";
+                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                    if (titleAttribute.Title != "")
+                    {
+                        return titleAttribute.Title;
+                    }
                 }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
         }
 
         /// <summary>
-        /// The assembly company
+        /// The assembly version
         /// </summary>
-        public string AssemblyCompany
+        public string AssemblyVersion
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
 

@@ -9,22 +9,20 @@ namespace MinecraftTextureEditorUI
         #region Public properties
 
         /// <summary>
-        /// The image width
-        /// </summary>
-        public int ImageWidth { get; set; }
-
-        /// <summary>
         /// The image height
         /// </summary>
         public int ImageHeight { get; set; }
 
+        /// <summary>
+        /// The image width
+        /// </summary>
+        public int ImageWidth { get; set; }
         #endregion Public properties
 
         #region Private properties
 
-        private bool _squareImage;
-
         private readonly ILog _log;
+        private bool _squareImage;
 
         #endregion Private properties
 
@@ -57,50 +55,6 @@ namespace MinecraftTextureEditorUI
         }
 
         #region Private form events
-
-        /// <summary>
-        /// Capture the height combo box selection change event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComboBoxHeightSelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ImageHeight = Convert.ToInt32(comboBoxHeight.Text);
-
-                if (_squareImage && comboBoxHeight.SelectedIndex != comboBoxWidth.SelectedIndex)
-                {
-                    comboBoxWidth.SelectedIndex = comboBoxHeight.SelectedIndex;
-                }
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Capture the width combo box selection change event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComboBoxWidthSelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ImageWidth = Convert.ToInt32(comboBoxWidth.Text);
-
-                if (_squareImage && comboBoxHeight.SelectedIndex != comboBoxWidth.SelectedIndex)
-                {
-                    comboBoxHeight.SelectedIndex = comboBoxWidth.SelectedIndex;
-                }
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
 
         /// <summary>
         /// Capture the OK button click event
@@ -145,6 +99,49 @@ namespace MinecraftTextureEditorUI
             _squareImage = checkBoxSquareImage.Checked;
         }
 
+        /// <summary>
+        /// Capture the height combo box selection change event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxHeightSelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ImageHeight = Convert.ToInt32(comboBoxHeight.Text);
+
+                if (_squareImage && comboBoxHeight.SelectedIndex != comboBoxWidth.SelectedIndex)
+                {
+                    comboBoxWidth.SelectedIndex = comboBoxHeight.SelectedIndex;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Capture the width combo box selection change event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxWidthSelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ImageWidth = Convert.ToInt32(comboBoxWidth.Text);
+
+                if (_squareImage && comboBoxHeight.SelectedIndex != comboBoxWidth.SelectedIndex)
+                {
+                    comboBoxHeight.SelectedIndex = comboBoxWidth.SelectedIndex;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
         #endregion Private form events
     }
 }

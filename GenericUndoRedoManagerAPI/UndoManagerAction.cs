@@ -11,15 +11,21 @@ namespace GenericUndoRedoManagerAPI
     /// <typeparam name="T"></typeparam>
     public class UndoManagerAction<T> : IDisposable
     {
+        #region Public properties
+
         /// <summary>
         /// The current item
         /// </summary>
         public T CurrentItem { get; set; }
 
+        #endregion Public properties
+
+        #region Private properties
+
         /// <summary>
-        /// Private Undo stack
+        /// The log4net logger
         /// </summary>
-        private readonly Stack<T> UndoStack;
+        private readonly ILog _log;
 
         /// <summary>
         /// Private Redo stack
@@ -27,9 +33,11 @@ namespace GenericUndoRedoManagerAPI
         private readonly Stack<T> RedoStack;
 
         /// <summary>
-        /// The log4net logger
+        /// Private Undo stack
         /// </summary>
-        private readonly ILog _log;
+        private readonly Stack<T> UndoStack;
+
+        #endregion Private properties
 
         /// <summary>
         /// Constructor
@@ -42,22 +50,17 @@ namespace GenericUndoRedoManagerAPI
             RedoStack = new Stack<T>();
         }
 
+        #region Public methods
+
         /// <summary>
-        /// Clear all global variables
+        /// Can perform a Redo
         /// </summary>
-        public void Clear()
-        {
-            try
-            {
-                UndoStack.Clear();
-                RedoStack.Clear();
-                CurrentItem = default;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
+        public bool CanRedo => RedoStack.Count > 0;
+
+        /// <summary>
+        /// Can perform an Undo
+        /// </summary>
+        public bool CanUndo => UndoStack.Count > 0;
 
         /// <summary>
         /// Add a new item to the Undo stack
@@ -81,21 +84,36 @@ namespace GenericUndoRedoManagerAPI
         }
 
         /// <summary>
-        /// Undo
+        /// Clear all global variables
         /// </summary>
-        /// <returns>T</returns>
-        public T Undo()
+        public void Clear()
         {
             try
             {
-                RedoStack.Push(CurrentItem);
-                CurrentItem = UndoStack.Pop();
-                return CurrentItem;
+                UndoStack.Clear();
+                RedoStack.Clear();
+                CurrentItem = default;
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
-                return default;
+            }
+        }
+        public void Dispose()
+        {
+            try
+            {
+                Clear();
+
+                UndoStack.Clear();
+                RedoStack.Clear();
+
+                // The only way to get rid of all the undos/redos
+                GC.Collect();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
             }
         }
 
@@ -119,49 +137,35 @@ namespace GenericUndoRedoManagerAPI
         }
 
         /// <summary>
-        /// Can perform an Undo
-        /// </summary>
-        public bool CanUndo => UndoStack.Count > 0;
-
-        /// <summary>
-        /// Can perform a Redo
-        /// </summary>
-        public bool CanRedo => RedoStack.Count > 0;
-
-        /// <summary>
-        /// Returns a generic List cast of the Undo stack
-        /// </summary>
-        /// <returns>List(T)</returns>
-        public List<T> UndoItems()
-        {
-            return UndoStack.ToList();
-        }
-
-        /// <summary>
         /// Returns a generic List cast of the Redo stack
         /// </summary>
         /// <returns>List(T)</returns>
-        public List<T> RedoItems()
-        {
-            return RedoStack.ToList();
-        }
+        public List<T> RedoItems() => RedoStack.ToList();
 
-        public void Dispose()
+        /// <summary>
+        /// Undo
+        /// </summary>
+        /// <returns>T</returns>
+        public T Undo()
         {
             try
             {
-                Clear();
-
-                UndoStack.Clear();
-                RedoStack.Clear();
-
-                // The only way to get rid of all the undos/redos
-                GC.Collect();
+                RedoStack.Push(CurrentItem);
+                CurrentItem = UndoStack.Pop();
+                return CurrentItem;
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
+                return default;
             }
         }
+        /// <summary>
+        /// Returns a generic List cast of the Undo stack
+        /// </summary>
+        /// <returns>List(T)</returns>
+        public List<T> UndoItems() => UndoStack.ToList();
+
+        #endregion Public methods
     }
 }

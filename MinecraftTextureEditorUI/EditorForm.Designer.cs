@@ -54,10 +54,12 @@ namespace MinecraftTextureEditorUI
             this.ClientSize = new System.Drawing.Size(417, 363);
             this.Controls.Add(this.pictureBoxImage);
             this.Font = new System.Drawing.Font("Minecraft", 10F);
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.MaximizeBox = false;
             this.Name = "EditorForm";
             this.Text = "Editor";
+            this.Load += new System.EventHandler(this.EditorForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

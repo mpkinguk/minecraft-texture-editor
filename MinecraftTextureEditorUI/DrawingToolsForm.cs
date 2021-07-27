@@ -1,11 +1,10 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
-using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -13,32 +12,45 @@ namespace MinecraftTextureEditorUI
     {
         #region Public delegates
 
-        public delegate void ToolTypeChangedEventHandler(ToolType toolType);
+        public delegate void BackColourChangedEventHandler();
 
-        public delegate void BackColourChangedEventHandler(Color colour);
+        public delegate void BrushSizeChangedEventHandler();
 
-        public delegate void ForeColourChangedEventHandler(Color colour);
+        public delegate void ForeColourChangedEventHandler();
 
-        public delegate void BrushSizeChangedEventHandler(int brushSize);
-
-        public delegate void TransparencyLockChangedEventHandler(bool locked);
+        public delegate void ToolTypeChangedEventHandler();
+        public delegate void TransparencyLockChangedEventHandler();
 
         #endregion Public delegates
 
         #region Public properties
 
         /// <summary>
-        /// The brush size
+        /// The pen foreground colour
         /// </summary>
-        public int BrushSize { 
-            get 
-            { 
-                return _brushSize; 
-            } 
-            set 
-            { 
-                _brushSize = value; 
-            } 
+        public Color Colour1
+        {
+            get { return State.Colour1; }
+            set
+            {
+                State.Colour1 = value;
+                DrawSaturation(State.Colour1);
+                panelColour1.BackColor = State.Colour1;
+            }
+        }
+
+        /// <summary>
+        /// The pen background colour
+        /// </summary>
+        public Color Colour2
+        {
+            get { return State.Colour2; }
+            set
+            {
+                State.Colour2 = value;
+                DrawSaturation(State.Colour2);
+                panelColour2.BackColor = State.Colour2;
+            }
         }
 
         /// <summary>
@@ -46,10 +58,10 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public ToolType CurrentToolType
         {
-            get { return _currentToolType; }
+            get { return State.ToolType; }
             set
             {
-                _currentToolType = value;
+                State.ToolType = value;
 
                 if (value.Equals(ToolType.TransparencyLock))
                 {
@@ -58,7 +70,7 @@ namespace MinecraftTextureEditorUI
 
                 var button = (Button)Controls[$"button{value}"];
 
-                if(button is null)
+                if (button is null)
                 {
                     return;
                 }
@@ -68,42 +80,15 @@ namespace MinecraftTextureEditorUI
                 Invalidate(true);
             }
         }
-
-        /// <summary>
-        /// The pen foreground colour
-        /// </summary>
-        public Color Colour1
-        {
-            get { return panelColour1.BackColor; }
-            set
-            {
-                DrawSaturation(value);
-                panelColour1.BackColor = value;
-            }
-        }
-
-        /// <summary>
-        /// The pen background colour
-        /// </summary>
-        public Color Colour2
-        {
-            get { return panelColour2.BackColor; }
-            set
-            {
-                DrawSaturation(value);
-                panelColour2.BackColor = value;
-            }
-        }
-
         /// <summary>
         /// The transparency lock
         /// </summary>
         public bool TransparencyLock
         {
-            get { return _transparencyLock; }
+            get { return State.TransparencyLock; }
             set
             {
-                _transparencyLock = value;
+                State.TransparencyLock = value;
                 UpdateTransparencyButton();
             }
         }
@@ -113,9 +98,9 @@ namespace MinecraftTextureEditorUI
         #region Public events
 
         /// <summary>
-        /// Tool type changed event
+        /// Back colour changed event
         /// </summary>
-        public event ToolTypeChangedEventHandler ToolTypeChanged;
+        public event BrushSizeChangedEventHandler BrushSizeChanged;
 
         /// <summary>
         /// Fore colour changed event
@@ -128,10 +113,9 @@ namespace MinecraftTextureEditorUI
         public event BackColourChangedEventHandler Colour2Changed;
 
         /// <summary>
-        /// Back colour changed event
+        /// Tool type changed event
         /// </summary>
-        public event BrushSizeChangedEventHandler BrushSizeChanged;
-
+        public event ToolTypeChangedEventHandler ToolTypeChanged;
         /// <summary>
         /// Back colour changed event
         /// </summary>
@@ -140,14 +124,6 @@ namespace MinecraftTextureEditorUI
         #endregion Public events
 
         #region Private properties
-
-        private int _alpha;
-
-        private int _brushSize;
-
-        private ToolType _currentToolType;
-
-        private bool _transparencyLock;
 
         private readonly ILog _log;
 
@@ -184,13 +160,36 @@ namespace MinecraftTextureEditorUI
 
                 toolTip1.Draw += ToolTipDraw;
 
-                Colour2 = Color.Black;
+                State.CurrentRainbowColourIndex = 0;
 
-                Colour1 = Color.White;
+                State.EraserColor = Color.Transparent;
 
-                _brushSize = 1;
+                State.Colour2 = Color.Black;
 
-                _alpha = 255;
+                State.Colour1 = Color.White;
+
+                State.BrushSize = 1;
+
+                State.Alpha = 255;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        #region Public methods
+
+        /// <summary>
+        /// Update the button states
+        /// </summary>
+        public void UpdateButtons()
+        {
+            try
+            {
+                Controls[$"button{State.ToolType}"].Focus();
+
+                UpdateTransparencyButton();
             }
             catch (Exception ex)
             {
@@ -199,32 +198,41 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Override the tool tip drawing function
+        /// Update the colours
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
+        public void UpdateColours()
+        {
+            Colour1 = State.Colour1;
+            Colour2 = State.Colour2;
+        }
+
+        #endregion Public methods
+
+        #region Private methods
+
+        /// <summary>
+        /// Draw alpha picker
+        /// </summary>
+        private void DrawAlpha()
         {
             try
             {
-                var g = e.Graphics;
+                var tmp = new Bitmap(pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height);
 
-                using (StringFormat sf = new StringFormat())
+                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height), Color.FromArgb(0, Color.Black), Color.Black, LinearGradientMode.Horizontal);
+
+                using (var g = Graphics.FromImage(tmp))
                 {
-                    e.DrawBackground();
+                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height));
 
-                    // Top.
-                    sf.LineAlignment = StringAlignment.Center;
+                    var x1 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * State.Colour1.A);
+                    var x2 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * State.Colour2.A);
 
-                    // Top/Left.
-                    sf.Alignment = StringAlignment.Center;
-
-                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
-
-                    e.DrawBorder();
+                    g.DrawLine(new Pen(Color.Yellow, 2F), x1, 0, x1, pictureBoxAlpha.ClientSize.Width);
+                    g.DrawLine(new Pen(Color.Red, 2F), x2, 0, x2, pictureBoxAlpha.ClientSize.Width);
                 }
 
-                g.Flush();
+                pictureBoxAlpha.Image = tmp;
             }
             catch (Exception ex)
             {
@@ -232,7 +240,32 @@ namespace MinecraftTextureEditorUI
             }
         }
 
-        #region Private methods
+        /// <summary>
+        /// Draw the saturation bar
+        /// </summary>
+        /// <param name="colour">Base colour</param>
+        private void DrawSaturation(Color colour)
+        {
+            try
+            {
+                var tmp = new Bitmap(pictureBoxGamma.ClientSize.Width, pictureBoxGamma.ClientSize.Height);
+
+                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), Color.Black, colour, LinearGradientMode.Horizontal);
+                var gradient2 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), colour, Color.White, LinearGradientMode.Horizontal);
+
+                using (var g = Graphics.FromImage(tmp))
+                {
+                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
+                    g.FillRectangle(gradient2, new Rectangle(pictureBoxGamma.ClientSize.Width / 2, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
+                }
+
+                pictureBoxGamma.Image = tmp;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
 
         /// <summary>
         /// Pick a colour
@@ -277,11 +310,13 @@ namespace MinecraftTextureEditorUI
                 {
                     if (e.Button.Equals(MouseButtons.Left) || e.Button.Equals(MouseButtons.Right))
                     {
-                        _alpha = Convert.ToInt32(GetColour(pictureBox, cursorPosition.X, cursorPosition.Y).A).Clamp(0, 255);
+                        State.Alpha = Convert.ToInt32(GetColour(pictureBox, cursorPosition.X, cursorPosition.Y).A).Clamp(0, 255);
                     }
                 }
 
-                colour = colourSelectionType.Equals(ColourSelectionType.Alpha) ? Color.FromArgb(_alpha, e.Button.Equals(MouseButtons.Left) ? Colour1 : Colour2) : Color.FromArgb(_alpha, colour);
+                colour = colourSelectionType.Equals(ColourSelectionType.Alpha) ?
+                    Color.FromArgb(State.Alpha, e.Button.Equals(MouseButtons.Left) ?
+                    State.Colour1 : State.Colour2) : Color.FromArgb(State.Alpha, colour);
 
                 switch (e.Button)
                 {
@@ -317,75 +352,205 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
-
-        /// <summary>
-        /// Draw the saturation bar
-        /// </summary>
-        /// <param name="colour">Base colour</param>
-        private void DrawSaturation(Color colour)
-        {
-            try
-            {
-                var tmp = new Bitmap(pictureBoxGamma.ClientSize.Width, pictureBoxGamma.ClientSize.Height);
-
-                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), Color.Black, colour, LinearGradientMode.Horizontal);
-                var gradient2 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height), colour, Color.White, LinearGradientMode.Horizontal);
-
-                using (var g = Graphics.FromImage(tmp))
-                {
-                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
-                    g.FillRectangle(gradient2, new Rectangle(pictureBoxGamma.ClientSize.Width / 2, 0, pictureBoxGamma.ClientSize.Width / 2, pictureBoxGamma.ClientSize.Height));
-                }
-
-                pictureBoxGamma.Image = tmp;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Draw alpha picker
-        /// </summary>
-        private void DrawAlpha()
-        {
-            try
-            {
-                var tmp = new Bitmap(pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height);
-
-                var gradient1 = new LinearGradientBrush(new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height), Color.FromArgb(0, Color.Black), Color.Black, LinearGradientMode.Horizontal);
-
-                using (var g = Graphics.FromImage(tmp))
-                {
-                    g.FillRectangle(gradient1, new Rectangle(0, 0, pictureBoxAlpha.ClientSize.Width, pictureBoxAlpha.ClientSize.Height));
-
-                    var x1 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour1.A);
-                    var x2 = (int)(pictureBoxAlpha.ClientSize.Width / 255F * Colour2.A);
-
-                    g.DrawLine(new Pen(Color.Yellow, 2F), x1, 0, x1, pictureBoxAlpha.ClientSize.Width);
-                    g.DrawLine(new Pen(Color.Red, 2F), x2, 0, x2, pictureBoxAlpha.ClientSize.Width);
-                }
-
-                pictureBoxAlpha.Image = tmp;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
         /// <summary>
         /// Update the transparency lock button
         /// </summary>
         private void UpdateTransparencyButton()
         {
-            buttonLockTransparency.Image = TransparencyLock ? Properties.Resources.lockon : Properties.Resources.lockoff;
+            buttonTransparencyLock.Image = State.TransparencyLock ? Properties.Resources.lockon : Properties.Resources.lockoff;
         }
 
         #endregion Private methods
 
         #region Form events
+
+        /// <summary>
+        /// Brush size
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonBrushSizeClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var button = (Button)sender;
+
+                if (int.TryParse(button.Name[button.Name.Length - 1].ToString(), out int size))
+                {
+                    OnBrushSizeChanged(size);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Dropper click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonDropperClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Dropper);
+        }
+
+        /// <summary>
+        /// Eraser click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonEraserClick(object sender, System.EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Eraser);
+        }
+
+        /// <summary>
+        /// Flood fill
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonFloodFillClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.FloodFill);
+        }
+
+        /// <summary>
+        /// Transaparency lock
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonLockTransparencyClick(object sender, EventArgs e)
+        {
+            try
+            {
+                State.TransparencyLock = !State.TransparencyLock;
+
+                UpdateTransparencyButton();
+
+                OnTransparencyLockChanged(State.TransparencyLock);
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// MirrorX click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonMirrorXClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.MirrorX);
+        }
+
+        /// <summary>
+        /// MirrorY click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonMirrorYClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.MirrorY);
+        }
+
+        /// <summary>
+        /// Pen click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonPenClick(object sender, System.EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Pen);
+        }
+
+        /// <summary>
+        /// Rainbow :D
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonRainbowClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Rainbow);
+        }
+
+        /// <summary>
+        /// Texturiser click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonTexturiserClick(object sender, EventArgs e)
+        {
+            OnToolTypeChanged(ToolType.Texturiser);
+        }
+
+        /// <summary>
+        /// Brush size changed event
+        /// </summary>
+        /// <param name="brushSize">The brush size</param>
+        private void OnBrushSizeChanged(int brushSize)
+        {
+            State.BrushSize = brushSize;
+
+            BrushSizeChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Fore colour changed event
+        /// </summary>
+        private void OnColour1Changed(Color colour)
+        {
+            State.Colour1 = colour;
+
+            Colour1Changed?.Invoke();
+        }
+
+        /// <summary>
+        /// Back colour changed event
+        /// </summary>
+        private void OnColour2Changed(Color colour)
+        {
+            State.Colour2 = colour;
+
+            Colour2Changed?.Invoke();
+        }
+
+        /// <summary>
+        /// Tool type changed event
+        /// </summary>
+        /// <param name="toolType"></param>
+        private void OnToolTypeChanged(ToolType toolType)
+        {
+            State.ToolType = toolType;
+
+            ToolTypeChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Transparency lock changed event
+        /// </summary>
+        /// <param name="locked">Locked</param>
+        private void OnTransparencyLockChanged(bool locked)
+        {
+            State.TransparencyLock = locked;
+
+            TransparencyLockChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Change the saturation panel to reflect panel back colour
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PanelColourClick(object sender, EventArgs e)
+        {
+            var panel = (Panel)sender;
+
+            PickColour(panel);
+        }
 
         /// <summary>
         /// Pick a colour
@@ -412,26 +577,6 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PictureBoxSaturationMouseDown(object sender, MouseEventArgs e)
-        {
-            PickColour(sender, e, ColourSelectionType.Saturation);
-        }
-
-        /// <summary>
-        /// Pick a colour
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PictureBoxSaturationMouseMove(object sender, MouseEventArgs e)
-        {
-            PickColour(sender, e, ColourSelectionType.Saturation);
-        }
-
-        /// <summary>
-        /// Pick a colour
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PictureBoxColourPicker_MouseDown(object sender, MouseEventArgs e)
         {
             PickColour(sender, e);
@@ -448,186 +593,58 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Pen click event
+        /// Pick a colour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonPenClick(object sender, System.EventArgs e)
+        private void PictureBoxSaturationMouseDown(object sender, MouseEventArgs e)
         {
-            OnToolTypeChanged(ToolType.Pen);
+            PickColour(sender, e, ColourSelectionType.Saturation);
         }
 
         /// <summary>
-        /// Eraser click event
+        /// Pick a colour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonEraserClick(object sender, System.EventArgs e)
+        private void PictureBoxSaturationMouseMove(object sender, MouseEventArgs e)
         {
-            OnToolTypeChanged(ToolType.Eraser);
+            PickColour(sender, e, ColourSelectionType.Saturation);
         }
 
         /// <summary>
-        /// Dropper click event
+        /// Override the tool tip drawing function
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonDropperClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.Dropper);
-        }
-
-        /// <summary>
-        /// MirrorX click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonMirrorXClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.MirrorX);
-        }
-
-        /// <summary>
-        /// MirrorY click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonMirrorYClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.MirrorY);
-        }
-
-        /// <summary>
-        /// Texturiser click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonTexturiserClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.Texturiser);
-        }
-
-        /// <summary>
-        /// Change the saturation panel to reflect panel back colour
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PanelColourClick(object sender, EventArgs e)
-        {
-            var panel = (Panel)sender;
-
-            PickColour(panel);
-        }
-
-        /// <summary>
-        /// Tool type changed event
-        /// </summary>
-        /// <param name="toolType"></param>
-        private void OnToolTypeChanged(ToolType toolType)
-        {
-            _currentToolType = toolType;
-            ToolTypeChanged?.Invoke(toolType);
-        }
-
-        /// <summary>
-        /// Fore colour changed event
-        /// </summary>
-        private void OnColour1Changed(Color colour)
-        {
-            Colour1Changed?.Invoke(colour);
-        }
-
-        /// <summary>
-        /// Back colour changed event
-        /// </summary>
-        private void OnColour2Changed(Color colour)
-        {
-            Colour2Changed?.Invoke(colour);
-        }
-
-        /// <summary>
-        /// Brush size changed event
-        /// </summary>
-        /// <param name="brushSize">The brush size</param>
-        private void OnBrushSizeChanged(int brushSize)
-        {
-            BrushSize = brushSize;
-
-            BrushSizeChanged?.Invoke(brushSize);
-        }
-
-        /// <summary>
-        /// Transparency lock changed event
-        /// </summary>
-        /// <param name="locked">Locked</param>
-        private void OnTransparencyLockChanged(bool locked)
-        {
-            TransparencyLockChanged?.Invoke(locked);
-        }
-
-        /// <summary>
-        /// Flood fill
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonFloodFillClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.FloodFill);
-        }
-
-        /// <summary>
-        /// Rainbow :D
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonRainbowClick(object sender, EventArgs e)
-        {
-            OnToolTypeChanged(ToolType.Rainbow);
-        }
-
-        /// <summary>
-        /// Brush size
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonBrushSizeClick(object sender, EventArgs e)
+        private void ToolTipDraw(object sender, DrawToolTipEventArgs e)
         {
             try
             {
-                var button = (Button)sender;
+                var g = e.Graphics;
 
-                if (int.TryParse(button.Name[button.Name.Length - 1].ToString(), out int size))
+                using (StringFormat sf = new StringFormat())
                 {
-                    OnBrushSizeChanged(size);
+                    e.DrawBackground();
+
+                    // Top.
+                    sf.LineAlignment = StringAlignment.Center;
+
+                    // Top/Left.
+                    sf.Alignment = StringAlignment.Center;
+
+                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+
+                    e.DrawBorder();
                 }
+
+                g.Flush();
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
             }
         }
-
-        /// <summary>
-        /// Transaparency lock
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonLockTransparencyClick(object sender, EventArgs e)
-        {
-            try
-            {
-                _transparencyLock = !_transparencyLock;
-
-                UpdateTransparencyButton();
-
-                OnTransparencyLockChanged(TransparencyLock);
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
         #endregion Form events
     }
 }

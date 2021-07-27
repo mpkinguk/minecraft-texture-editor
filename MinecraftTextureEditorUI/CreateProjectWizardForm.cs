@@ -38,57 +38,21 @@ namespace MinecraftTextureEditorUI
         #region Form events
 
         /// <summary>
-        /// Dynamically process the buttons for each tab index change
+        /// Finish button clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TabControlSelectedIndexChanged(object sender, EventArgs e)
+        private void ButtonFinishClick(object sender, EventArgs e)
         {
             try
             {
-                var tabControl = (TabControl)sender;
+                DialogResult = DialogResult.OK;
 
-                var lastTab = tabControl.TabCount - 1;
-
-                switch (tabControl.SelectedIndex)
-                {
-                    case 0:
-                        buttonPrevious.Enabled = false;
-                        buttonNext.Enabled = true;
-                        buttonFinish.Enabled = false;
-                        break;
-                    default:
-                        if (tabControl.SelectedIndex == lastTab)
-                        {
-                            buttonPrevious.Enabled = true;
-                            buttonNext.Enabled = false;
-                            buttonFinish.Enabled = true;
-                        }
-                        else
-                        {
-                            buttonPrevious.Enabled = true;
-                            buttonNext.Enabled = true;
-                            buttonFinish.Enabled = false;
-                        }
-                        break;
-                }
+                Close();
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Previous button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonPreviousClick(object sender, EventArgs e)
-        {
-            if (tabControlDeploy.SelectedIndex > 0)
-            {
-                tabControlDeploy.SelectedIndex--;
             }
         }
 
@@ -161,6 +125,79 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Previous button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonPreviousClick(object sender, EventArgs e)
+        {
+            if (tabControlDeploy.SelectedIndex > 0)
+            {
+                tabControlDeploy.SelectedIndex--;
+            }
+        }
+
+        /// <summary>
+        /// Capture the path browser button event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
+        {
+            try
+            {
+                string folder = FileHelper.SelectFolder(textBoxProjectPath.Text);
+
+                textBoxProjectPath.Text = folder;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Dynamically process the buttons for each tab index change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TabControlSelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                var tabControl = (TabControl)sender;
+
+                var lastTab = tabControl.TabCount - 1;
+
+                switch (tabControl.SelectedIndex)
+                {
+                    case 0:
+                        buttonPrevious.Enabled = false;
+                        buttonNext.Enabled = true;
+                        buttonFinish.Enabled = false;
+                        break;
+                    default:
+                        if (tabControl.SelectedIndex == lastTab)
+                        {
+                            buttonPrevious.Enabled = true;
+                            buttonNext.Enabled = false;
+                            buttonFinish.Enabled = true;
+                        }
+                        else
+                        {
+                            buttonPrevious.Enabled = true;
+                            buttonNext.Enabled = true;
+                            buttonFinish.Enabled = false;
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+        /// <summary>
         /// Unpack the version .jar file to the chosen project directory
         /// </summary>
         /// <param name="packVersion">The pack version</param>
@@ -188,7 +225,7 @@ namespace MinecraftTextureEditorUI
 
                 if (result)
                 {
-                    State.CurrentPath = Path.Combine(projectFolder, packFile);
+                    State.Path = Path.Combine(projectFolder, packFile);
                     DialogResult = DialogResult.OK;
                 }
                 else
@@ -206,94 +243,33 @@ namespace MinecraftTextureEditorUI
                 UpdateCursor(false);
             }
         }
-
-        /// <summary>
-        /// Finish button clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonFinishClick(object sender, EventArgs e)
-        {
-            try
-            {
-                DialogResult = DialogResult.OK;
-
-                Close();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Capture the path browser button event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
-        {
-            try
-            {
-                string folder = FileHelper.SelectFolder(textBoxProjectPath.Text);
-
-                textBoxProjectPath.Text = folder;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
         #endregion Form events
 
         #region Threadsafe methods
 
         /// <summary>
-        /// Threadsafe method for displaying error messagebox
+        /// Threadsafe method for increment tab selected index
         /// </summary>
-        /// <param name="error">The error message</param>
-        private void ShowErrorBox(string error)
+        private void DecrementTabControl()
         {
             try
             {
-                if (InvokeRequired)
+                if (tabControlDeploy.InvokeRequired)
                 {
-                    var d = new Action<string>(ShowErrorBox);
-                    Invoke(d, new object[] { error });
+                    var d = new Action(DecrementTabControl);
+                    Invoke(d);
                 }
                 else
                 {
-                    MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (tabControlDeploy.SelectedIndex > 0)
+                    {
+                        tabControlDeploy.SelectedIndex--;
+                    }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                _log?.Error(ex.Message); 
-            }
-        }
-
-        /// <summary>
-        /// Threadsafe method for updating progress label text
-        /// </summary>
-        /// <param name="message">The message</param>
-        private void UpdateProgressLabel(string message)
-        {
-            try
-            {
-                if (labelProgress.InvokeRequired)
-                {
-                    var d = new Action<string>(UpdateProgressLabel);
-                    Invoke(d, new object[] { message });
-                }
-                else
-                {
-                    labelProgress.Text = message;
-                }
-            }
-            catch (Exception ex) 
-            { 
-                _log?.Error(ex.Message); 
+                _log?.Error(ex.Message);
             }
         }
 
@@ -314,9 +290,9 @@ namespace MinecraftTextureEditorUI
                     buttonPrevious.Enabled = false;
                 }
             }
-            catch (Exception ex) 
-            { 
-                _log?.Error(ex.Message); 
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
             }
         }
 
@@ -372,28 +348,26 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Threadsafe method for increment tab selected index
+        /// Threadsafe method for displaying error messagebox
         /// </summary>
-        private void DecrementTabControl()
+        /// <param name="error">The error message</param>
+        private void ShowErrorBox(string error)
         {
             try
             {
-                if (tabControlDeploy.InvokeRequired)
+                if (InvokeRequired)
                 {
-                    var d = new Action(DecrementTabControl);
-                    Invoke(d);
+                    var d = new Action<string>(ShowErrorBox);
+                    Invoke(d, new object[] { error });
                 }
                 else
                 {
-                    if (tabControlDeploy.SelectedIndex > 0)
-                    {
-                        tabControlDeploy.SelectedIndex--;
-                    }
+                    MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
-                _log?.Error(ex.Message);
+                _log?.Error(ex.Message); 
             }
         }
 
@@ -421,6 +395,29 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Threadsafe method for updating progress label text
+        /// </summary>
+        /// <param name="message">The message</param>
+        private void UpdateProgressLabel(string message)
+        {
+            try
+            {
+                if (labelProgress.InvokeRequired)
+                {
+                    var d = new Action<string>(UpdateProgressLabel);
+                    Invoke(d, new object[] { message });
+                }
+                else
+                {
+                    labelProgress.Text = message;
+                }
+            }
+            catch (Exception ex) 
+            { 
+                _log?.Error(ex.Message); 
+            }
+        }
         #endregion Threadsafe methods
 
         ///// <summary>

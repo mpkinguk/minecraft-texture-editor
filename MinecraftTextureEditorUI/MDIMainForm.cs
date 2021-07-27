@@ -1,5 +1,4 @@
 ﻿using log4net;
-using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -15,9 +14,8 @@ namespace MinecraftTextureEditorUI
     {
         #region Private properties
 
-        private bool _skipResolutionCheck;
-
         private readonly ILog _log;
+        private bool _skipResolutionCheck;
 
         #endregion Private properties
 
@@ -64,108 +62,13 @@ namespace MinecraftTextureEditorUI
         #region Private methods
 
         /// <summary>
-        /// Tool has been selected. Inform other controls
+        /// Restart the application
         /// </summary>
-        /// <param name="sender">The sender</param>
-        /// <param name="toolType">The tooltype</param>
-        private void SelectTool(object sender, ToolType toolType)
+        public void RestartApplication()
         {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-
-                if (sender.GetType().Equals(typeof(ToolStripMenuItem)))
-                {
-                    var selectedMenuItem = (ToolStripMenuItem)sender;
-
-                    // Reset other items
-                    foreach (object item in selectedMenuItem.GetCurrentParent().Items)
-                    {
-                        if (item.GetType().Equals(typeof(ToolStripMenuItem)))
-                        {
-                            ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
-                            menuItem.Checked = false;
-                        }
-                    }
-
-                    selectedMenuItem.Checked = true;
-                }
-
-                if (toolType != ToolType.TransparencyLock)
-                {
-                    State.CurrentEditor.ToolType = toolType;
-                }
-                else
-                {
-                    State.CurrentEditor.TransparencyLock = State.DrawingTools.TransparencyLock;
-                }
-
-                if (State.DrawingTools is null)
-                {
-                    return;
-                }
-
-                State.DrawingTools.CurrentToolType = toolType;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Randomises the wallpaper
-        /// </summary>
-        private void RandomiseWallpaper()
-        {
-            try
-            {
-                var rnd = new System.Random();
-
-                switch (rnd.Next(1, 6))
-                {
-                    case 2:
-                        BackgroundImage = Properties.Resources.wallpaper2;
-                        break;
-
-                    case 3:
-                        BackgroundImage = Properties.Resources.wallpaper3;
-                        break;
-
-                    case 4:
-                        BackgroundImage = Properties.Resources.wallpaper4;
-                        break;
-
-                    case 5:
-                        BackgroundImage = Properties.Resources.wallpaper5;
-                        break;
-
-                    case 6:
-                        BackgroundImage = Properties.Resources.steve;
-                        break;
-
-                    default:
-                        BackgroundImage = Properties.Resources.wallpaper1;
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Is called once form is fully loaded
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MDIMainFormShown(object sender, EventArgs e)
-        {
-            ShowToolWindows();
+            Close();
+            ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
+            Process.Start(info);
         }
 
         /// <summary>
@@ -216,205 +119,13 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Show tool windows
-        /// </summary>
-        private void ShowToolWindows()
-        {
-            try
-            {
-                if (MdiChildren.Contains(State.TexturePicker))
-                {
-                    State.TexturePicker.Close();
-                }
-
-                if (MdiChildren.Contains(State.DrawingTools))
-                {
-                    State.DrawingTools.Close();
-                }
-
-                State.TexturePicker = new TexturePickerForm(_log) { MdiParent = this, Visible = false };
-
-                State.TexturePicker.TextureClicked += TexturePickerTextureClicked;
-
-                State.TexturePicker.LoadTextures();
-
-                State.TexturePicker.Show();
-
-                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
-
-                State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this, Visible = false };
-
-                State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
-                State.DrawingTools.Colour2Changed += DrawingToolsBackColourChanged;
-                State.DrawingTools.Colour1Changed += DrawingToolsForeColourChanged;
-                State.DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
-                State.DrawingTools.TransparencyLockChanged += DrawingToolsTransparencyLockChanged;
-
-                State.DrawingTools.Show();
-
-                State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Capture the transparency lock changed event from the Drawing tools window
-        /// </summary>
-        /// <param name="locked">Locked</param>
-        private void DrawingToolsTransparencyLockChanged(bool locked)
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            State.CurrentEditor.TransparencyLock = locked;
-        }
-
-        /// <summary>
-        /// Capture the brush size changed event from the Drawing tools window
-        /// </summary>
-        /// <param name="brushSize"></param>
-        private void DrawingToolsBrushSizeChanged(int brushSize)
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            State.CurrentEditor.BrushSize = brushSize;
-        }
-
-        /// <summary>
-        /// Capture the fore colour changed event from the Drawing tools window
-        /// </summary>
-        /// <param name="colour">The colour</param>
-        private void DrawingToolsForeColourChanged(Color colour)
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            State.CurrentEditor.Colour1 = colour;
-        }
-
-        /// <summary>
-        /// Capture the Back colour changed event from the Drawing tools window
-        /// </summary>
-        /// <param name="colour">The colour</param>
-        private void DrawingToolsBackColourChanged(Color colour)
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            State.CurrentEditor.Colour2 = colour;
-        }
-
-        /// <summary>
-        /// Captures the texture clicked event from the texture picker window
-        /// </summary>
-        /// <param name="filename"></param>
-        private void TexturePickerTextureClicked(string filename)
-        {
-            LoadFile(filename);
-        }
-
-        /// <summary>
-        /// Captures the tool type changed event from the drawing tools window
-        /// </summary>
-        /// <param name="toolType"></param>
-        private void DrawingToolsToolTypeChanged(ToolType toolType)
-        {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-
-                toolStripStatusLabel.Text = $"Current Tool type is {toolType}";
-
-                State.CurrentEditor.ToolType = toolType;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new editor form
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ShowNewEditorForm(object sender, EventArgs e)
-        {
-            try
-            {
-                int width;
-                int height;
-
-                if (_skipResolutionCheck)
-                {
-                    // Default to 16x16 if loading
-                    width = 16;
-                    height = 16;
-                }
-                else
-                {
-                    using (ResolutionForm resolutionForm = new ResolutionForm(_log))
-                    {
-                        if (resolutionForm.ShowDialog(this).Equals(DialogResult.OK))
-                        {
-
-                            width = resolutionForm.ImageWidth;
-                            height = resolutionForm.ImageHeight;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                }
-
-                EditorForm childForm = new EditorForm(width, height, _log)
-                {
-                    MdiParent = this,
-                    Text = "Editor " + MdiChildren.Count(x => x.Name == "EditorForm"),
-                    Colour1 = State.DrawingTools.Colour1,
-                    Colour2 = State.DrawingTools.Colour2,
-                    ToolType = State.DrawingTools.CurrentToolType,
-                    BrushSize = State.DrawingTools.BrushSize,
-                    TransparencyLock = State.DrawingTools.TransparencyLock,
-                    Zoom = 16
-                };
-
-                childForm.GotFocus += ChildFormGotFocus;
-                childForm.ColourSelected += ChildFormColourSelected;
-                childForm.UndoManagerAction += ChildFormUndoManagerAction;
-                childForm.Disposed += ChildFormDisposed;
-                childForm.Show();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Enable/disable undo controls based on current editor status
         /// </summary>
         private void CheckUndos()
         {
             try
             {
-                if (State.CurrentEditor is null)
+                if (State.Editor is null)
                 {
                     undoToolStripMenuItem.Enabled = false;
                     redoToolStripMenuItem.Enabled = false;
@@ -423,15 +134,104 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                undoToolStripMenuItem.Enabled = State.CurrentEditor.UndoEnabled;
-                redoToolStripMenuItem.Enabled = State.CurrentEditor.RedoEnabled;
-                toolStripButtonUndo.Enabled = State.CurrentEditor.UndoEnabled;
-                toolStripButtonRedo.Enabled = State.CurrentEditor.RedoEnabled;
+                undoToolStripMenuItem.Enabled = State.Editor.UndoEnabled;
+                redoToolStripMenuItem.Enabled = State.Editor.RedoEnabled;
+                toolStripButtonUndo.Enabled = State.Editor.UndoEnabled;
+                toolStripButtonRedo.Enabled = State.Editor.RedoEnabled;
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Clear the current texture
+        /// </summary>
+        private void Clear()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+                State.Editor.Clear();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Close all the editor forms
+        /// </summary>
+        private void CloseAll()
+        {
+            foreach (Form childForm in MdiChildren.Where(o => o.GetType().Equals(typeof(EditorForm))))
+            {
+                childForm.Close();
+            }
+
+            State.Editor = null;
+        }
+
+        /// <summary>
+        /// Copy
+        /// </summary>
+        private void Copy()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+                State.PixelClipboard = State.Editor.Texture.Clone();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Cut
+        /// </summary>
+        private void Cut()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                State.PixelClipboard = State.Editor.Texture.Clone();
+
+                Clear();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Brush size changed event
+        /// </summary>
+        private void DrawingToolsBrushSizeChanged()
+        {
+            UpdateLabels();
+        }
+
+        /// <summary>
+        /// Captures the tool type changed event from the drawing tools window
+        /// </summary>
+        private void DrawingToolsToolTypeChanged()
+        {
+            UpdateLabels();
         }
 
         /// <summary>
@@ -444,44 +244,12 @@ namespace MinecraftTextureEditorUI
             {
                 _skipResolutionCheck = true;
                 ShowNewEditorForm(this, new EventArgs());
-                State.CurrentEditor.LoadFile(fileName);
+                State.Editor.LoadFile(fileName);
                 _skipResolutionCheck = false;
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Undo changes
-        /// </summary>
-        private void Undo()
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            if (State.CurrentEditor.UndoEnabled)
-            {
-                State.CurrentEditor.Undo();
-            }
-        }
-
-        /// <summary>
-        /// Redo changes
-        /// </summary>
-        private void Redo()
-        {
-            if (State.CurrentEditor is null)
-            {
-                return;
-            }
-
-            if (State.CurrentEditor.RedoEnabled)
-            {
-                State.CurrentEditor.Redo();
             }
         }
 
@@ -528,6 +296,261 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Paste
+        /// </summary>
+        private void Paste()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                var data = State.PixelClipboard.Clone();
+
+                if (data is null)
+                {
+                    return;
+                }
+
+                State.Editor.Texture = data;
+                State.Editor.HasChanged = true;
+                State.Editor.AddItem();
+                State.Editor.RefreshDisplay();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Randomises the wallpaper
+        /// </summary>
+        private void RandomiseWallpaper()
+        {
+            try
+            {
+                var rnd = new System.Random();
+
+                switch (rnd.Next(1, 6))
+                {
+                    case 2:
+                        BackgroundImage = Properties.Resources.wallpaper2;
+                        break;
+
+                    case 3:
+                        BackgroundImage = Properties.Resources.wallpaper3;
+                        break;
+
+                    case 4:
+                        BackgroundImage = Properties.Resources.wallpaper4;
+                        break;
+
+                    case 5:
+                        BackgroundImage = Properties.Resources.wallpaper5;
+                        break;
+
+                    case 6:
+                        BackgroundImage = Properties.Resources.steve;
+                        break;
+
+                    default:
+                        BackgroundImage = Properties.Resources.wallpaper1;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Redo changes
+        /// </summary>
+        private void Redo()
+        {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
+            if (State.Editor.RedoEnabled)
+            {
+                State.Editor.Redo();
+            }
+        }
+
+        /// <summary>
+        /// Save file
+        /// </summary>
+        private void Save()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                var result = State.Editor.SaveFile(State.Editor.FileName);
+
+                if (result)
+                {
+                    State.TexturePicker.RefreshImage(State.Editor.FileName);
+                }
+                else
+                {
+                    throw new Exception($"Could not save file {State.Editor.FileName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Save file As
+        /// </summary>
+        private void SaveAs()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                var result = State.Editor.SaveFile();
+
+                if (!result)
+                {
+                    throw new Exception($"Could not save file {State.Editor.FileName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Tool has been selected. Inform other controls
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="toolType">The tooltype</param>
+        private void SelectTool(object sender, ToolType toolType)
+        {
+            try
+            {
+                if (sender.GetType().Equals(typeof(ToolStripMenuItem)))
+                {
+                    var selectedMenuItem = (ToolStripMenuItem)sender;
+
+                    // Reset other items
+                    foreach (object item in selectedMenuItem.GetCurrentParent().Items)
+                    {
+                        if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                        {
+                            ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+                            menuItem.Checked = false;
+                        }
+                    }
+
+                    selectedMenuItem.Checked = true;
+                }
+
+                if (toolType.Equals(ToolType.TransparencyLock))
+                {
+                    State.TransparencyLock = !State.TransparencyLock;
+                }
+                else
+                {
+                    State.ToolType = toolType;
+                }
+
+                if(State.DrawingTools is null)
+                {
+                    return;
+                }
+
+                State.DrawingTools.UpdateButtons();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Show the about form
+        /// </summary>
+        private void ShowAbout()
+        {
+            using (var aboutForm = new AboutForm(_log))
+            {
+                aboutForm.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new editor form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowNewEditorForm(object sender, EventArgs e)
+        {
+            try
+            {
+                int width;
+                int height;
+
+                if (_skipResolutionCheck)
+                {
+                    // Default to 16x16 if loading
+                    width = 16;
+                    height = 16;
+                }
+                else
+                {
+                    using (ResolutionForm resolutionForm = new ResolutionForm(_log))
+                    {
+                        if (resolutionForm.ShowDialog(this).Equals(DialogResult.OK))
+                        {
+                            width = resolutionForm.ImageWidth;
+                            height = resolutionForm.ImageHeight;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                EditorForm childForm = new EditorForm(width, height, _log)
+                {
+                    MdiParent = this,
+                    Text = $"Editor {MdiChildren.Count(x => x.Name == "EditorForm")}",
+                    Zoom = 16
+                };
+
+                childForm.GotFocus += ChildFormGotFocus;
+                childForm.ColourSelected += ChildFormColourSelected;
+                childForm.UndoManagerAction += ChildFormUndoManagerAction;
+                childForm.Disposed += ChildFormDisposed;
+                childForm.Show();
+
+                State.Editor = childForm;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Display the options dialog
         /// </summary>
         private void ShowOptions()
@@ -552,80 +575,44 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Save file
+        /// Show tool windows
         /// </summary>
-        private void Save()
+        private void ShowToolWindows()
         {
             try
             {
-                if (State.CurrentEditor is null)
+                if (MdiChildren.Contains(State.TexturePicker))
                 {
-                    return;
-                }
-                
-                var result = State.CurrentEditor.SaveFile(State.CurrentEditor.FileName);
-
-                if (result)
-                {
-                    State.TexturePicker.RefreshImage(State.CurrentEditor.FileName);
-                } 
-                else
-                {
-                    throw new Exception($"Could not save file {State.CurrentEditor.FileName}");
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Save file As
-        /// </summary>
-        private void SaveAs()
-        {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                
-                var result = State.CurrentEditor.SaveFile();
-
-                if (!result)
-                {
-                    throw new Exception($"Could not save file {State.CurrentEditor.FileName}");
+                    State.TexturePicker.Close();
                 }
 
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message);
-            }
-        }
+                if (MdiChildren.Contains(State.DrawingTools))
+                {
+                    State.DrawingTools.Close();
+                }
 
-        /// <summary>
-        /// Paste
-        /// </summary>
-        private void Paste()
-        {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                var data = State.PixelClipboard.Clone();
-                if (data is null)
-                {
-                    return;
-                }
-                State.CurrentEditor.Texture = data;
-                State.CurrentEditor.HasChanged = true;
-                State.CurrentEditor.AddItem();
-                State.CurrentEditor.RefreshDisplay();
+                State.TexturePicker = new TexturePickerForm(_log) { MdiParent = this, Visible = false };
+
+                State.TexturePicker.TextureClicked += TexturePickerTextureClicked;
+
+                State.TexturePicker.LoadTextures();
+
+                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
+
+                State.TexturePicker.Show();
+
+                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
+
+                State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this, Visible = false };
+
+                State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
+                State.DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
+
+                State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
+
+                State.DrawingTools.Show();
+
+                State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
             }
             catch (Exception ex)
             {
@@ -634,50 +621,91 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Restart the application
+        /// Captures the texture clicked event from the texture picker window
         /// </summary>
-        public void RestartApplication()
+        /// <param name="filename"></param>
+        private void TexturePickerTextureClicked(string filename)
         {
-            Close();
-            ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
-            Process.Start(info);
+            LoadFile(filename);
+        }
+        /// <summary>
+        /// Toggle the grid
+        /// </summary>
+        private void ToggleGrid()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                State.Editor.ShowGrid = !State.Editor.ShowGrid;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
         }
 
+        /// <summary>
+        /// Toggle transparent grid
+        /// </summary>
+        private void ToggleTransparentGrid()
+        {
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                State.Editor.ShowTransparentGrid = !State.Editor.ShowTransparentGrid;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Undo changes
+        /// </summary>
+        private void Undo()
+        {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
+            if (State.Editor.UndoEnabled)
+            {
+                State.Editor.Undo();
+            }
+        }
+
+        /// <summary>
+        /// Update the labels
+        /// </summary>
+        private void UpdateLabels()
+        {
+            toolStripStatusLabel.Text = $"Current texture is {State.Editor.Text}";
+            toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}";
+            toolStripBrushSizeLabel.Text = $"Brush = {State.BrushSize} px";
+        }
 
         #endregion Private methods
 
         #region Form events
 
         /// <summary>
-        /// Clear down the current editor object if form closed
+        /// Show about box
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ChildFormDisposed(object sender, EventArgs e)
+        private void AboutToolStripMenuItemClick(object sender, EventArgs e)
         {
-            State.CurrentEditor = null;
-
-            CheckUndos();
-        }
-
-        /// <summary>
-        /// Capture the undo manager action event from the current editor window
-        /// </summary>
-        private void ChildFormUndoManagerAction()
-        {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                toolStripStatusLabel.Text = $"Undo manager action occurred";
-                CheckUndos();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
+            ShowAbout();
         }
 
         /// <summary>
@@ -687,14 +715,38 @@ namespace MinecraftTextureEditorUI
         /// <param name="isColour1"></param>
         private void ChildFormColourSelected(Color colour, bool isColour1)
         {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
             if (isColour1)
             {
-                State.DrawingTools.Colour1 = colour;
+                State.Colour1 = colour;
             }
             else
             {
-                State.DrawingTools.Colour2 = colour;
+                State.Colour2 = colour;
             }
+
+            if(State.DrawingTools is null)
+            {
+                return;
+            }
+
+            State.DrawingTools.UpdateColours();
+        }
+
+        /// <summary>
+        /// Clear down the current editor object if form closed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChildFormDisposed(object sender, EventArgs e)
+        {
+            State.Editor = null;
+
+            CheckUndos();
         }
 
         /// <summary>
@@ -710,14 +762,17 @@ namespace MinecraftTextureEditorUI
                 {
                     return;
                 }
-                State.CurrentEditor = (EditorForm)sender;
-                State.CurrentEditor.Colour1 = State.DrawingTools.Colour1;
-                State.CurrentEditor.Colour2 = State.DrawingTools.Colour2;
-                State.CurrentEditor.ToolType = State.DrawingTools.CurrentToolType;
-                State.CurrentEditor.TransparencyLock = State.DrawingTools.TransparencyLock;
-                State.CurrentEditor.BrushSize = State.DrawingTools.BrushSize;
 
-                toolStripStatusLabel.Text = $"Current editor is {State.CurrentEditor.Text}";
+                if (!sender.GetType().Equals(typeof(EditorForm)))
+                {
+                    return;
+                }
+
+                State.Editor = (EditorForm)sender;
+
+                CheckUndos();
+
+                UpdateLabels();
             }
             catch (Exception ex)
             {
@@ -726,23 +781,63 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Open file
+        /// Capture the undo manager action event from the current editor window
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LoadFile(object sender, EventArgs e)
+        private void ChildFormUndoManagerAction()
         {
-            LoadFile();
+            try
+            {
+                if (State.Editor is null)
+                {
+                    return;
+                }
+
+                CheckUndos();             
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
         }
 
         /// <summary>
-        /// Save as (menu)
+        /// Clear the current texture
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ClearToolStripMenuItemClick(object sender, EventArgs e)
         {
-            SaveAs();
+            Clear();
+        }
+
+        /// <summary>
+        /// Close all windows
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CloseAll();
+        }
+
+        /// <summary>
+        /// Copy (menu)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Copy();
+        }
+
+        /// <summary>
+        /// Cut (menu)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Cut();
         }
 
         /// <summary>
@@ -756,49 +851,52 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Cut (menu)
+        /// Open file
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadFile(object sender, EventArgs e)
         {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                State.PixelClipboard = State.CurrentEditor.Texture.Clone();
-                State.CurrentEditor.Texture = new Texture(State.PixelClipboard.Width, State.PixelClipboard.Height);
-                State.CurrentEditor.HasChanged = true;
-                State.CurrentEditor.AddItem();
-                State.CurrentEditor.RefreshDisplay();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
+            LoadFile();
         }
 
         /// <summary>
-        /// Copy (menu)
+        /// Is called once form is fully loaded
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MDIMainFormShown(object sender, EventArgs e)
         {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                State.PixelClipboard = State.CurrentEditor.Texture.Clone();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
+            ShowToolWindows();
+        }
+        /// <summary>
+        /// New Image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewImageToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            ShowNewEditorForm(sender, e);
+        }
+
+        /// <summary>
+        /// New Project
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            RestartApplication();
+        }
+
+        /// <summary>
+        /// Options clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OptionsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            ShowOptions();
         }
 
         /// <summary>
@@ -812,38 +910,24 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Toolbar (menu)
+        /// Undo (menu)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
         {
-            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
+            Redo();
         }
 
         /// <summary>
-        /// Statusbar (menu)
+        /// Save as (menu)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            statusStrip.Visible = statusBarToolStripMenuItem.Checked;
+            SaveAs();
         }
-
-        /// <summary>
-        /// Close all windows
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (Form childForm in MdiChildren.Where(o => o.GetType().Equals(typeof(EditorForm))))
-            {
-                childForm.Close();
-            }
-        }
-
         /// <summary>
         /// Save (button)
         /// </summary>
@@ -865,74 +949,32 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Undo (menu)
+        /// Statusbar (menu)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
+        private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Redo();
+            statusStrip.Visible = statusBarToolStripMenuItem.Checked;
         }
 
         /// <summary>
-        /// Redo (menu)
+        /// Toolbar (menu)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+        private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Undo();
+            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
         }
-
         /// <summary>
-        /// Save as (button)
+        /// Create Project Wizard
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripButtonSaveAsClick(object sender, EventArgs e)
+        private void ToolStripButtonCreateWizardClick(object sender, EventArgs e)
         {
-            SaveAs();
-        }
-
-        /// <summary>
-        /// Undo (button)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripButtonUndoClick(object sender, EventArgs e)
-        {
-            Undo();
-        }
-
-        /// <summary>
-        /// Redo (button)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripButtonRedoClick(object sender, EventArgs e)
-        {
-            Redo();
-        }
-
-        /// <summary>
-        /// Toggle the grid
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripButtonToggleGridClick(object sender, EventArgs e)
-        {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                State.CurrentEditor.ShowGrid = !State.CurrentEditor.ShowGrid;
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message);
-            }
+            OpenCreateProjectWizardForm();
         }
 
         /// <summary>
@@ -946,36 +988,33 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Create Project Wizard
+        /// Redo (button)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripButtonCreateWizardClick(object sender, EventArgs e)
+        private void ToolStripButtonRedoClick(object sender, EventArgs e)
         {
-            OpenCreateProjectWizardForm();
+            Redo();
         }
 
         /// <summary>
-        /// Options clicked
+        /// Save as (button)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OptionsToolStripMenuItemClick(object sender, EventArgs e)
+        private void ToolStripButtonSaveAsClick(object sender, EventArgs e)
         {
-            ShowOptions();
+            SaveAs();
         }
 
         /// <summary>
-        /// Show about box
+        /// Toggle the grid
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AboutToolStripMenuItemClick(object sender, EventArgs e)
+        private void ToolStripButtonToggleGridClick(object sender, EventArgs e)
         {
-            using (var aboutForm = new AboutForm(_log))
-            {
-                aboutForm.ShowDialog(this);
-            }
+            ToggleGrid();
         }
 
         /// <summary>
@@ -985,18 +1024,27 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripButtonTransparentClick(object sender, EventArgs e)
         {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                State.CurrentEditor.ShowTransparent = !State.CurrentEditor.ShowTransparent;
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message);
-            }
+            ToggleTransparentGrid();
+        }
+
+        /// <summary>
+        /// Undo (button)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripButtonUndoClick(object sender, EventArgs e)
+        {
+            Undo();
+        }
+
+        /// <summary>
+        /// Colour picker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemColourPickerClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Dropper);
         }
 
         /// <summary>
@@ -1020,54 +1068,13 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Clear the current texture
+        /// Pen
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ClearToolStripMenuItemClick(object sender, EventArgs e)
+        private void ToolStripMenuItemDrawClick(object sender, EventArgs e)
         {
-            try
-            {
-                if (State.CurrentEditor is null)
-                {
-                    return;
-                }
-                State.CurrentEditor.Clear();
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Texturiser
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripMenuItemTexturiserClick(object sender, EventArgs e)
-        {
-            SelectTool(sender, ToolType.Texturiser);
-        }
-
-        /// <summary>
-        /// FLood fill
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripMenuItemFloodFillClick(object sender, EventArgs e)
-        {
-            SelectTool(sender, ToolType.FloodFill);
-        }
-
-        /// <summary>
-        /// Rainbow!
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripMenuItemRainbowClick(object sender, EventArgs e)
-        {
-            SelectTool(sender, ToolType.Rainbow);
+            SelectTool(sender, ToolType.Pen);
         }
 
         /// <summary>
@@ -1081,23 +1088,13 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Pen
+        /// FLood fill
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripMenuItemDrawClick(object sender, EventArgs e)
+        private void ToolStripMenuItemFloodFillClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.Pen);
-        }
-
-        /// <summary>
-        /// Colour picker
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ToolStripMenuItemColourPickerClick(object sender, EventArgs e)
-        {
-            SelectTool(sender, ToolType.Dropper);
+            SelectTool(sender, ToolType.FloodFill);
         }
 
         /// <summary>
@@ -1121,6 +1118,26 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Rainbow!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemRainbowClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Rainbow);
+        }
+
+        /// <summary>
+        /// Texturiser
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemTexturiserClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Texturiser);
+        }
+
+        /// <summary>
         /// Transparency Lock
         /// </summary>
         /// <param name="sender"></param>
@@ -1130,25 +1147,14 @@ namespace MinecraftTextureEditorUI
             SelectTool(sender, ToolType.TransparencyLock);
         }
 
-
         /// <summary>
-        /// New Image
+        /// Redo (menu)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NewImageToolStripMenuItemClick(object sender, EventArgs e)
+        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
         {
-            ShowNewEditorForm(sender, e);
-        }
-
-        /// <summary>
-        /// New Project
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            RestartApplication();
+            Undo();
         }
 
         #endregion Form events

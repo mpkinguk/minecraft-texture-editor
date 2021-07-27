@@ -9,21 +9,14 @@ namespace MinecraftTextureEditorAPI.Helpers
     /// </summary>
     public static class ColourHelper
     {
+        #region Private properties
+
         private static double Tolerance
             => 0.000000000000001;
 
-        /// <summary>
-        /// Defines brightness levels.
-        /// </summary>
-        public enum Brightness
-                : byte
-        {
-            Bright = 255,
-            MediumBright = 210,
-            Medium = 142,
-            Dim = 98,
-            XDim = 50
-        }
+        #endregion Private properties
+
+        #region Enums
 
         /// <summary>
         /// Defines alpha levels.
@@ -40,17 +33,17 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
-        /// Defines hint alpha levels.
+        /// Defines brightness levels.
         /// </summary>
-        public enum HintAlpha
+        public enum Brightness
                 : byte
         {
-            Low = 64,
-            XLow = 48,
-            XxLow = 32,
-            XxxLow = 16
+            Bright = 255,
+            MediumBright = 210,
+            Medium = 142,
+            Dim = 98,
+            XDim = 50
         }
-
         /// <summary>
         /// Specifies a mode for argb transformations.
         /// </summary>
@@ -62,57 +55,125 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
-        /// Converts RGB to HSL. Alpha is ignored.
-        /// Output is: { H: [0, 360], S: [0, 1], L: [0, 1] }.
+        /// Defines hint alpha levels.
         /// </summary>
-        /// <param name="color">The color to convert.</param>
-        public static double[] RgBtoHsl(Color color)
+        public enum HintAlpha
+                : byte
         {
-            double h = 0D;
-            double s = 0D;
-            double l;
+            Low = 64,
+            XLow = 48,
+            XxLow = 32,
+            XxxLow = 16
+        }
 
-            // normalize red, green, blue values
-            double r = color.R / 255D;
-            double g = color.G / 255D;
-            double b = color.B / 255D;
+        #endregion Enums
 
-            double max = SystemMath.Max(r, SystemMath.Max(g, b));
-            double min = SystemMath.Min(r, SystemMath.Min(g, b));
+        #region Public properties
 
-            // hue
-            if (SystemMath.Abs(max - min) < Tolerance)
-                h = 0D; // undefined
-            else if ((SystemMath.Abs(max - r) < Tolerance)
-                    && (g >= b))
-                h = (60D * (g - b)) / (max - min);
-            else if ((SystemMath.Abs(max - r) < Tolerance)
-                    && (g < b))
-                h = ((60D * (g - b)) / (max - min)) + 360D;
-            else if (SystemMath.Abs(max - g) < Tolerance)
-                h = ((60D * (b - r)) / (max - min)) + 120D;
-            else if (SystemMath.Abs(max - b) < Tolerance)
-                h = ((60D * (r - g)) / (max - min)) + 240D;
+        /// <summary>
+        /// Creates a new Color by combining R, G, and B from each Color, scaled by the Color's Alpha.
+        /// The R, G, B of each Color is scaled by the Color's Alpha. The R, G, B of both results is
+        /// then added together and divided by 2. The valuea are limited to [0, 255].
+        /// The Alpha of the output Color is specified; and is also limited to [0, 255]
+        /// (does not raise exceptions).
+        /// </summary>
+        /// <param name="color1">Combined by scaling RGB by the A.</param>
+        /// <param name="color2">Combined by scaling RGB by the A.</param>
+        /// <param name="outputAlpha">The Alpha of the output Color.</param>
+        public static Color AlphaCombine(Color color1, Color color2, byte outputAlpha)
+        {
+            double a1 = color1.A / 255D;
+            double a2 = color2.A / 255D;
+            return Color.FromArgb(
+                    outputAlpha,
+                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.R * a1) + (color2.R * a2)) * .5D)),
+                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.G * a1) + (color2.G * a2)) * .5D)),
+                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.B * a1) + (color2.B * a2)) * .5D)));
+        }
 
-            // luminance
-            l = (max + min) / 2D;
+        /// <summary>
+        /// Converts HSB to RGB, with a specified output Alpha.
+        /// Arguments are limited to the defined range:
+        /// does not raise exceptions.
+        /// </summary>
+        /// <param name="h">Hue, must be in [0, 360].</param>
+        /// <param name="s">Saturation, must be in [0, 1].</param>
+        /// <param name="b">Brightness, must be in [0, 1].</param>
+        /// <param name="a">Output Alpha, must be in [0, 255].</param>
+        public static Color HsBtoRgb(double h, double s, double b, int a = 255)
+        {
+            h = SystemMath.Max(0D, SystemMath.Min(360D, h));
+            s = SystemMath.Max(0D, SystemMath.Min(1D, s));
+            b = SystemMath.Max(0D, SystemMath.Min(1D, b));
+            a = SystemMath.Max(0, SystemMath.Min(255, a));
 
-            // saturation
-            if ((SystemMath.Abs(l) < Tolerance)
-                    || (SystemMath.Abs(max - min) < Tolerance))
-                s = 0D;
-            else if ((0D < l)
-                    && (l <= .5D))
-                s = (max - min) / (max + min);
-            else if (l > .5D)
-                s = (max - min) / (2D - (max + min)); //(max-min > 0)?
+            double r = 0D;
+            double g = 0D;
+            double bl = 0D;
 
-            return new[]
+            if (SystemMath.Abs(s) < Tolerance)
+                r = g = bl = b;
+            else
             {
-                SystemMath.Max(0D, SystemMath.Min(360D, double.Parse($"{h:0.##}"))),
-                SystemMath.Max(0D, SystemMath.Min(1D, double.Parse($"{s:0.##}"))),
-                SystemMath.Max(0D, SystemMath.Min(1D, double.Parse($"{l:0.##}")))
-            };
+                // the argb wheel consists of 6 sectors. Figure out which sector
+                // you're in.
+                double sectorPos = h / 60D;
+                int sectorNumber = (int)SystemMath.Floor(sectorPos);
+                // get the fractional part of the sector
+                double fractionalSector = sectorPos - sectorNumber;
+
+                // calculate values for the three axes of the argb.
+                double p = b * (1D - s);
+                double q = b * (1D - (s * fractionalSector));
+                double t = b * (1D - (s * (1D - fractionalSector)));
+
+                // assign the fractional colors to r, g, and b based on the sector
+                // the angle is in.
+                switch (sectorNumber)
+                {
+                    case 0:
+                        r = b;
+                        g = t;
+                        bl = p;
+                        break;
+
+                    case 1:
+                        r = q;
+                        g = b;
+                        bl = p;
+                        break;
+
+                    case 2:
+                        r = p;
+                        g = b;
+                        bl = t;
+                        break;
+
+                    case 3:
+                        r = p;
+                        g = q;
+                        bl = b;
+                        break;
+
+                    case 4:
+                        r = t;
+                        g = p;
+                        bl = b;
+                        break;
+
+                    case 5:
+                        r = b;
+                        g = p;
+                        bl = q;
+                        break;
+                }
+            }
+
+            return Color.FromArgb(
+                    a,
+                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{r * 255D:0.00}")))),
+                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{g * 255D:0.00}")))),
+                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{bl * 250D:0.00}")))));
         }
 
         /// <summary>
@@ -217,90 +278,58 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
-        /// Converts HSB to RGB, with a specified output Alpha.
-        /// Arguments are limited to the defined range:
-        /// does not raise exceptions.
+        /// Converts RGB to HSL. Alpha is ignored.
+        /// Output is: { H: [0, 360], S: [0, 1], L: [0, 1] }.
         /// </summary>
-        /// <param name="h">Hue, must be in [0, 360].</param>
-        /// <param name="s">Saturation, must be in [0, 1].</param>
-        /// <param name="b">Brightness, must be in [0, 1].</param>
-        /// <param name="a">Output Alpha, must be in [0, 255].</param>
-        public static Color HsBtoRgb(double h, double s, double b, int a = 255)
+        /// <param name="color">The color to convert.</param>
+        public static double[] RgBtoHsl(Color color)
         {
-            h = SystemMath.Max(0D, SystemMath.Min(360D, h));
-            s = SystemMath.Max(0D, SystemMath.Min(1D, s));
-            b = SystemMath.Max(0D, SystemMath.Min(1D, b));
-            a = SystemMath.Max(0, SystemMath.Min(255, a));
+            double h = 0D;
+            double s = 0D;
+            double l;
 
-            double r = 0D;
-            double g = 0D;
-            double bl = 0D;
+            // normalize red, green, blue values
+            double r = color.R / 255D;
+            double g = color.G / 255D;
+            double b = color.B / 255D;
 
-            if (SystemMath.Abs(s) < Tolerance)
-                r = g = bl = b;
-            else
+            double max = SystemMath.Max(r, SystemMath.Max(g, b));
+            double min = SystemMath.Min(r, SystemMath.Min(g, b));
+
+            // hue
+            if (SystemMath.Abs(max - min) < Tolerance)
+                h = 0D; // undefined
+            else if ((SystemMath.Abs(max - r) < Tolerance)
+                    && (g >= b))
+                h = (60D * (g - b)) / (max - min);
+            else if ((SystemMath.Abs(max - r) < Tolerance)
+                    && (g < b))
+                h = ((60D * (g - b)) / (max - min)) + 360D;
+            else if (SystemMath.Abs(max - g) < Tolerance)
+                h = ((60D * (b - r)) / (max - min)) + 120D;
+            else if (SystemMath.Abs(max - b) < Tolerance)
+                h = ((60D * (r - g)) / (max - min)) + 240D;
+
+            // luminance
+            l = (max + min) / 2D;
+
+            // saturation
+            if ((SystemMath.Abs(l) < Tolerance)
+                    || (SystemMath.Abs(max - min) < Tolerance))
+                s = 0D;
+            else if ((0D < l)
+                    && (l <= .5D))
+                s = (max - min) / (max + min);
+            else if (l > .5D)
+                s = (max - min) / (2D - (max + min)); //(max-min > 0)?
+
+            return new[]
             {
-                // the argb wheel consists of 6 sectors. Figure out which sector
-                // you're in.
-                double sectorPos = h / 60D;
-                int sectorNumber = (int)SystemMath.Floor(sectorPos);
-                // get the fractional part of the sector
-                double fractionalSector = sectorPos - sectorNumber;
-
-                // calculate values for the three axes of the argb.
-                double p = b * (1D - s);
-                double q = b * (1D - (s * fractionalSector));
-                double t = b * (1D - (s * (1D - fractionalSector)));
-
-                // assign the fractional colors to r, g, and b based on the sector
-                // the angle is in.
-                switch (sectorNumber)
-                {
-                    case 0:
-                        r = b;
-                        g = t;
-                        bl = p;
-                        break;
-
-                    case 1:
-                        r = q;
-                        g = b;
-                        bl = p;
-                        break;
-
-                    case 2:
-                        r = p;
-                        g = b;
-                        bl = t;
-                        break;
-
-                    case 3:
-                        r = p;
-                        g = q;
-                        bl = b;
-                        break;
-
-                    case 4:
-                        r = t;
-                        g = p;
-                        bl = b;
-                        break;
-
-                    case 5:
-                        r = b;
-                        g = p;
-                        bl = q;
-                        break;
-                }
-            }
-
-            return Color.FromArgb(
-                    a,
-                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{r * 255D:0.00}")))),
-                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{g * 255D:0.00}")))),
-                    SystemMath.Max(0, SystemMath.Min(255, Convert.ToInt32(double.Parse($"{bl * 250D:0.00}")))));
+                SystemMath.Max(0D, SystemMath.Min(360D, double.Parse($"{h:0.##}"))),
+                SystemMath.Max(0D, SystemMath.Min(1D, double.Parse($"{s:0.##}"))),
+                SystemMath.Max(0D, SystemMath.Min(1D, double.Parse($"{l:0.##}")))
+            };
         }
-
         /// <summary>
         /// Multiplies the Color's Luminance or Brightness by the argument;
         /// and optionally specifies the output Alpha.
@@ -366,25 +395,6 @@ namespace MinecraftTextureEditorAPI.Helpers
                     : HsBtoRgb(hsl[0], hsl[1], hsl[2], outputAlpha ?? color.A);
         }
 
-        /// <summary>
-        /// Creates a new Color by combining R, G, and B from each Color, scaled by the Color's Alpha.
-        /// The R, G, B of each Color is scaled by the Color's Alpha. The R, G, B of both results is
-        /// then added together and divided by 2. The valuea are limited to [0, 255].
-        /// The Alpha of the output Color is specified; and is also limited to [0, 255]
-        /// (does not raise exceptions).
-        /// </summary>
-        /// <param name="color1">Combined by scaling RGB by the A.</param>
-        /// <param name="color2">Combined by scaling RGB by the A.</param>
-        /// <param name="outputAlpha">The Alpha of the output Color.</param>
-        public static Color AlphaCombine(Color color1, Color color2, byte outputAlpha)
-        {
-            double a1 = color1.A / 255D;
-            double a2 = color2.A / 255D;
-            return Color.FromArgb(
-                    outputAlpha,
-                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.R * a1) + (color2.R * a2)) * .5D)),
-                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.G * a1) + (color2.G * a2)) * .5D)),
-                    (byte)SystemMath.Max(0D, SystemMath.Min(255D, ((color1.B * a1) + (color2.B * a2)) * .5D)));
-        }
+        #endregion Public properties
     }
 }

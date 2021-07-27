@@ -13,20 +13,14 @@ namespace MinecraftTextureEditorAPI
         public static string AssetsFolder = ConfigurationHelper.LoadSetting("AssetsFolder");
 
         /// <summary>
-        /// MinecraftFolder
-        /// </summary>
-        public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder");
-
-        /// <summary>
         /// ProjectFolder
         /// </summary>
         public static string DocumentsFolder = ConfigurationHelper.LoadSetting("ProjectFolder");
 
         /// <summary>
-        /// VersionsFolder
+        /// MinecraftFolder
         /// </summary>
-        public static string VersionsFolder = ConfigurationHelper.LoadSetting("VersionsFolder");
-
+        public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder");
         /// <summary>
         /// ResourcePackFolder
         /// </summary>
@@ -36,5 +30,10 @@ namespace MinecraftTextureEditorAPI
         /// Versions
         /// </summary>
         public static string Versions = ConfigurationHelper.LoadSetting("Versions");
+
+        /// <summary>
+        /// VersionsFolder
+        /// </summary>
+        public static string VersionsFolder = ConfigurationHelper.LoadSetting("VersionsFolder");
     }
 }

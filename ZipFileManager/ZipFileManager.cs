@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace ZipFileManagerAPI
 {
+    /// <summary>
+    /// ZipFileManager class
+    /// </summary>
     public class ZipFileManager
     {
         #region Public delegates
@@ -35,6 +38,56 @@ namespace ZipFileManagerAPI
         public ZipFileManager(ILog log)
         {
             _log = log;
+        }
+
+        /// <summary>
+        /// Extract zip file to the chosen folder
+        /// </summary>
+        /// <param name="inputFilename">The input filename</param>
+        /// <param name="outputPath">The output path</param>
+        /// <returns></returns>
+        public async Task<bool> UnZipFiles(string inputFilename, string outputPath)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(inputFilename);
+
+                var archiveFolderName = fileInfo.Name.Replace(fileInfo.Extension, "");
+
+                var outputFolder = Path.Combine(outputPath, archiveFolderName);
+
+                // run async so we free up the UI
+                using (var t = Task.Run(() =>
+                {
+                    if (fileInfo.Extension.ToLower() == "zip")
+                    {
+                        ZipFile.ExtractToDirectory(inputFilename, outputFolder);
+                    }
+                    else
+                    {
+                        string zPath = @"7zip\7za.exe"; //add to proj and set CopyToOuputDir
+
+                        ProcessStartInfo processInfo = new ProcessStartInfo
+                        {
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            FileName = zPath,
+                            Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", inputFilename, outputFolder)
+                        };
+                        Process x = Process.Start(processInfo);
+                        x.WaitForExit();
+                    }
+                }))
+                {
+                    await t.ConfigureAwait(false);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -88,56 +141,6 @@ namespace ZipFileManagerAPI
         private void OnFileProcessed(string filename)
         {
             FileProcessed?.Invoke(filename);
-        }
-
-        /// <summary>
-        /// Extract zip file to the chosen folder
-        /// </summary>
-        /// <param name="inputFilename">The input filename</param>
-        /// <param name="outputPath">The output path</param>
-        /// <returns></returns>
-        public async Task<bool> UnZipFiles(string inputFilename, string outputPath)
-        {
-            try
-            {
-                var fileInfo = new FileInfo(inputFilename);
-
-                var archiveFolderName = fileInfo.Name.Replace(fileInfo.Extension, "");
-
-                var outputFolder = Path.Combine(outputPath, archiveFolderName);
-
-                // run async so we free up the UI
-                using (var t = Task.Run(() =>
-                {
-                    if (fileInfo.Extension.ToLower() == "zip")
-                    {
-                        ZipFile.ExtractToDirectory(inputFilename, outputFolder);
-                    }
-                    else
-                    {
-                        string zPath = @"7zip\7za.exe"; //add to proj and set CopyToOuputDir
-
-                            ProcessStartInfo processInfo = new ProcessStartInfo
-                        {
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            FileName = zPath,
-                            Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", inputFilename, outputFolder)
-                        };
-                        Process x = Process.Start(processInfo);
-                        x.WaitForExit();
-                    }
-                }))
-                {
-                    await t.ConfigureAwait(false);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-                return false;
-            }
         }
     }
 }

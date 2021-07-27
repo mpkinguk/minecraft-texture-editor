@@ -12,13 +12,11 @@ namespace MinecraftTextureEditorUI
 {
     public partial class DeploymentWizardForm : Form
     {
-        private bool _deployed;
-
-        private bool _unpack;
-
-        private bool _onlyTextures;
-
         private readonly ILog _log;
+
+        private bool _deployed;
+        private bool _onlyTextures;
+        private bool _unpack;
 
         /// <summary>
         /// Constructor
@@ -40,61 +38,15 @@ namespace MinecraftTextureEditorUI
         #region Form events
 
         /// <summary>
-        /// A file has been processed, so update the progress bar
-        /// </summary>
-        /// <param name="value"></param>
-        private void FileProcessed(string filename)
-        {
-            IncrementProgressBarValue(filename);
-        }
-
-        /// <summary>
-        /// Dynamically process the buttons for each tab index change
+        /// Finish button clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TabControlSelectedIndexChanged(object sender, EventArgs e)
+        private void ButtonFinishClick(object sender, EventArgs e)
         {
-            var tabControl = (TabControl)sender;
+            DialogResult = DialogResult.OK;
 
-            var lastTab = tabControl.TabCount - 1;
-
-            switch (tabControl.SelectedIndex)
-            {
-                case 0:
-                    buttonPrevious.Enabled = false;
-                    buttonNext.Enabled = true;
-                    buttonFinish.Enabled = false;
-                    break;
-
-                default:
-                    if (tabControl.SelectedIndex == lastTab)
-                    {
-                        buttonPrevious.Enabled = true;
-                        buttonNext.Enabled = false;
-                        buttonFinish.Enabled = true;
-                    }
-                    else
-                    {
-                        buttonPrevious.Enabled = true;
-                        buttonNext.Enabled = true;
-                        buttonFinish.Enabled = false;
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Previous button click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonPreviousClick(object sender, EventArgs e)
-        {
-            if (tabControlDeploy.SelectedIndex > 0)
-            {
-                tabControlDeploy.SelectedIndex--;
-            }
+            Close();
         }
 
         /// <summary>
@@ -148,7 +100,7 @@ namespace MinecraftTextureEditorUI
                             {
                                 case DialogResult.Yes:
                                     File.Move(outputFile, $"{outputFile}.bak");
-                                    if(_unpack)
+                                    if (_unpack)
                                     {
                                         if (Directory.Exists(unpackDirectory))
                                         {
@@ -182,7 +134,7 @@ namespace MinecraftTextureEditorUI
                             if (_unpack)
                             {
                                 UpdateProgressLabel("Unpacking zip file to resource pack folder...");
-                                await UnpackZipFile(PackName).ConfigureAwait(false);                                
+                                await UnpackZipFile(PackName).ConfigureAwait(false);
                             }
                         }
 
@@ -202,6 +154,38 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Previous button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonPreviousClick(object sender, EventArgs e)
+        {
+            if (tabControlDeploy.SelectedIndex > 0)
+            {
+                tabControlDeploy.SelectedIndex--;
+            }
+        }
+
+        /// <summary>
+        /// Captures the check changed event for unpacking zip files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxCheckedChanged(object sender, EventArgs e)
+        {
+            var checkBox = (CheckBox)sender;
+            switch (checkBox.Name)
+            {
+                case nameof(checkBoxUnpackZipFile):
+                    _unpack = checkBoxUnpackZipFile.Checked;
+                    break;
+                case nameof(checkBoxOnlyIncludeTextures):
+                    _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Create meta file and deploy it to current path
         /// </summary>
         /// <param name="description">the description</param>
@@ -210,7 +194,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var fileName = Path.Combine(State.CurrentPath, "pack.mcmeta");
+                var fileName = Path.Combine(State.Path, "pack.mcmeta");
 
                 var pack = new Pack() { Description = description, Format = format };
 
@@ -245,11 +229,11 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(true);
 
-                var filesPath = State.CurrentPath;
+                var filesPath = State.Path;
 
                 var files = await Task.Run(() => FileHelper.GetFiles(filesPath, _onlyTextures ? "*.png" : "*.*", true)).ConfigureAwait(false);
-                
-                files.Add(Path.Combine(State.CurrentPath, "pack.mcmeta"));
+
+                files.Add(Path.Combine(State.Path, "pack.mcmeta"));
 
                 UpdateProgressBarMin(0);
                 UpdateProgressBarValue(0);
@@ -259,7 +243,7 @@ namespace MinecraftTextureEditorUI
 
                 zipFileManager.FileProcessed += FileProcessed;
 
-                _deployed = await zipFileManager.ZipFiles(outputFile, State.CurrentPath, files).ConfigureAwait(false);
+                _deployed = await zipFileManager.ZipFiles(outputFile, State.Path, files).ConfigureAwait(false);
 
                 return _deployed;
             }
@@ -281,6 +265,50 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// A file has been processed, so update the progress bar
+        /// </summary>
+        /// <param name="value"></param>
+        private void FileProcessed(string filename)
+        {
+            IncrementProgressBarValue(filename);
+        }
+
+        /// <summary>
+        /// Dynamically process the buttons for each tab index change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TabControlSelectedIndexChanged(object sender, EventArgs e)
+        {
+            var tabControl = (TabControl)sender;
+
+            var lastTab = tabControl.TabCount - 1;
+
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    buttonPrevious.Enabled = false;
+                    buttonNext.Enabled = true;
+                    buttonFinish.Enabled = false;
+                    break;
+
+                default:
+                    if (tabControl.SelectedIndex == lastTab)
+                    {
+                        buttonPrevious.Enabled = true;
+                        buttonNext.Enabled = false;
+                        buttonFinish.Enabled = true;
+                    }
+                    else
+                    {
+                        buttonPrevious.Enabled = true;
+                        buttonNext.Enabled = true;
+                        buttonFinish.Enabled = false;
+                    }
+                    break;
+            }
+        }
         /// <summary>
         /// Upack a zip file
         /// </summary>
@@ -324,91 +352,42 @@ namespace MinecraftTextureEditorUI
                 UpdateCursor(false);
             }
         }
-
-        /// <summary>
-        /// Finish button clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonFinishClick(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-
-            Close();
-        }
-
-        /// <summary>
-        /// Captures the check changed event for unpacking zip files
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckBoxCheckedChanged(object sender, EventArgs e)
-        {
-            var checkBox = (CheckBox)sender;
-            switch (checkBox.Name) 
-            {
-                case nameof(checkBoxUnpackZipFile):
-                    _unpack = checkBoxUnpackZipFile.Checked;
-                    break;
-                case nameof(checkBoxOnlyIncludeTextures):
-                    _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
-                    break;
-            }
-        }
-
         #endregion Form events
 
         #region Threadsafe methods
 
         /// <summary>
-        /// Threadsafe method for displaying error messagebox
+        /// Threadsafe method for increment tab selected index
         /// </summary>
-        /// <param name="error">The error message</param>
-        private void ShowErrorBox(string error, string caption = "Error")
+        private void DecrementTabControl()
         {
-            if (InvokeRequired)
+            if (tabControlDeploy.InvokeRequired)
             {
-                //var d = new Action<string>(ShowErrorBox);
-                BeginInvoke((MethodInvoker)delegate { ShowErrorBox(error, caption); });
-                //Invoke(d, new object[] { error });
+                var d = new Action(DecrementTabControl);
+                Invoke(d);
             }
             else
             {
-                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (tabControlDeploy.SelectedIndex > 0)
+                {
+                    tabControlDeploy.SelectedIndex--;
+                }
             }
         }
 
         /// <summary>
-        /// Threadsafe method for updating progressbar min
+        /// Threadsafe method for disabling previous button
         /// </summary>
-        /// <param name="value">The value</param>
-        private void UpdateProgressBarMin(int value)
+        private void DisablePreviousButton()
         {
-            if (progressBarDeploymentProgress.InvokeRequired)
+            if (buttonPrevious.InvokeRequired)
             {
-                var d = new Action<int>(UpdateProgressBarMin);
-                Invoke(d, new object[] { value });
+                var d = new Action(DisablePreviousButton);
+                Invoke(d);
             }
             else
             {
-                progressBarDeploymentProgress.Minimum = value;
-            }
-        }
-
-        /// <summary>
-        /// Threadsafe method for updating progressbar max
-        /// </summary>
-        /// <param name="value">The value</param>
-        private void UpdateProgressBarMax(int value)
-        {
-            if (progressBarDeploymentProgress.InvokeRequired)
-            {
-                var d = new Action<int>(UpdateProgressBarMax);
-                Invoke(d, new object[] { value });
-            }
-            else
-            {
-                progressBarDeploymentProgress.Maximum = value;
+                buttonPrevious.Enabled = false;
             }
         }
 
@@ -431,56 +410,6 @@ namespace MinecraftTextureEditorUI
                 {
                     progressBarDeploymentProgress.Value++;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Threadsafe method for updating progressbar value
-        /// </summary>
-        /// <param name="value">the value</param>
-        private void UpdateProgressBarValue(int value)
-        {
-            if (progressBarDeploymentProgress.InvokeRequired)
-            {
-                var d = new Action<int>(UpdateProgressBarValue);
-                Invoke(d, new object[] { value });
-            }
-            else
-            {
-                progressBarDeploymentProgress.Value = 0;
-            }
-        }
-
-        /// <summary>
-        /// Threadsafe method for updating progress label text
-        /// </summary>
-        /// <param name="message">The message</param>
-        private void UpdateProgressLabel(string message)
-        {
-            if (labelProgress.InvokeRequired)
-            {
-                var d = new Action<string>(UpdateProgressLabel);
-                Invoke(d, new object[] { message });
-            }
-            else
-            {
-                labelProgress.Text = message;
-            }
-        }
-
-        /// <summary>
-        /// Threadsafe method for disabling previous button
-        /// </summary>
-        private void DisablePreviousButton()
-        {
-            if (buttonPrevious.InvokeRequired)
-            {
-                var d = new Action(DisablePreviousButton);
-                Invoke(d);
-            }
-            else
-            {
-                buttonPrevious.Enabled = false;
             }
         }
 
@@ -526,21 +455,20 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Threadsafe method for increment tab selected index
+        /// Threadsafe method for displaying error messagebox
         /// </summary>
-        private void DecrementTabControl()
+        /// <param name="error">The error message</param>
+        private void ShowErrorBox(string error, string caption = "Error")
         {
-            if (tabControlDeploy.InvokeRequired)
+            if (InvokeRequired)
             {
-                var d = new Action(DecrementTabControl);
-                Invoke(d);
+                //var d = new Action<string>(ShowErrorBox);
+                BeginInvoke((MethodInvoker)delegate { ShowErrorBox(error, caption); });
+                //Invoke(d, new object[] { error });
             }
             else
             {
-                if (tabControlDeploy.SelectedIndex > 0)
-                {
-                    tabControlDeploy.SelectedIndex--;
-                }
+                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -561,6 +489,72 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Threadsafe method for updating progressbar max
+        /// </summary>
+        /// <param name="value">The value</param>
+        private void UpdateProgressBarMax(int value)
+        {
+            if (progressBarDeploymentProgress.InvokeRequired)
+            {
+                var d = new Action<int>(UpdateProgressBarMax);
+                Invoke(d, new object[] { value });
+            }
+            else
+            {
+                progressBarDeploymentProgress.Maximum = value;
+            }
+        }
+
+        /// <summary>
+        /// Threadsafe method for updating progressbar min
+        /// </summary>
+        /// <param name="value">The value</param>
+        private void UpdateProgressBarMin(int value)
+        {
+            if (progressBarDeploymentProgress.InvokeRequired)
+            {
+                var d = new Action<int>(UpdateProgressBarMin);
+                Invoke(d, new object[] { value });
+            }
+            else
+            {
+                progressBarDeploymentProgress.Minimum = value;
+            }
+        }
+        /// <summary>
+        /// Threadsafe method for updating progressbar value
+        /// </summary>
+        /// <param name="value">the value</param>
+        private void UpdateProgressBarValue(int value)
+        {
+            if (progressBarDeploymentProgress.InvokeRequired)
+            {
+                var d = new Action<int>(UpdateProgressBarValue);
+                Invoke(d, new object[] { value });
+            }
+            else
+            {
+                progressBarDeploymentProgress.Value = 0;
+            }
+        }
+
+        /// <summary>
+        /// Threadsafe method for updating progress label text
+        /// </summary>
+        /// <param name="message">The message</param>
+        private void UpdateProgressLabel(string message)
+        {
+            if (labelProgress.InvokeRequired)
+            {
+                var d = new Action<string>(UpdateProgressLabel);
+                Invoke(d, new object[] { message });
+            }
+            else
+            {
+                labelProgress.Text = message;
+            }
+        }
         #endregion Threadsafe methods
     }
 }

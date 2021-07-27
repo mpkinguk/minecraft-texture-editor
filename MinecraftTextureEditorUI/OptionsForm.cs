@@ -34,11 +34,10 @@ namespace MinecraftTextureEditorUI
 
         #region Private properties
 
-        private bool _hasChanged;
-
-        private bool _hasSaved;
-
         private readonly ILog _log;
+        
+        private bool _hasChanged;
+        private bool _hasSaved;
 
         #endregion Private properties
 
@@ -57,27 +56,6 @@ namespace MinecraftTextureEditorUI
         }
 
         #region Private methods
-
-        /// <summary>
-        /// Save the settings
-        /// </summary>
-        private void SaveSettings()
-        {
-            try
-            {
-                foreach (Control control in Controls.OfType<TextBox>())
-                {
-                    var key = (string)control.Tag;
-                    ConfigurationHelper.SaveSetting(key, control.Text);
-                }
-
-                _hasSaved = true;
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
 
         /// <summary>
         /// Load settings
@@ -132,9 +110,49 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Save the settings
+        /// </summary>
+        private void SaveSettings()
+        {
+            try
+            {
+                foreach (Control control in Controls.OfType<TextBox>())
+                {
+                    var key = (string)control.Tag;
+                    ConfigurationHelper.SaveSetting(key, control.Text);
+                }
+
+                _hasSaved = true;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
         #endregion Private methods
 
         #region Form events
+
+        /// <summary>
+        /// Reload the settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonReloadClick(object sender, System.EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        /// <summary>
+        /// Save the settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonSaveClick(object sender, System.EventArgs e)
+        {
+            SaveSettings();
+        }
 
         /// <summary>
         /// Capture the form load event
@@ -194,27 +212,6 @@ namespace MinecraftTextureEditorUI
         {
             _hasChanged = true;
         }
-
-        /// <summary>
-        /// Save the settings
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonSaveClick(object sender, System.EventArgs e)
-        {
-            SaveSettings();
-        }
-
-        /// <summary>
-        /// Reload the settings
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonReloadClick(object sender, System.EventArgs e)
-        {
-            LoadSettings();
-        }
-
         #endregion Form events
     }
 }

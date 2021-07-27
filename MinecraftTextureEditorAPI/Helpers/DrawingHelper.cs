@@ -7,9 +7,22 @@ using System.Windows.Forms;
 
 namespace MinecraftTextureEditorAPI.Helpers
 {
+    /// <summary>
+    /// DrawingHelper class
+    /// </summary>
     public static class DrawingHelper
     {
         #region Enums
+
+        /// <summary>
+        /// Colour selection types
+        /// </summary>
+        public enum ColourSelectionType
+        {
+            ColourWheel,
+            Saturation,
+            Alpha
+        }
 
         /// <summary>
         /// Tool types
@@ -27,147 +40,50 @@ namespace MinecraftTextureEditorAPI.Helpers
             TransparencyLock
         }
 
-        /// <summary>
-        /// Colour selection types
-        /// </summary>
-        public enum ColourSelectionType
-        {
-            ColourWheel,
-            Saturation,
-            Alpha
-        }
-
         #endregion Enums
 
-        public static List<Color> RainbowColours = new List<Color> { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+        #region Public constants
 
         /// <summary>
         /// The eraser colour
         /// </summary>
         public static Color EraserColour = Color.FromArgb(0, 0, 0, 0);
 
+        public static List<Color> RainbowColours = new List<Color> { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+
+        #endregion Public constants
+
+        #region Public methods
+
         /// <summary>
-        /// Get colour using PictureBox object
+        /// Generate a bitmap from a texture
         /// </summary>
-        /// <param name="x">x coordinate</param>
-        /// <param name="y">y coordinate</param>
-        /// <returns>Color</returns>
-        public static Color GetColour(PictureBox pictureBox, int x, int y)
+        /// <param name="texture">The texture</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap BitmapFromTexture(Texture texture)
         {
-            try
+            var width = texture.Width;
+            var height = texture.Height;
+
+            var tmp = new Bitmap(width, height);
+
+            foreach (Pixel pixel in texture.PixelList)
             {
-                using (var tmp = new Bitmap(pictureBox.Width, pictureBox.Height))
-                {
-                    var rectangle = new Rectangle(0, 0, tmp.Width, tmp.Height);
-
-                    var p = GraphicsUnit.Pixel;
-
-                    using (var g = Graphics.FromImage(tmp))
-                    {
-                        g.DrawImage(pictureBox.Image, rectangle, pictureBox.Image.GetBounds(ref p), GraphicsUnit.Pixel);
-                    }
-
-                    return tmp.GetPixel(x, y);
-                }
+                tmp.SetPixel(pixel.X, pixel.Y, pixel.PixelColour);
             }
-            catch
-            {
-                return EraserColour;
-            }
+
+            return tmp;
         }
 
         /// <summary>
-        /// Get colour using Image object
+        /// Does the color match exactly
         /// </summary>
-        /// <param name="x">x coordinate</param>
-        /// <param name="y">y coordinate</param>
-        /// <returns>Color</returns>
-        public static Color GetColour(Image image, int x, int y)
+        /// <param name="a">Colour a</param>
+        /// <param name="b">Colour b</param>
+        /// <returns>Bool</returns>
+        public static bool ColourMatch(Color a, Color b)
         {
-            try
-            {
-                using (var tmp = new Bitmap(1, 1))
-                {
-                    var rectangle = new Rectangle(0, 0, 1, 1);
-
-                    using (var g = Graphics.FromImage(tmp))
-                    {
-                        g.DrawImage(image, rectangle, new Rectangle(x, y, 1, 1), GraphicsUnit.Pixel);
-                    }
-
-                    return tmp.GetPixel(0, 0);
-                }
-            }
-            catch
-            {
-                return EraserColour;
-            }
-        }
-
-        /// <summary>
-        /// Returns a blank list of pixels using the correct coodrinate structure
-        /// </summary>
-        /// <param name="width">Pixels wide</param>
-        /// <param name="height">Pixels high</param>
-        /// <returns>List(Pixel)</returns>
-        public static List<Pixel> GetBlankPixels(int width, int height)
-        {
-            var result = new List<Pixel>();
-
-            for (int y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var pixel = new Pixel() { X = x, Y = y, PixelColour = EraserColour };
-
-                    result.Add(pixel);
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Converts an image to a pixel list
-        /// </summary>
-        /// <param name="image">The image</param>
-        /// <returns>List(Pixel)</returns>
-        public static List<Pixel> GetPixelsFromImage(Image image)
-        {
-            var result = new List<Pixel>();
-
-            for (int y = 0; y < image.Height; y++)
-            {
-                for (int x = 0; x < image.Width; x++)
-                {
-                    var colour = GetColour(image, x, y);
-                    var pixel = new Pixel() { PixelColour = colour, X = x, Y = y };
-                    result.Add(pixel);
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns a texture from an image
-        /// </summary>
-        /// <param name="image">The image</param>
-        /// <returns>Texture</returns>
-        public static Texture GetTextureFromImage(Image image)
-        {
-            return new Texture(image);
-        }
-
-        /// <summary>
-        /// Returns a blank texture
-        /// </summary>
-        /// <param name="width">The width</param>
-        /// <param name="height">The height</param>
-        /// <returns>Texture</returns>
-        public static Texture GetBlankTexture(int width, int height)
-        {
-            return new Texture(width, height);
+            return (a.ToArgb() & 0xffffff) == (b.ToArgb() & 0xffffff);
         }
 
         /// <summary>
@@ -235,6 +151,97 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
+        /// Returns a blank list of pixels using the correct coodrinate structure
+        /// </summary>
+        /// <param name="width">Pixels wide</param>
+        /// <param name="height">Pixels high</param>
+        /// <returns>List(Pixel)</returns>
+        public static List<Pixel> GetBlankPixels(int width, int height)
+        {
+            var result = new List<Pixel>();
+
+            for (int y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var pixel = new Pixel() { X = x, Y = y, PixelColour = EraserColour };
+
+                    result.Add(pixel);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a blank texture
+        /// </summary>
+        /// <param name="width">The width</param>
+        /// <param name="height">The height</param>
+        /// <returns>Texture</returns>
+        public static Texture GetBlankTexture(int width, int height)
+        {
+            return new Texture(width, height);
+        }
+
+        /// <summary>
+        /// Get colour using PictureBox object
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <returns>Color</returns>
+        public static Color GetColour(PictureBox pictureBox, int x, int y)
+        {
+            try
+            {
+                using (var tmp = new Bitmap(pictureBox.Width, pictureBox.Height))
+                {
+                    var rectangle = new Rectangle(0, 0, tmp.Width, tmp.Height);
+
+                    var p = GraphicsUnit.Pixel;
+
+                    using (var g = Graphics.FromImage(tmp))
+                    {
+                        g.DrawImage(pictureBox.Image, rectangle, pictureBox.Image.GetBounds(ref p), GraphicsUnit.Pixel);
+                    }
+
+                    return tmp.GetPixel(x, y);
+                }
+            }
+            catch
+            {
+                return EraserColour;
+            }
+        }
+
+        /// <summary>
+        /// Get colour using Image object
+        /// </summary>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <returns>Color</returns>
+        public static Color GetColour(Image image, int x, int y)
+        {
+            try
+            {
+                using (var tmp = new Bitmap(1, 1))
+                {
+                    var rectangle = new Rectangle(0, 0, 1, 1);
+
+                    using (var g = Graphics.FromImage(tmp))
+                    {
+                        g.DrawImage(image, rectangle, new Rectangle(x, y, 1, 1), GraphicsUnit.Pixel);
+                    }
+
+                    return tmp.GetPixel(0, 0);
+                }
+            }
+            catch
+            {
+                return EraserColour;
+            }
+        }
+        /// <summary>
         /// Returns a colour at the coordinates provided
         /// </summary>
         /// <param name="texture">The texture</param>
@@ -259,6 +266,37 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
+        /// Converts an image to a pixel list
+        /// </summary>
+        /// <param name="image">The image</param>
+        /// <returns>List(Pixel)</returns>
+        public static List<Pixel> GetPixelsFromImage(Image image)
+        {
+            var result = new List<Pixel>();
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    var colour = GetColour(image, x, y);
+                    var pixel = new Pixel() { PixelColour = colour, X = x, Y = y };
+                    result.Add(pixel);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a texture from an image
+        /// </summary>
+        /// <param name="image">The image</param>
+        /// <returns>Texture</returns>
+        public static Texture GetTextureFromImage(Image image)
+        {
+            return new Texture(image);
+        }
+        /// <summary>
         /// Is the point within the bounds of the texture
         /// </summary>
         /// <param name="x">x</param>
@@ -271,18 +309,6 @@ namespace MinecraftTextureEditorAPI.Helpers
             return (x >= 0 && x < width &&
                          y >= 0 && y < height);
         }
-
-        /// <summary>
-        /// Does the color match exactly
-        /// </summary>
-        /// <param name="a">Colour a</param>
-        /// <param name="b">Colour b</param>
-        /// <returns>Bool</returns>
-        public static bool ColourMatch(Color a, Color b)
-        {
-            return (a.ToArgb() & 0xffffff) == (b.ToArgb() & 0xffffff);
-        }
-
         /// <summary>
         /// Rainbow
         /// </summary>
@@ -337,24 +363,6 @@ namespace MinecraftTextureEditorAPI.Helpers
             return newColour;
         }
 
-        /// <summary>
-        /// Generate a bitmap from a texture
-        /// </summary>
-        /// <param name="texture">The texture</param>
-        /// <returns>Bitmap</returns>
-        public static Bitmap BitmapFromTexture(Texture texture)
-        {
-            var width = texture.Width;
-            var height = texture.Height;
-
-            var tmp = new Bitmap(width, height);
-            
-            foreach (Pixel pixel in texture.PixelList)
-            {
-                tmp.SetPixel(pixel.X, pixel.Y, pixel.PixelColour);
-            }
-
-            return tmp;
-        }
+        #endregion Public methods
     }
 }

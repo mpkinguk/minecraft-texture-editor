@@ -33,6 +33,21 @@ namespace MinecraftTextureEditorUI
         #region Public variables
 
         /// <summary>
+        /// The current filename for this editor window
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// Has the image changed since loading?
+        /// </summary>
+        public bool HasChanged { get; set; }
+
+        /// <summary>
+        /// Redo enabled
+        /// </summary>
+        public bool RedoEnabled => _undoManager.CanRedo;
+
+        /// <summary>
         /// Display drawing grid
         /// </summary>
         public bool ShowGrid
@@ -46,73 +61,22 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Display drawing grid
+        /// Display transparent grid
         /// </summary>
-        public bool ShowTransparent
+        public bool ShowTransparentGrid
         {
-            get => _showTransparent;
+            get => _showTransparentGrid;
             set
-            {
-                _showTransparent = !_showTransparent;
-                BackgroundImage = _showTransparent ? Properties.Resources.transparentGrid : null;
+            {            
+                _showTransparentGrid = value;
+                BackgroundImage = _showTransparentGrid ? Properties.Resources.transparentGrid : null;
                 RefreshDisplay();
             }
         }
-
-        /// <summary>
-        /// The current brush size
-        /// </summary>
-        public int BrushSize
-        {
-            get
-            {
-                return _brushSize;
-            }
-            set
-            {
-                _brushSize = value;
-            }
-        }
-
-        /// <summary>
-        /// Has the image changed since loading?
-        /// </summary>
-        public bool HasChanged { get; set; }
-
-        /// <summary>
-        /// The current fore colour
-        /// </summary>
-        public Color Colour1 { get; set; }
-
-        /// <summary>
-        /// the current back colour
-        /// </summary>
-        public Color Colour2 { get; set; }
-
-        /// <summary>
-        /// The eraser colour
-        /// </summary>
-        public Color EraserColor { get; set; }
-
-        /// <summary>
-        /// The current filename for this editor window
-        /// </summary>
-        public string FileName { get; set; }
-
-        /// <summary>
-        /// The current tool type in use
-        /// </summary>
-        public ToolType ToolType { get; set; }
-
         /// <summary>
         /// The pixel objects in use
         /// </summary>
         public Texture Texture { get; set; }
-
-        /// <summary>
-        /// The current zoom value
-        /// </summary>
-        public int Zoom { get; set; }
 
         /// <summary>
         /// Undo enabled
@@ -120,41 +84,23 @@ namespace MinecraftTextureEditorUI
         public bool UndoEnabled => _undoManager.CanUndo;
 
         /// <summary>
-        /// Redo enabled
+        /// The current zoom value
         /// </summary>
-        public bool RedoEnabled => _undoManager.CanRedo;
-
-        /// <summary>
-        /// Transparency Lock
-        /// </summary>
-        public bool TransparencyLock { get; set; }
-
+        public int Zoom { get; set; }
         #endregion Public variables
 
         #region private variables
 
-        private bool _showGrid;
-
-        private bool _showTransparent;
-
         private const int StartZoom = 16;
 
-        private int _width;
-
-        private int _height;
-
-        private int _currentRainbowColour;
-
-        private Point _cursor;
-
-        private int _brushSize;
-
-        private Pixel _lastRainbowPixel = new Pixel();
-
-        private UndoManagerAction<Texture> _undoManager;
-
         private readonly ILog _log;
-
+        private Point _cursor;
+        private int _height;
+        private Pixel _lastRainbowPixel = new Pixel();
+        private bool _showGrid;
+        private bool _showTransparentGrid;
+        private UndoManagerAction<Texture> _undoManager;
+        private int _width;
         #endregion private variables
 
         #region Event constructors
@@ -186,6 +132,15 @@ namespace MinecraftTextureEditorUI
         #region Private methods
 
         /// <summary>
+        /// Is the cursor out of bounds?
+        /// </summary>
+        /// <returns>Bool</returns>
+        private bool CursorOutOfBounds()
+        {
+            return (_cursor.X < 0 || _cursor.Y < 0 || _cursor.X >= pictureBoxImage.Width || _cursor.Y >= pictureBoxImage.Height);
+        }
+
+        /// <summary>
         /// Init variables
         /// </summary>
         private void Init(int width, int height)
@@ -195,9 +150,7 @@ namespace MinecraftTextureEditorUI
                 Texture = GetBlankTexture(width, height);
 
                 _width = width;
-                _height = height;
-
-                _currentRainbowColour = 0;               
+                _height = height;          
 
                 _undoManager = new UndoManagerAction<Texture>(_log);
 
@@ -219,15 +172,11 @@ namespace MinecraftTextureEditorUI
 
                 Zoom = StartZoom;
 
-                EraserColor = Color.Transparent;
-
                 HasChanged = false;
 
                 ShowGrid = true;
 
-                ShowTransparent = true;
-
-                KeyUp += EditorFormKeyUp;
+                ShowTransparentGrid = true;
 
                 RefreshDisplay();
             }
@@ -238,62 +187,46 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Allows commands using single key presses
+        /// Let calling thread know an action has occurred (for updating UI elements)
+        /// </summary>
+        private void UndoRedoHappened()
+        {
+            UndoManagerAction?.Invoke();
+        }
+
+        #endregion Private methods
+
+        #region Form events
+
+        /// <summary>
+        /// Form load event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EditorFormKeyUp(object sender, KeyEventArgs e)
+        private void EditorForm_Load(object sender, EventArgs e)
+        {
+            KeyPreview = true;
+        }
+
+        /// <summary>
+        /// Form closing event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorFormFormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                switch (e.KeyCode)
+                if (HasChanged)
                 {
-                    case Keys.Delete:
-                        if (e.KeyCode.Equals(Keys.Delete))
-                        {
-                            Clear();
-                        }
-                        break;
+                    if (MessageBox.Show("Changes have been made. Do you wish to save them?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        SaveFile(FileName);
+                    }
 
-                    case Keys.D1:
-                    case Keys.NumPad1:
-                        ToolType = ToolType.Pen;
-                        break;
+                    _undoManager.Dispose();
 
-                    case Keys.D2:
-                    case Keys.NumPad2:
-                        ToolType = ToolType.Eraser;
-                        break;
-
-                    case Keys.D3:
-                    case Keys.NumPad3:
-                        ToolType = ToolType.Dropper;
-                        break;
-
-                    case Keys.D4:
-                    case Keys.NumPad4:
-                        ToolType = ToolType.Texturiser;
-                        break;
-
-                    case Keys.D5:
-                    case Keys.NumPad5:
-                        ToolType = ToolType.FloodFill;
-                        break;
-
-                    case Keys.D6:
-                    case Keys.NumPad6:
-                        ToolType = ToolType.Rainbow;
-                        break;
-
-                    case Keys.D7:
-                    case Keys.NumPad7:
-                        ToolType = ToolType.MirrorX;
-                        break;
-
-                    case Keys.D8:
-                    case Keys.NumPad8:
-                        ToolType = ToolType.MirrorY;
-                        break;
+                    Dispose();
                 }
             }
             catch (Exception ex)
@@ -303,47 +236,13 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Clear the current texture
-        /// </summary>
-        public void Clear()
-        {
-            try
-            {
-                var newTexture = GetBlankTexture(Texture.Width, Texture.Height);
-
-                Texture = newTexture.Clone();
-
-                AddItem();
-
-                RefreshDisplay();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Is the cursor out of bounds?
-        /// </summary>
-        /// <returns>Bool</returns>
-        private bool CursorOutOfBounds()
-        {
-            return (_cursor.X < 0 || _cursor.Y < 0 || _cursor.X >= pictureBoxImage.Width || _cursor.Y >= pictureBoxImage.Height);
-        }
-
-        #endregion Private methods
-
-        #region Form events
-
-        /// <summary>
-        /// Check for mouse up event
+        /// Track focus of form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PictureBoxImageMouseUp(object sender, MouseEventArgs e)
+        private void EditorFormLostFocus(object sender, EventArgs e)
         {
-            AddItem();
+            _cursor = new Point(_width + 1, _height + 1);
             RefreshDisplay();
         }
 
@@ -359,16 +258,166 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Track focus of form
+        /// Paint pixels using fore or back color where appropriate
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EditorFormLostFocus(object sender, EventArgs e)
+        private void EditorMousePaintPixel(object sender, MouseEventArgs e)
         {
-            _cursor = new Point(_width + 1, _height + 1);
-            RefreshDisplay();
+            try
+            {
+                Color colour;
+
+                _cursor = e.Location;
+
+                if (CursorOutOfBounds())
+                {
+                    return;
+                }
+
+                if (State.BrushSize == 0)
+                {
+                    return;
+                }
+
+                for (var y = 0; y < State.BrushSize; y++)
+                {
+                    for (var x = 0; x < State.BrushSize; x++)
+                    {
+                        if (((_cursor.X / Zoom) + x > Texture.Width - 1 || ((_cursor.Y / Zoom) + y > Texture.Height - 1)))
+                        {
+                            continue;
+                        }
+
+                        Pixel pixel = Texture.PixelList.FirstOrDefault(o => (o.X == (_cursor.X / Zoom) + x) && (o.Y == (_cursor.Y / Zoom) + y));
+
+                        if (pixel is null)
+                        {
+                            return;
+                        }
+
+                        // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
+                        if (State.TransparencyLock)
+                        {
+                            if (pixel.PixelColour.A.Equals(0))
+                            {
+                                return;
+                            }
+                        }
+
+                        switch (e.Button)
+                        {
+                            case MouseButtons.Left:
+                                switch (State.ToolType)
+                                {
+                                    case ToolType.Dropper:
+                                        // Only require first pixel
+                                        OnColourSelected(pixel.PixelColour, true);
+                                        return;
+
+                                    case ToolType.Eraser:
+                                        colour = State.EraserColor;
+                                        break;
+
+                                    default:
+                                        colour = State.Colour1;
+                                        break;
+                                }
+                                break;
+
+                            case MouseButtons.Right:
+                                switch (State.ToolType)
+                                {
+                                    case ToolType.Dropper:
+                                        // Only require first pixel
+                                        OnColourSelected(pixel.PixelColour, false);
+                                        return;
+
+                                    case ToolType.Eraser:
+                                        colour = State.EraserColor;
+                                        break;
+
+                                    default:
+                                        colour = State.Colour2;
+                                        break;
+                                }
+                                break;
+
+                            default:
+                                RefreshDisplay();
+                                return;
+                        }
+
+                        if (State.ToolType.Equals(ToolType.Rainbow))
+                        {
+                            colour = Rainbow(pixel, e.Button.Equals(MouseButtons.Left), ref State.CurrentRainbowColourIndex, ref _lastRainbowPixel);
+                        }
+
+                        if (State.ToolType.Equals(ToolType.MirrorX))
+                        {
+                            Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
+
+                            inversePixel.PixelColour = colour;
+                        }
+                        else if (State.ToolType.Equals(ToolType.MirrorY))
+                        {
+                            Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
+
+                            inversePixel.PixelColour = colour;
+                        }
+
+                        if (State.ToolType.Equals(ToolType.Texturiser))
+                        {
+                            colour = Randomiser(colour);
+                        }
+
+                        if (State.ToolType.Equals(ToolType.FloodFill))
+                        {
+                            var currentColour = pixel.PixelColour;
+
+                            var floodX = pixel.X;
+
+                            var floodY = pixel.Y;
+
+                            var result = FloodFill(currentColour, colour, floodX, floodY, Texture);
+                        }
+                        else
+                        {
+                            pixel.PixelColour = colour;
+                        }
+                    }
+                }
+
+                HasChanged = true;
+
+                RefreshDisplay();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
         }
 
+        /// <summary>
+        /// Fire colour selected event
+        /// </summary>
+        /// <param name="colour">The colour selected</param>
+        /// <param name="isColour1">Is fore colour</param>
+        private void OnColourSelected(Color colour, bool isColour1)
+        {
+            ColourSelected?.Invoke(colour, isColour1);
+        }
+
+        /// <summary>
+        /// Check for mouse up event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PictureBoxImageMouseUp(object sender, MouseEventArgs e)
+        {
+            AddItem();
+            RefreshDisplay();
+        }
         /// <summary>
         /// Use mouse wheel to Zoom in/out
         /// </summary>
@@ -402,20 +451,6 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
-
-        /// <summary>
-        /// Fire colour selected event
-        /// </summary>
-        /// <param name="colour">The colour selected</param>
-        /// <param name="isColour1">Is fore colour</param>
-        private void OnColourSelected(Color colour, bool isColour1)
-        {
-            ColourSelected?.Invoke(colour, isColour1);
-
-            Colour1 = isColour1 ? colour : Colour1;
-            Colour2 = isColour1 ? Colour2 : colour;
-        }
-
         /// <summary>
         /// Paint the picture box
         /// </summary>
@@ -454,9 +489,9 @@ namespace MinecraftTextureEditorUI
 
                 if (!CursorOutOfBounds())
                 {
-                    for (var y = 0; y < BrushSize; y++)
+                    for (var y = 0; y < State.BrushSize; y++)
                     {
-                        for (var x = 0; x < BrushSize; x++)
+                        for (var x = 0; x < State.BrushSize; x++)
                         {
                             g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Yellow)), cursorX + (x * Zoom), cursorY + (y * Zoom), Zoom, Zoom);
                         }
@@ -471,138 +506,32 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        #endregion Form events
+
+        #region Public methods
+
         /// <summary>
-        /// Paint pixels using fore or back color where appropriate
+        /// Add item to undo stack
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditorMousePaintPixel(object sender, MouseEventArgs e)
+        public void AddItem()
+        {
+            _undoManager.AddItem(Texture.Clone());
+
+            UndoRedoHappened();
+        }
+
+        /// <summary>
+        /// Clear the current texture
+        /// </summary>
+        public void Clear()
         {
             try
             {
-                Color colour;
+                var newTexture = GetBlankTexture(Texture.Width, Texture.Height);
 
-                _cursor = e.Location;
+                Texture = newTexture.Clone();
 
-                if (CursorOutOfBounds())
-                {
-                    return;
-                }
-
-                if (_brushSize == 0)
-                {
-                    return;
-                }
-
-                for (var y = 0; y < BrushSize; y++)
-                {
-                    for (var x = 0; x < BrushSize; x++)
-                    {
-                        if (((_cursor.X / Zoom) + x > Texture.Width - 1 || ((_cursor.Y / Zoom) + y > Texture.Height - 1)))
-                        {
-                            continue;
-                        }
-
-                        Pixel pixel = Texture.PixelList.FirstOrDefault(o => (o.X == (_cursor.X / Zoom) + x) && (o.Y == (_cursor.Y / Zoom) + y));
-
-                        if (pixel is null)
-                        {
-                            return;
-                        }
-
-                        // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
-                        if (TransparencyLock)
-                        {
-                            if (pixel.PixelColour.A.Equals(0))
-                            {
-                                return;
-                            }
-                        }
-
-                        switch (e.Button)
-                        {
-                            case MouseButtons.Left:
-                                switch (ToolType)
-                                {
-                                    case ToolType.Dropper:
-                                        // Only require first pixel
-                                        OnColourSelected(pixel.PixelColour, true);
-                                        return;
-
-                                    case ToolType.Eraser:
-                                        colour = EraserColor;
-                                        break;
-
-                                    default:
-                                        colour = Colour1;
-                                        break;
-                                }
-                                break;
-
-                            case MouseButtons.Right:
-                                switch (ToolType)
-                                {
-                                    case ToolType.Dropper:
-                                        // Only require first pixel
-                                        OnColourSelected(pixel.PixelColour, false);
-                                        return;
-
-                                    case ToolType.Eraser:
-                                        colour = EraserColor;
-                                        break;
-
-                                    default:
-                                        colour = Colour2;
-                                        break;
-                                }
-                                break;
-
-                            default:
-                                RefreshDisplay();
-                                return;
-                        }
-
-                        if (ToolType.Equals(ToolType.Rainbow))
-                        {
-                            colour = Rainbow(pixel, e.Button.Equals(MouseButtons.Left), ref _currentRainbowColour, ref _lastRainbowPixel);
-                        }
-
-                        if (ToolType.Equals(ToolType.MirrorX))
-                        {
-                            Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.X.Equals(_width - 1 - pixel.X) && o.Y.Equals(pixel.Y));
-
-                            inversePixel.PixelColour = colour;
-                        }
-                        else if (ToolType.Equals(ToolType.MirrorY))
-                        {
-                            Pixel inversePixel = Texture.PixelList.FirstOrDefault(o => o.Y.Equals(_height - 1 - pixel.Y) && o.X.Equals(pixel.X));
-
-                            inversePixel.PixelColour = colour;
-                        }
-
-                        if (ToolType.Equals(ToolType.Texturiser))
-                        {
-                            colour = Randomiser(colour);
-                        }
-
-                        if (ToolType.Equals(ToolType.FloodFill))
-                        {
-                            var currentColour = pixel.PixelColour;
-
-                            var floodX = pixel.X;
-
-                            var floodY = pixel.Y;
-
-                            var result = FloodFill(currentColour, colour, floodX, floodY, Texture);
-                        }
-                        else
-                        {
-                            pixel.PixelColour = colour;
-                        }
-                    }
-                }
-
-                HasChanged = true;
+                AddItem();
 
                 RefreshDisplay();
             }
@@ -611,51 +540,6 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
-
-        /// <summary>
-        /// Refresh the display
-        /// </summary>
-        public void RefreshDisplay()
-        {
-            if (Texture.PixelList.Count > 0)
-            {
-                pictureBoxImage.Width = Texture.Width * Zoom;
-                pictureBoxImage.Height = Texture.Height * Zoom;
-            }
-
-            pictureBoxImage.Invalidate(true);
-        }
-
-        /// <summary>
-        /// Form closing event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditorFormFormClosing(object sender, FormClosingEventArgs e)
-        {
-            try
-            {
-                if (HasChanged)
-                {
-                    if (MessageBox.Show("Changes have been made. Do you wish to save them?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                    {
-                        SaveFile(FileName);
-                    }
-
-                    _undoManager.Dispose();
-
-                    Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        #endregion Form events
-
-        #region Public methods
 
         /// <summary>
         /// Load a file with optional filename
@@ -693,23 +577,33 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
-
         /// <summary>
-        /// Add item to undo stack
+        /// Redo
         /// </summary>
-        public void AddItem()
+        public void Redo()
         {
-            _undoManager.AddItem(Texture.Clone());
+            if (RedoEnabled)
+            {
+                Texture = _undoManager.Redo().Clone();
 
-            UndoRedoHappened();
+                RefreshDisplay();
+
+                UndoRedoHappened();
+            }
         }
 
         /// <summary>
-        /// Let calling thread know an action has occurred (for updating UI elements)
+        /// Refresh the display
         /// </summary>
-        private void UndoRedoHappened()
+        public void RefreshDisplay()
         {
-            UndoManagerAction?.Invoke();
+            if (Texture.PixelList.Count > 0)
+            {
+                pictureBoxImage.Width = Texture.Width * Zoom;
+                pictureBoxImage.Height = Texture.Height * Zoom;
+            }
+
+            pictureBoxImage.Invalidate(true);
         }
 
         /// <summary>
@@ -753,22 +647,6 @@ namespace MinecraftTextureEditorUI
                 UndoRedoHappened();
             }
         }
-
-        /// <summary>
-        /// Redo
-        /// </summary>
-        public void Redo()
-        {
-            if (RedoEnabled)
-            {
-                Texture = _undoManager.Redo().Clone();
-
-                RefreshDisplay();
-
-                UndoRedoHappened();
-            }
-        }
-
         #endregion Public methods
     }
 }

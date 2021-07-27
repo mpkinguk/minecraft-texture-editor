@@ -5,8 +5,18 @@ using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorAPI.Model
 {
+    /// <summary>
+    /// Texture class
+    /// </summary>
     public class Texture
     {
+        #region Properties
+
+        /// <summary>
+        /// The height
+        /// </summary>
+        public int Height => PixelList.Max(o => o.Y) + 1;
+
         public List<Pixel> PixelList { get; set; }
 
         /// <summary>
@@ -14,10 +24,9 @@ namespace MinecraftTextureEditorAPI.Model
         /// </summary>
         public int Width => PixelList.Max(o => o.X) + 1;
 
-        /// <summary>
-        /// The height
-        /// </summary>
-        public int Height => PixelList.Max(o => o.Y) + 1;
+        #endregion Properties
+
+        #region Constructors
 
         /// <summary>
         /// Constructor
@@ -46,6 +55,10 @@ namespace MinecraftTextureEditorAPI.Model
             PixelList = GetPixelsFromImage(image);
         }
 
+        #endregion Constructors
+
+        #region Public methods
+
         /// <summary>
         /// Clones a new instance of the current texture
         /// </summary>
@@ -64,5 +77,7 @@ namespace MinecraftTextureEditorAPI.Model
 
             return newTexture;
         }
+
+        #endregion Public methods
     }
 }

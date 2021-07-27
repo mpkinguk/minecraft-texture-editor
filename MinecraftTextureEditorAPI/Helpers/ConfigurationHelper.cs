@@ -7,7 +7,37 @@ namespace MinecraftTextureEditorAPI.Helpers
 {
     public static class ConfigurationHelper
     {
+        #region Public properties
+
         public static ILog Log;
+
+        #endregion Public properties
+
+        #region Public methods
+
+        /// <summary>
+        /// Get all settings
+        /// </summary>
+        /// <returns>Dictionary(string,string)</returns>
+        public static Dictionary<string, string> GetAllSettings()
+        {
+            var result = new Dictionary<string, string>();
+
+            try
+            {
+                for (int i = 0; i < ConfigurationManager.AppSettings.Count; i++)
+                {
+                    result.Add(ConfigurationManager.AppSettings.Keys[i], ConfigurationManager.AppSettings[i]);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                return result;
+            }
+        }
 
         /// <summary>
         /// Load a setting
@@ -48,29 +78,6 @@ namespace MinecraftTextureEditorAPI.Helpers
                 Log?.Debug(ex.Message);
             }
         }
-
-        /// <summary>
-        /// Get all settings
-        /// </summary>
-        /// <returns>Dictionary(string,string)</returns>
-        public static Dictionary<string, string> GetAllSettings()
-        {
-            var result = new Dictionary<string, string>();
-
-            try
-            {
-                for (int i = 0; i < ConfigurationManager.AppSettings.Count; i++)
-                {
-                    result.Add(ConfigurationManager.AppSettings.Keys[i], ConfigurationManager.AppSettings[i]);
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Log?.Error(ex.Message);
-                return result;
-            }
-        }
+        #endregion Public methods
     }
 }
