@@ -39,27 +39,6 @@ namespace MinecraftTextureEditorUI
                     Properties.Resources.netherite_pickaxe
                 };
 
-                Random rnd = new Random();
-
-                for (int i = 0; i < 6; i++)
-                {
-                    var x = rnd.Next(ClientRectangle.Width - 32);
-                    var y = rnd.Next(ClientRectangle.Height - 32);
-
-                    _points.Add(new Point(x, y));
-
-                    var dX = 0;
-                    var dY = 0;
-
-                    while (dX.Equals(0) || dY.Equals(0))
-                    {
-                        dX = rnd.Next(-5, 5);
-                        dY = rnd.Next(-5, 5);
-                    }
-
-                    _directions.Add(new Point(dX, dY));
-                }
-
                 InitializeComponent();
 
                 // Reduce display flicker
@@ -87,6 +66,27 @@ namespace MinecraftTextureEditorUI
                 labelCompanyName.Visible = false;
                 labelAbout.Visible = false;
 
+                Random rnd = new Random();
+
+                for (int i = 0; i < 12; i++)
+                {
+                    var x = rnd.Next(ClientRectangle.Width - 32);
+                    var y = rnd.Next(ClientRectangle.Height - 32);
+
+                    _points.Add(new Point(x, y));
+
+                    var dX = 0;
+                    var dY = 0;
+
+                    while (dX.Equals(0) || dY.Equals(0))
+                    {
+                        dX = rnd.Next(-5, 5);
+                        dY = rnd.Next(-5, 5);
+                    }
+
+                    _directions.Add(new Point(dX, dY));
+                }
+
                 _timer.Start();
             }
             catch (Exception ex)
@@ -108,13 +108,22 @@ namespace MinecraftTextureEditorUI
 
             g.DrawImage(Properties.Resources.steve, ClientRectangle);
 
-            for (int i = 0; i < _images.Count; i++)
+            var index = 0;
+
+            for (int i = 0; i < _points.Count; i++)
             {
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                var newBitmap = RotateBitmap((Bitmap)_images[i], _angle);
+                var newBitmap = RotateBitmap((Bitmap)_images[index], _angle);
 
                 g.DrawImage(newBitmap, _points[i].X, _points[i].Y, 15, 15);
+
+                index++;
+
+                if (index.Equals(_images.Count))
+                {
+                    index = 0;
+                }
             }
 
             foreach (Control control in Controls)
@@ -149,7 +158,7 @@ namespace MinecraftTextureEditorUI
                 _angle = 0;
             }
 
-            for (int i = 0; i < _images.Count; i++)
+            for (int i = 0; i < _points.Count; i++)
             {
                 var x = _points[i].X;
                 var y = _points[i].Y;
