@@ -18,6 +18,11 @@ namespace MinecraftTextureEditorAPI
         public static string DocumentsFolder = ConfigurationHelper.LoadSetting("ProjectFolder");
 
         /// <summary>
+        /// ItemSize
+        /// </summary>
+        public const int ItemSize = 48;
+
+        /// <summary>
         /// MinecraftFolder
         /// </summary>
         public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder");

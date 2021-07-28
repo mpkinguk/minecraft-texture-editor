@@ -10,6 +10,11 @@ namespace MinecraftTextureEditorUI
 {
     public partial class CreateProjectWizardForm : Form
     {
+        /// <summary>
+        /// Was the creation successful?
+        /// </summary>
+        public bool Success { get; set; }
+
         private readonly ILog _log;
 
         /// <summary>
@@ -106,7 +111,9 @@ namespace MinecraftTextureEditorUI
 
                         UpdateProgressLabel("Unpacking minecraft version file to project folder...");
 
-                        await UnpackZipFile(packVersion, newProjectPath).ConfigureAwait(false);
+                        var result = await UnpackZipFile(packVersion, newProjectPath).ConfigureAwait(false);
+
+                        Success = result;
 
                         IncrementTabControl();
 
@@ -202,8 +209,10 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="packVersion">The pack version</param>
         /// <param name="outputPath">The output path</param>
-        private async Task UnpackZipFile(string packVersion, string outputPath)
+        private async Task<bool> UnpackZipFile(string packVersion, string outputPath)
         {
+            var result = false;
+
             try
             {
                 UpdateCursor(true);
@@ -219,24 +228,27 @@ namespace MinecraftTextureEditorUI
 
                 var zipFileManager = new ZipFileManager(_log);
 
-                var result = await zipFileManager.UnZipFiles(packFile, projectFolder);
+                result = await zipFileManager.UnZipFiles(packFile, projectFolder);
 
-                UpdateProgressLabel(result ? "Project Creation complete!" : "Project was not unpacked correctly.\nPlease check your paths and files.");
+                UpdateProgressLabel(Success ? "Project Creation complete!" : "Project was not unpacked correctly.\nPlease check your paths and files.");
 
                 if (result)
                 {
-                    State.Path = Path.Combine(projectFolder, packFile);
+                    State.Path = Path.Combine(projectFolder);
                     DialogResult = DialogResult.OK;
                 }
                 else
                 {
                     DialogResult = DialogResult.Abort;
                 }
+
+                return result;
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
                 UpdateProgressLabel(ex.Message);
+                return false;
             }
             finally
             {

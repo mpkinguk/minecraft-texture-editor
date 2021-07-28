@@ -7,3 +7,5 @@
 /ZipFileManager/obj/
 /ZipFileManager/bin
 /MinecraftTextureEditorInstaller/Debug/
+/MinecraftTextureEditorInstaller/Release/MinecraftTextureEditorInstaller.msi
+/MinecraftTextureEditorInstaller/Release/setup.exe

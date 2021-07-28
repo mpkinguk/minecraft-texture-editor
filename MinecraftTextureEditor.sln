@@ -169,6 +169,7 @@ Global
 		{8E0B68B4-0922-4FED-BD2B-21C73602EF90}.Release|ARM.ActiveCfg = Release
 		{8E0B68B4-0922-4FED-BD2B-21C73602EF90}.Release|ARM64.ActiveCfg = Release
 		{8E0B68B4-0922-4FED-BD2B-21C73602EF90}.Release|x64.ActiveCfg = Release
+		{8E0B68B4-0922-4FED-BD2B-21C73602EF90}.Release|x64.Build.0 = Release
 		{8E0B68B4-0922-4FED-BD2B-21C73602EF90}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

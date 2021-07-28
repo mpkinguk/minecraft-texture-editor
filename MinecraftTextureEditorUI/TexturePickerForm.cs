@@ -39,8 +39,6 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         public IList<string> Files { get; set; }
 
-        public bool FromWizard { get; set; }
-
         #endregion Public properties
 
         #region Private properties
@@ -48,7 +46,6 @@ namespace MinecraftTextureEditorUI
         private readonly List<Image> _images;
         private readonly ILog _log;
         private int _imageCounter = 0;
-        private int _itemSize;
         private bool _loading;
 
         #endregion Private properties
@@ -113,82 +110,18 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Load the textures
         /// </summary>
-        /// <param name="refresh">Refresh only?</param>
-        public async void LoadTextures(bool refresh = false)
+        public async Task LoadTextures()
         {
             try
             {
-                var defaultProjectPath = Path.Combine(FileHelper.GetDefaultProjectFolder());
-
-                // Only grab it from settings once
-                State.Path = string.IsNullOrEmpty(State.Path) ? defaultProjectPath : State.Path;
-
-                if (!refresh && !FromWizard)
-                {
-                    State.Path = FileHelper.SelectFolder(State.Path);
-                }
-
-                // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
-                if (string.IsNullOrEmpty(State.Path))
-                {
-                    _log.Debug("No path selected to load textures. Exiting application");
-                    Application.Exit();
-                    return;
-                }
-
                 UpdateText("Loading textures...");
 
                 _loading = true;
 
-                var assetsDirectorySearch = SafeFileEnumerator.EnumerateDirectories(State.Path, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
-
-                string directory = string.Empty;
-
-                if (!assetsDirectorySearch.Any())
-                {
-                    if (State.Path.Contains(Constants.AssetsFolder))
-                    {
-                        directory = State.Path;
-                    }
-                    else
-                    {
-                        MessageBox.Show("This path does not contain an asset folder. Please choose a different path");
-
-                        LoadTextures(refresh);
-                    }
-                }
-                else
-                {
-                    if (assetsDirectorySearch.Count.Equals(1))
-                    {
-                        directory = assetsDirectorySearch.FirstOrDefault();
-                    }
-                    else
-                    {
-                        using (var form = new AssetPickerForm(_log, assetsDirectorySearch))
-                        {
-                            if (form.ShowDialog(this).Equals(DialogResult.OK))
-                            {
-                                directory = form.Asset;
-
-                                // Otherwise CurrentPath will just be set to the root folder,
-                                // which creates all sorts of fun when deploying... :o|
-                                State.Path = directory;
-                            }
-                            else
-                            {
-                                throw new OperationCanceledException("No asset chosen");
-                            }
-                        }
-                    }
-                }
-
-                Files = await Task.Run(() => FileHelper.GetFiles(directory, "*.png", true)).ConfigureAwait(false);
+                Files = await Task.Run(() => FileHelper.GetFiles(State.Path, "*.png", true)).ConfigureAwait(false);
 
                 if (Files.Count > 0)
                 {
-                    _itemSize = 48;
-
                     await UpdateFlowLayoutPanel(Files).ConfigureAwait(false);
                 }
 
@@ -234,9 +167,9 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonRefreshClick(object sender, EventArgs e)
+        private async void ButtonRefreshClick(object sender, EventArgs e)
         {
-            LoadTextures(true);
+            await LoadTextures().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -385,7 +318,7 @@ namespace MinecraftTextureEditorUI
 
                     var itemText = fileInfo.Name.Length > 6 ? $"{fileInfo.Name.Substring(0, 7)}..." : fileInfo.Name;
 
-                    var item = new Button() { Tag = file, Text = itemText, Location = new Point(0, 0), Size = new Size(_itemSize, _itemSize), Font = new Font("Minecraft", 6F) };
+                    var item = new Button() { Tag = file, Text = itemText, Location = new Point(0, 0), Size = new Size(Constants.ItemSize, Constants.ItemSize), Font = new Font("Minecraft", 6F) };
 
                     toolTip1.SetToolTip(item, fileInfo.Name);
 

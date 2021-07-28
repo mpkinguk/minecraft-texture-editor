@@ -226,13 +226,19 @@
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
         "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -394,6 +400,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C853005AB128140FAFA6645C5FB10316"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -549,7 +561,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -693,7 +705,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -837,7 +849,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1012,7 +1024,38 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B8CEAD70B09E57AA7115F71773EB9CFC"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_B8CEAD70B09E57AA7115F71773EB9CFC"
+                    {
+                    "Name" = "8:System.Buffers.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.Buffers.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1331,15 +1374,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{28548436-ED96-4A12-A49E-19575F600A41}"
-        "PackageCode" = "8:{1FA85370-E856-4674-AA15-9A15D3EB4A6B}"
+        "ProductCode" = "8:{49939482-9695-41C3-B8BE-E13C760B1048}"
+        "PackageCode" = "8:{14F45845-B144-4639-AA42-B58052D1DA81}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.4.0"
+        "ProductVersion" = "8:1.5.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"
@@ -1947,7 +1990,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92C2BA6BD2284505B7448FFFA82A0C9B"
             {
-            "SourcePath" = "8:..\\MinecraftTextureEditorUI\\obj\\Release\\MinecraftTextureEditorUI.exe"
+            "SourcePath" = "8:..\\MinecraftTextureEditorUI\\obj\\Debug\\MinecraftTextureEditorUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"

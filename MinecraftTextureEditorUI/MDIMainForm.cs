@@ -7,8 +7,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using MinecraftTextureEditorUI.CustomControls;
+using static MinecraftTextureEditorAPI.Helpers.FileHelper;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
+using MinecraftTextureEditorAPI.Helpers;
+using System.Threading.Tasks;
+using MinecraftTextureEditorAPI;
 
 namespace MinecraftTextureEditorUI
 {
@@ -286,19 +289,111 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Load Textures
+        /// </summary>
+        /// <param name="browse">Open folder browser dialog</param>
+        private async Task LoadTextures(bool browse = false)
+        {
+            var defaultProjectPath = Path.Combine(GetDefaultProjectFolder());
+
+            // Only grab it from settings once
+            State.Path = string.IsNullOrEmpty(State.Path) ? defaultProjectPath : State.Path;
+
+            if (browse)
+            {
+                State.Path = SelectFolder(State.Path);
+
+                // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
+                if (string.IsNullOrEmpty(State.Path))
+                {
+                    var message = "No path selected to load textures. Do you want to use the Create Deployment Wizard?";
+                    _log.Debug("No path selected");
+                    var result = MessageBox.Show(this, message, "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+
+                    switch (result)
+                    {
+                        case DialogResult.Cancel:
+                            return;
+                        case DialogResult.Yes:
+                            await OpenCreateProjectWizardForm().ConfigureAwait(false);
+                            return;
+                        case DialogResult.No:
+                            await LoadTextures(browse).ConfigureAwait(false);
+                            break;
+                    }
+                }
+
+                var assetsDirectorySearch = SafeFileEnumerator.EnumerateDirectories(State.Path, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
+
+                string directory = string.Empty;
+
+                if (!assetsDirectorySearch.Any())
+                {
+                    if (State.Path.Contains(Constants.AssetsFolder))
+                    {
+                        directory = State.Path;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(this, "This path does not contain an asset folder.\nClick OK to choose a different path, or click cancel to continue without using a project.", "Information", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
+                        {
+                            await LoadTextures(browse).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (assetsDirectorySearch.Count.Equals(1))
+                    {
+                        directory = assetsDirectorySearch.FirstOrDefault();
+                    }
+                    else
+                    {
+                        using (var form = new AssetPickerForm(_log, assetsDirectorySearch))
+                        {
+                            if (form.ShowDialog(this).Equals(DialogResult.OK))
+                            {
+                                directory = form.Asset;
+                            }
+                            else
+                            {
+                                throw new OperationCanceledException("No asset chosen");
+                            }
+                        }
+                    }
+                }
+
+                // Otherwise CurrentPath will just be set to the root folder,
+                // which creates all sorts of fun when deploying... :o|
+                State.Path = directory;
+            }
+
+            await State.TexturePicker.LoadTextures().ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Open the Create Project Wizard form
         /// </summary>
-        private void OpenCreateProjectWizardForm()
+        private async Task OpenCreateProjectWizardForm()
         {
             try
             {
-                var createProjectWizard = new CreateProjectWizardForm(_log);
-
-                if (createProjectWizard.ShowDialog(this) == DialogResult.OK)
+                using (var createProjectWizard = new CreateProjectWizardForm(_log))
                 {
-                    MessageBox.Show("Project Created!", "Deployment complete");
+                    if (createProjectWizard.ShowDialog(this) == DialogResult.OK)
+                    {
+                        if (createProjectWizard.Success)
+                        {
+                            MessageBox.Show("Project Created!", "Deployment complete");
 
-                    ShowToolWindows();
+                            await LoadTextures().ConfigureAwait(false);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -641,8 +736,6 @@ namespace MinecraftTextureEditorUI
 
                 State.TexturePicker.Show();
 
-                State.TexturePicker.LoadTextures();
-
                 State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this, Visible = false };
 
                 State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
@@ -916,7 +1009,10 @@ namespace MinecraftTextureEditorUI
         private void MDIMainFormShown(object sender, EventArgs e)
         {
             ShowToolWindows();
+
+            LoadTextures(true);
         }
+
         /// <summary>
         /// New Image
         /// </summary>
@@ -932,9 +1028,9 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
+        private async void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
         {
-            RestartApplication();
+            await LoadTextures(true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1030,9 +1126,9 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripButtonCreateWizardClick(object sender, EventArgs e)
+        private async void ToolStripButtonCreateWizardClick(object sender, EventArgs e)
         {
-            OpenCreateProjectWizardForm();
+            await OpenCreateProjectWizardForm().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1110,9 +1206,9 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripMenuItemCreateProjectWizardClick(object sender, EventArgs e)
+        private async void ToolStripMenuItemCreateProjectWizardClick(object sender, EventArgs e)
         {
-            OpenCreateProjectWizardForm();
+            await OpenCreateProjectWizardForm().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1223,19 +1319,26 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void UpdateProgressBars()
         {
-            if (toolStrip.InvokeRequired)
+            try
             {
-                var d = new Action(UpdateProgressBars);
+                if (toolStrip.InvokeRequired)
+                {
+                    var d = new Action(UpdateProgressBars);
 
-                Invoke(d);
+                    Invoke(d);
+                }
+                else
+                {
+                    toolStripProgressBarCpu.Value = (int)_cpuCounter.NextValue();
+                    toolStripProgressBarCpu.ProgressBar.Text = $"CPU: {toolStripProgressBarCpu.Value}%";
+
+                    toolStripProgressBarRam.Value = (int)_totalRam / 1024 - (int)_ramCounter.NextValue();
+                    toolStripProgressBarRam.ProgressBar.Text = $"RAM: {toolStripProgressBarRam.Value} MB of {_totalRam / 1024} MB";
+                }
             }
-            else
+            catch(Exception ex)
             {
-                toolStripProgressBarCpu.Value = (int)_cpuCounter.NextValue();
-                toolStripProgressBarCpu.ProgressBar.Text = $"CPU: {toolStripProgressBarCpu.Value}%";
-
-                toolStripProgressBarRam.Value = (int)_totalRam / 1024 - (int)_ramCounter.NextValue();
-                toolStripProgressBarRam.ProgressBar.Text = $"RAM: {toolStripProgressBarRam.Value} MB of {_totalRam/1024} MB";
+                _log?.Error(ex.Message);
             }
         }
 

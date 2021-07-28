@@ -9,11 +9,11 @@ namespace MinecraftTextureEditorUI.CustomControls
     {
         public MyToolStripProgressBar() : base()
         {
-            this.Control.HandleCreated += Control_HandleCreated;
+            Control.HandleCreated += Control_HandleCreated;
         }
         private void Control_HandleCreated(object sender, EventArgs e)
         {
-            var s = new ProgressBarHelper((ProgressBar)this.Control);
+            _ = new ProgressBarHelper((ProgressBar)Control);
         }
     }
     public class ProgressBarHelper : NativeWindow
