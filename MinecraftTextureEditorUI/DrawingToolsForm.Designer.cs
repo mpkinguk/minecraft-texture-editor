@@ -313,6 +313,7 @@ namespace MinecraftTextureEditorUI
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DrawingToolsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = " ";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColourPicker)).EndInit();

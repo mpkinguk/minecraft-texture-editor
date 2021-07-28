@@ -91,8 +91,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripToolTypeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripBrushSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBarCpu = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripProgressBarRam = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripProgressBarCpu = new MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar();
+            this.toolStripProgressBarRam = new MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -633,6 +633,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripProgressBarRam});
             this.statusStrip.Location = new System.Drawing.Point(0, 431);
             this.statusStrip.Name = "statusStrip";
+            this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
             this.statusStrip.Size = new System.Drawing.Size(916, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "StatusStrip";
@@ -672,13 +673,17 @@ namespace MinecraftTextureEditorUI
             // 
             // toolStripProgressBarCpu
             // 
+            this.toolStripProgressBarCpu.Font = new System.Drawing.Font("Minecraft", 6F);
             this.toolStripProgressBarCpu.Name = "toolStripProgressBarCpu";
-            this.toolStripProgressBarCpu.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBarCpu.Size = new System.Drawing.Size(200, 16);
+            this.toolStripProgressBarCpu.ToolTipText = "CPU";
             // 
             // toolStripProgressBarRam
             // 
+            this.toolStripProgressBarRam.Font = new System.Drawing.Font("Minecraft", 6F);
             this.toolStripProgressBarRam.Name = "toolStripProgressBarRam";
-            this.toolStripProgressBarRam.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBarRam.Size = new System.Drawing.Size(200, 16);
+            this.toolStripProgressBarRam.ToolTipText = "RAM";
             // 
             // MDIMainForm
             // 

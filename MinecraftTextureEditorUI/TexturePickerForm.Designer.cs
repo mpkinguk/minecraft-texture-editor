@@ -125,6 +125,7 @@ namespace MinecraftTextureEditorUI
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(360, 200);
             this.Name = "TexturePickerForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = " ";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

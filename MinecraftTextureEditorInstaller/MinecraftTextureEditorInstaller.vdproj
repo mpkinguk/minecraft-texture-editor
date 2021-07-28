@@ -69,6 +69,24 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_26CAE5346A1A459193E314A92217A61E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -166,19 +184,7 @@
         "Entry"
         {
         "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
-        "OwnerKey" = "8:_7921DAF7C6189AA0EA0C52ACD65BB03E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
         "OwnerKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -189,7 +195,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
+        "OwnerKey" = "8:_7921DAF7C6189AA0EA0C52ACD65BB03E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -202,13 +226,13 @@
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
-        "OwnerKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -298,12 +322,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -346,13 +364,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D3FD4711F328DA20C0B4965AE35ADD44"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "OwnerKey" = "8:_D3FD4711F328DA20C0B4965AE35ADD44"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -531,7 +549,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -562,7 +580,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -593,7 +611,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -624,7 +642,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -633,7 +651,7 @@
             "SourcePath" = "8:..\\MinecraftTextureEditorUI\\Fonts\\MINECRAFT_FONT.TTF"
             "TargetName" = "8:MINECRAFT_FONT.TTF"
             "Tag" = "8:"
-            "Folder" = "8:_5A6BB138DB4A4320A589C44058268414"
+            "Folder" = "8:_6068011F830D4861BEEEACE6DB9D482D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -675,7 +693,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -706,7 +724,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -715,7 +733,7 @@
             "SourcePath" = "8:..\\MinecraftTextureEditorAPI\\7zip\\7zxa.dll"
             "TargetName" = "8:7zxa.dll"
             "Tag" = "8:"
-            "Folder" = "8:_E6399DE6048F4492AB70FBF2041A465E"
+            "Folder" = "8:_826B20AA5D274F8ABB8471F16E6ABBCA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -757,7 +775,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -819,7 +837,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -850,7 +868,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -858,7 +876,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_6FAC1761E81DC0CA0115145770A1B7B7"
@@ -881,7 +899,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -889,7 +907,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_7921DAF7C6189AA0EA0C52ACD65BB03E"
@@ -912,7 +930,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -943,8 +961,28 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A8B7A908D715480CB7B1F7169F4BA488"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\banner.bmp"
+            "TargetName" = "8:banner.bmp"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AAD023CC2BDC9E0981F5F442CD6034DC"
@@ -974,33 +1012,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B8CEAD70B09E57AA7115F71773EB9CFC"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:System.Buffers.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1009,7 +1021,7 @@
             "SourcePath" = "8:..\\MinecraftTextureEditorAPI\\7zip\\7za.dll"
             "TargetName" = "8:7za.dll"
             "Tag" = "8:"
-            "Folder" = "8:_E6399DE6048F4492AB70FBF2041A465E"
+            "Folder" = "8:_826B20AA5D274F8ABB8471F16E6ABBCA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1040,7 +1052,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
@@ -1071,7 +1083,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1079,7 +1091,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_CC55C9A5E1CD5E763336CE53808C23E2"
@@ -1102,7 +1114,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1133,7 +1145,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1173,7 +1185,7 @@
             "SourcePath" = "8:..\\MinecraftTextureEditorAPI\\7zip\\7za.exe"
             "TargetName" = "8:7za.exe"
             "Tag" = "8:"
-            "Folder" = "8:_E6399DE6048F4492AB70FBF2041A465E"
+            "Folder" = "8:_826B20AA5D274F8ABB8471F16E6ABBCA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1238,7 +1250,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_9D7605F1495D4F0DB69032A856FD7744"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder]MKSoft\\MinecraftEditor"
+            "DefaultLocation" = "8:[ProgramFiles64Folder]MKSoft\\MinecraftEditor"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
@@ -1246,7 +1258,7 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_5A6BB138DB4A4320A589C44058268414"
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_6068011F830D4861BEEEACE6DB9D482D"
                     {
                     "Name" = "8:Fonts"
                     "AlwaysCreate" = "11:TRUE"
@@ -1257,7 +1269,7 @@
                         {
                         }
                     }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_E6399DE6048F4492AB70FBF2041A465E"
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_826B20AA5D274F8ABB8471F16E6ABBCA"
                     {
                     "Name" = "8:7Zip"
                     "AlwaysCreate" = "11:TRUE"
@@ -1319,15 +1331,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{9CB1A82B-DF3C-47B1-97BE-74C5613D4D0D}"
-        "PackageCode" = "8:{42B86B80-12FF-4956-9C60-541679F1B0DA}"
+        "ProductCode" = "8:{28548436-ED96-4A12-A49E-19575F600A41}"
+        "PackageCode" = "8:{1FA85370-E856-4674-AA15-9A15D3EB4A6B}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.3.0"
+        "ProductVersion" = "8:1.4.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"
@@ -1341,7 +1353,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -1451,7 +1463,7 @@
             "Target" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
             "Folder" = "8:_DBC637D0039D425C857CAD65D0469D91"
             "WorkingFolder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
-            "Icon" = "8:"
+            "Icon" = "8:_C703FCC517E94C298A127DD071D6D82F"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_6D4E3E08FC72420590B8A41EA4AD5B71"
@@ -1495,7 +1507,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1526,7 +1539,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -1561,7 +1575,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -1609,7 +1624,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1640,7 +1656,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1662,7 +1679,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -1710,7 +1728,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1741,7 +1760,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -1791,7 +1811,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -1835,7 +1856,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -1911,7 +1933,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
@@ -1925,7 +1947,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92C2BA6BD2284505B7448FFFA82A0C9B"
             {
-            "SourcePath" = "8:..\\MinecraftTextureEditorUI\\obj\\Debug\\MinecraftTextureEditorUI.exe"
+            "SourcePath" = "8:..\\MinecraftTextureEditorUI\\obj\\Release\\MinecraftTextureEditorUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"

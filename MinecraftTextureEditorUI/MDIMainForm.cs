@@ -7,27 +7,32 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using MinecraftTextureEditorUI.CustomControls;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorUI
 {
     public partial class MDIMainForm : Form
     {
+        #region External methods
+
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
 
+        #endregion External methods
+
         #region Private properties
 
+        private readonly PerformanceCounter _cpuCounter;
         private readonly ILog _log;
+        private readonly PerformanceCounter _ramCounter;
+
+        private readonly System.Timers.Timer _timer;
+
+        private readonly long _totalRam;
+
         private bool _skipResolutionCheck;
-
-        private PerformanceCounter _cpuCounter;
-        private PerformanceCounter _ramCounter;
-
-        private System.Timers.Timer _timer;
-
-        private long _totalRam;
 
         #endregion Private properties
 
@@ -79,11 +84,12 @@ namespace MinecraftTextureEditorUI
                 toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
                 toolStripProgressBarRam.Value = 0;
 
-                _timer = new System.Timers.Timer();
+                _timer = new System.Timers.Timer
+                {
+                    Interval = 1200
+                };
 
-                _timer.Interval = 1200;
-
-                _timer.Elapsed += _timerElapsed;
+                _timer.Elapsed += TimerElapsed;
 
                 _timer.Start();
             }
@@ -92,28 +98,8 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
-        /// <summary>
-        /// Timer elapsed event for updating cpu and ram usage bars
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _timerElapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            UpdateProgressBars();
-        }
 
         #region Private methods
-
-        /// <summary>
-        /// Restart the application
-        /// </summary>
-        public void RestartApplication()
-        {
-            _timer?.Stop();
-            Close();
-            ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
-            Process.Start(info);
-        }
 
         /// <summary>
         /// Check that the minecraft font is installed
@@ -430,6 +416,16 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Restart the application
+        /// </summary>
+        private void RestartApplication()
+        {
+            _timer?.Stop();
+            Close();
+            ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
+            Process.Start(info);
+        }
+        /// <summary>
         /// Save file
         /// </summary>
         private void Save()
@@ -641,13 +637,11 @@ namespace MinecraftTextureEditorUI
 
                 State.TexturePicker.TextureClicked += TexturePickerTextureClicked;
 
-                State.TexturePicker.LoadTextures();
-
                 State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
 
                 State.TexturePicker.Show();
 
-                State.TexturePicker.Location = new Point(ClientSize.Width / 8 * 6 + 50, 50);
+                State.TexturePicker.LoadTextures();
 
                 State.DrawingTools = new DrawingToolsForm(_log) { MdiParent = this, Visible = false };
 
@@ -657,8 +651,6 @@ namespace MinecraftTextureEditorUI
                 State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
 
                 State.DrawingTools.Show();
-
-                State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
             }
             catch (Exception ex)
             {
@@ -674,6 +666,7 @@ namespace MinecraftTextureEditorUI
         {
             LoadFile(filename);
         }
+
         /// <summary>
         /// Toggle the grid
         /// </summary>
@@ -1014,6 +1007,16 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Timer elapsed event for updating cpu and ram usage bars
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            UpdateProgressBars();
+        }
+
+        /// <summary>
         /// Toolbar (menu)
         /// </summary>
         /// <param name="sender"></param>
@@ -1211,7 +1214,6 @@ namespace MinecraftTextureEditorUI
         {
             Undo();
         }
-
         #endregion Form events
 
         #region Threadsafe Mehods
@@ -1230,7 +1232,10 @@ namespace MinecraftTextureEditorUI
             else
             {
                 toolStripProgressBarCpu.Value = (int)_cpuCounter.NextValue();
+                toolStripProgressBarCpu.ProgressBar.Text = $"CPU: {toolStripProgressBarCpu.Value}%";
+
                 toolStripProgressBarRam.Value = (int)_totalRam / 1024 - (int)_ramCounter.NextValue();
+                toolStripProgressBarRam.ProgressBar.Text = $"RAM: {toolStripProgressBarRam.Value} MB of {_totalRam/1024} MB";
             }
         }
 
