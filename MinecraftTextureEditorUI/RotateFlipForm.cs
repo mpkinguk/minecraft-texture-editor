@@ -1,18 +1,24 @@
 ﻿using log4net;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorUI
 {
-    public partial class AssetPickerForm : Form
+    public partial class RotateFlipForm : Form
     {
         #region Public properties
 
         /// <summary>
-        /// The asset list
+        /// The image height
         /// </summary>
-        public string Asset { get; set; }
+        public RotateFlipType RotateFlip { get; set; }
+
+        /// <summary>
+        /// The image width
+        /// </summary>
+        public int ImageWidth { get; set; }
 
         #endregion Public properties
 
@@ -26,7 +32,7 @@ namespace MinecraftTextureEditorUI
         /// Constructor
         /// </summary>
         /// <param name="log"></param>
-        public AssetPickerForm(ILog log, List<string> assets)
+        public RotateFlipForm(ILog log)
         {
             _log = log;
 
@@ -34,11 +40,16 @@ namespace MinecraftTextureEditorUI
             {
                 InitializeComponent();
 
-                comboBoxAsset.SelectedIndexChanged += ComboBoxAssetSelectedIndexChanged;
+                var types = Enum.GetNames(typeof(RotateFlipType)).ToList();
 
-                comboBoxAsset.Items.AddRange(assets.ToArray());
+                types.Sort();
 
-                comboBoxAsset.SelectedIndex = 0;
+                foreach (string item in types)
+                {
+                    comboBoxRotateFlip.Items.Add(item);
+                }
+
+                comboBoxRotateFlip.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -53,7 +64,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ButtonClick(object sender, EventArgs e)
+        private void ButtonOKClick(object sender, EventArgs e)
         {
             try
             {
@@ -62,7 +73,8 @@ namespace MinecraftTextureEditorUI
                 switch (button.Name)
                 {
                     case (nameof(buttonOK)):
-                        Asset = comboBoxAsset.Text;
+                        RotateFlip = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), (string)comboBoxRotateFlip.SelectedItem);
+
                         DialogResult = DialogResult.OK;
                         break;
 
@@ -72,23 +84,6 @@ namespace MinecraftTextureEditorUI
                 }
 
                 Close();
-            }
-            catch (Exception ex)
-            {
-                _log?.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Capture the width combo box selection change event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComboBoxAssetSelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                Asset = comboBoxAsset.Text;
             }
             catch (Exception ex)
             {

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 
 namespace MinecraftTextureEditorAPI.Model
 {
@@ -34,25 +32,6 @@ namespace MinecraftTextureEditorAPI.Model
         public Texture()
         {
             PixelList = new List<Pixel>();
-        }
-
-        /// <summary>
-        /// Initialise empty pixel list using dimensions
-        /// </summary>
-        /// <param name="width">The width</param>
-        /// <param name="height">The height</param>
-        public Texture(int width, int height)
-        {
-            PixelList = GetBlankPixels(width, height);
-        }
-
-        /// <summary>
-        /// Initialise pixel list using image
-        /// </summary>
-        /// <param name="image">The image</param>
-        public Texture(Bitmap image)
-        {
-            PixelList = GetPixelsFromImage(image);
         }
 
         #endregion Constructors

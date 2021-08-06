@@ -49,20 +49,20 @@ namespace MinecraftTextureEditorUI
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabPageDeploy3 = new System.Windows.Forms.TabPage();
+            this.checkBoxOnlyIncludeTextures = new System.Windows.Forms.CheckBox();
+            this.checkBoxUnpackZipFile = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.tabPageDeploy4 = new System.Windows.Forms.TabPage();
             this.labelProgress = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.progressBarDeploymentProgress = new System.Windows.Forms.ProgressBar();
-            this.tabPageDeploy3 = new System.Windows.Forms.TabPage();
-            this.label11 = new System.Windows.Forms.Label();
-            this.checkBoxOnlyIncludeTextures = new System.Windows.Forms.CheckBox();
-            this.checkBoxUnpackZipFile = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tabControlDeploy.SuspendLayout();
             this.tabPageDeploy1.SuspendLayout();
             this.tabPageDeploy2.SuspendLayout();
-            this.tabPageDeploy4.SuspendLayout();
             this.tabPageDeploy3.SuspendLayout();
+            this.tabPageDeploy4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -217,6 +217,7 @@ namespace MinecraftTextureEditorUI
             this.textBoxPackName.Name = "textBoxPackName";
             this.textBoxPackName.Size = new System.Drawing.Size(437, 24);
             this.textBoxPackName.TabIndex = 0;
+            this.textBoxPackName.TextChanged += new System.EventHandler(this.TextBoxPackNameTextChanged);
             // 
             // textBoxDescription
             // 
@@ -325,6 +326,63 @@ namespace MinecraftTextureEditorUI
             this.label1.TabIndex = 0;
             this.label1.Text = "Format:";
             // 
+            // tabPageDeploy3
+            // 
+            this.tabPageDeploy3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
+            this.tabPageDeploy3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.tabPageDeploy3.Controls.Add(this.checkBoxOnlyIncludeTextures);
+            this.tabPageDeploy3.Controls.Add(this.checkBoxUnpackZipFile);
+            this.tabPageDeploy3.Controls.Add(this.label11);
+            this.tabPageDeploy3.Location = new System.Drawing.Point(4, 26);
+            this.tabPageDeploy3.Name = "tabPageDeploy3";
+            this.tabPageDeploy3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDeploy3.Size = new System.Drawing.Size(631, 368);
+            this.tabPageDeploy3.TabIndex = 3;
+            this.tabPageDeploy3.Text = "Step 3";
+            this.tabPageDeploy3.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxOnlyIncludeTextures
+            // 
+            this.checkBoxOnlyIncludeTextures.AutoSize = true;
+            this.checkBoxOnlyIncludeTextures.Checked = true;
+            this.checkBoxOnlyIncludeTextures.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxOnlyIncludeTextures.ForeColor = System.Drawing.Color.Yellow;
+            this.checkBoxOnlyIncludeTextures.Location = new System.Drawing.Point(158, 137);
+            this.checkBoxOnlyIncludeTextures.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.checkBoxOnlyIncludeTextures.Name = "checkBoxOnlyIncludeTextures";
+            this.checkBoxOnlyIncludeTextures.Size = new System.Drawing.Size(249, 21);
+            this.checkBoxOnlyIncludeTextures.TabIndex = 7;
+            this.checkBoxOnlyIncludeTextures.Text = "Only include textures (PNG)";
+            this.checkBoxOnlyIncludeTextures.UseVisualStyleBackColor = true;
+            this.checkBoxOnlyIncludeTextures.CheckedChanged += new System.EventHandler(this.CheckBoxOnlyIncludeTexturesCheckedChanged);
+            // 
+            // checkBoxUnpackZipFile
+            // 
+            this.checkBoxUnpackZipFile.AutoSize = true;
+            this.checkBoxUnpackZipFile.Checked = true;
+            this.checkBoxUnpackZipFile.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUnpackZipFile.ForeColor = System.Drawing.Color.Yellow;
+            this.checkBoxUnpackZipFile.Location = new System.Drawing.Point(158, 211);
+            this.checkBoxUnpackZipFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.checkBoxUnpackZipFile.Name = "checkBoxUnpackZipFile";
+            this.checkBoxUnpackZipFile.Size = new System.Drawing.Size(299, 21);
+            this.checkBoxUnpackZipFile.TabIndex = 6;
+            this.checkBoxUnpackZipFile.Text = "Unpack zip file to resource folder";
+            this.checkBoxUnpackZipFile.UseVisualStyleBackColor = true;
+            this.checkBoxUnpackZipFile.CheckedChanged += new System.EventHandler(this.CheckBoxUnpackZipFileCheckedChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Yellow;
+            this.label11.Location = new System.Drawing.Point(8, 8);
+            this.label11.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(195, 20);
+            this.label11.TabIndex = 3;
+            this.label11.Text = "Deployment Options";
+            // 
             // tabPageDeploy4
             // 
             this.tabPageDeploy4.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
@@ -377,61 +435,6 @@ namespace MinecraftTextureEditorUI
             this.progressBarDeploymentProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBarDeploymentProgress.TabIndex = 0;
             // 
-            // tabPageDeploy3
-            // 
-            this.tabPageDeploy3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
-            this.tabPageDeploy3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.tabPageDeploy3.Controls.Add(this.checkBoxOnlyIncludeTextures);
-            this.tabPageDeploy3.Controls.Add(this.checkBoxUnpackZipFile);
-            this.tabPageDeploy3.Controls.Add(this.label11);
-            this.tabPageDeploy3.Location = new System.Drawing.Point(4, 26);
-            this.tabPageDeploy3.Name = "tabPageDeploy3";
-            this.tabPageDeploy3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDeploy3.Size = new System.Drawing.Size(631, 368);
-            this.tabPageDeploy3.TabIndex = 3;
-            this.tabPageDeploy3.Text = "Step 3";
-            this.tabPageDeploy3.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.ForeColor = System.Drawing.Color.Yellow;
-            this.label11.Location = new System.Drawing.Point(8, 8);
-            this.label11.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(195, 20);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Deployment Options";
-            // 
-            // checkBoxOnlyIncludeTextures
-            // 
-            this.checkBoxOnlyIncludeTextures.AutoSize = true;
-            this.checkBoxOnlyIncludeTextures.Checked = true;
-            this.checkBoxOnlyIncludeTextures.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxOnlyIncludeTextures.ForeColor = System.Drawing.Color.Yellow;
-            this.checkBoxOnlyIncludeTextures.Location = new System.Drawing.Point(158, 137);
-            this.checkBoxOnlyIncludeTextures.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.checkBoxOnlyIncludeTextures.Name = "checkBoxOnlyIncludeTextures";
-            this.checkBoxOnlyIncludeTextures.Size = new System.Drawing.Size(249, 21);
-            this.checkBoxOnlyIncludeTextures.TabIndex = 7;
-            this.checkBoxOnlyIncludeTextures.Text = "Only include textures (PNG)";
-            this.checkBoxOnlyIncludeTextures.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxUnpackZipFile
-            // 
-            this.checkBoxUnpackZipFile.AutoSize = true;
-            this.checkBoxUnpackZipFile.Checked = true;
-            this.checkBoxUnpackZipFile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxUnpackZipFile.ForeColor = System.Drawing.Color.Yellow;
-            this.checkBoxUnpackZipFile.Location = new System.Drawing.Point(158, 211);
-            this.checkBoxUnpackZipFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.checkBoxUnpackZipFile.Name = "checkBoxUnpackZipFile";
-            this.checkBoxUnpackZipFile.Size = new System.Drawing.Size(299, 21);
-            this.checkBoxUnpackZipFile.TabIndex = 6;
-            this.checkBoxUnpackZipFile.Text = "Unpack zip file to resource folder";
-            this.checkBoxUnpackZipFile.UseVisualStyleBackColor = true;
-            // 
             // DeploymentWizardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -451,10 +454,10 @@ namespace MinecraftTextureEditorUI
             this.tabPageDeploy1.PerformLayout();
             this.tabPageDeploy2.ResumeLayout(false);
             this.tabPageDeploy2.PerformLayout();
-            this.tabPageDeploy4.ResumeLayout(false);
-            this.tabPageDeploy4.PerformLayout();
             this.tabPageDeploy3.ResumeLayout(false);
             this.tabPageDeploy3.PerformLayout();
+            this.tabPageDeploy4.ResumeLayout(false);
+            this.tabPageDeploy4.PerformLayout();
             this.ResumeLayout(false);
 
         }

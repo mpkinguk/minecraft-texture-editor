@@ -110,7 +110,6 @@ namespace ZipFileManagerAPI
                 {
                     foreach (var file in fileNames)
                     {
-
                         using (var t = Task.Run(() =>
                         {
                             var newPath = file.Replace(path, "");
@@ -122,7 +121,6 @@ namespace ZipFileManagerAPI
 
                         OnFileProcessed($"Adding {file}...");
                     }
-
                 }
 
                 return true;

@@ -1,11 +1,11 @@
 ﻿using GenericUndoRedoManagerAPI;
 using log4net;
 using MinecraftTextureEditorAPI.Helpers;
-using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
-using static MinecraftTextureEditorAPI.Helpers.FileHelper;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.FileHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -65,12 +65,13 @@ namespace MinecraftTextureEditorUI
         {
             get => _showTransparentGrid;
             set
-            {            
+            {
                 _showTransparentGrid = value;
                 BackgroundImage = _showTransparentGrid ? Properties.Resources.transparentGrid : null;
                 RefreshDisplay();
             }
         }
+
         /// <summary>
         /// The pixel objects in use
         /// </summary>
@@ -85,6 +86,7 @@ namespace MinecraftTextureEditorUI
         /// The current zoom value
         /// </summary>
         public int Zoom { get; set; }
+
         #endregion Public variables
 
         #region private variables
@@ -152,7 +154,7 @@ namespace MinecraftTextureEditorUI
                 Texture = new Bitmap(width, height);
 
                 _width = width;
-                _height = height;          
+                _height = height;
 
                 _undoManager = new UndoManagerAction<Bitmap>(_log);
 
@@ -386,7 +388,7 @@ namespace MinecraftTextureEditorUI
 
                             tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
 
-                            if(State.Modifiers.Equals(Modifier.MirrorY) || State.Modifiers.Equals(Modifier.MirrorX | Modifier.MirrorY))
+                            if (State.Modifiers.Equals(Modifier.MirrorY) || State.Modifiers.Equals(Modifier.MirrorX | Modifier.MirrorY))
                             {
                                 inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
 
@@ -415,9 +417,9 @@ namespace MinecraftTextureEditorUI
                             var floodY = pixelPosition.Y;
 
                             tmpTexture = tmpTexture.FloodFill(currentColour, colour, floodX, floodY);
-                        } 
-                        else 
-                        { 
+                        }
+                        else
+                        {
                             tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
                         }
                     }
@@ -455,6 +457,7 @@ namespace MinecraftTextureEditorUI
             AddItem();
             RefreshDisplay();
         }
+
         /// <summary>
         /// Use mouse wheel to Zoom in/out
         /// </summary>
@@ -493,6 +496,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Paint the picture box
         /// </summary>
@@ -500,7 +504,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void PictureBoxImagePaint(object sender, PaintEventArgs e)
         {
-            if(Texture is null)
+            if (Texture is null)
             {
                 return;
             }
@@ -621,10 +625,6 @@ namespace MinecraftTextureEditorUI
 
                     Texture = (Bitmap)image.Clone();
 
-                    //pictureBoxImage.SizeMode = PictureBoxSizeMode.Normal;
-
-                    //Texture = GetTextureFromImage(image);
-
                     _undoManager = new UndoManagerAction<Bitmap>(_log);
 
                     Text = FileName.FileDetails()?.Name.ToUpper();
@@ -642,6 +642,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Redo
         /// </summary>
@@ -689,6 +690,21 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Rotate/Flip the image
+        /// </summary>
+        /// <param name="rotateFlipType">The rotate flip type</param>
+        public void Rotate(RotateFlipType rotateFlipType)
+        {
+            Texture = Texture.RotateAndFlip(rotateFlipType);
+
+            HasChanged = true;
+
+            AddItem();
+
+            RefreshDisplay();
         }
 
         /// <summary>
@@ -747,6 +763,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         #endregion Public methods
     }
 }

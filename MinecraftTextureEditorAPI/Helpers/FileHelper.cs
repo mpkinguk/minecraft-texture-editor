@@ -94,7 +94,6 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             try
             {
-
                 var files = Enumerable.Empty<string>();
 
                 var wildCardSplit = searchPatterns.Split(';');
@@ -108,7 +107,7 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                 return files.ToList();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log?.Debug(ex.Message);
                 return new List<string>();
@@ -137,6 +136,26 @@ namespace MinecraftTextureEditorAPI.Helpers
                 Log?.Error(ex.Message);
                 return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Get the root path of the project folder so it includes the assets path
+        /// </summary>
+        /// <param name="path">The path</param>
+        /// <returns>String</returns>
+        public static string GetProjectRootFolder(string path)
+        {
+            var filesPath = path;
+
+            var directoryPath = new DirectoryInfo(filesPath);
+
+            //We want to take the folder, not just the contents
+            if (directoryPath.Name.Equals("assets", StringComparison.InvariantCultureIgnoreCase))
+            {
+                filesPath = directoryPath.Parent.FullName;
+            }
+
+            return filesPath;
         }
 
         /// <summary>
@@ -238,7 +257,6 @@ namespace MinecraftTextureEditorAPI.Helpers
                 }
 
                 return image;
-
             }
             catch (Exception ex)
             {
@@ -440,6 +458,7 @@ namespace MinecraftTextureEditorAPI.Helpers
                 return selectedPath;
             }
         }
+
         #endregion Public methods
     }
 }

@@ -306,7 +306,7 @@ namespace MinecraftTextureEditorUI
                 // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
                 if (string.IsNullOrEmpty(State.Path))
                 {
-                    var message = "No path selected to load textures. Do you want to use the Create Deployment Wizard?";
+                    var message = "No path selected to load textures. Do you want to use the Create Deployment Wizard?\nClick \"Yes\" to use the wizard\nClick \"No\" to choose another path\nClick \"Cancel\" to choose you own file or create a new one";
                     _log.Debug("No path selected");
                     var result = MessageBox.Show(this, message, "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
 
@@ -323,6 +323,12 @@ namespace MinecraftTextureEditorUI
                             await LoadTextures(browse).ConfigureAwait(false);
                             break;
                     }
+                }
+
+                if (string.IsNullOrEmpty(State.Path))
+                {
+                    State.Path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    return;
                 }
 
                 var assetsDirectorySearch = SafeFileEnumerator.EnumerateDirectories(State.Path, Constants.AssetsFolder, SearchOption.AllDirectories).ToList();
@@ -415,7 +421,30 @@ namespace MinecraftTextureEditorUI
 
                 if (deploymentWizard.ShowDialog(this) == DialogResult.OK)
                 {
-                    MessageBox.Show("Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete");
+                    var deployed = deploymentWizard.Deployed;
+                    var unPacked = deploymentWizard.UnPacked;
+                    var zipFilePath = deploymentWizard.ZipFilePath;
+
+                    if (deployed)
+                    {
+                        if (unPacked)
+                        {
+                            MessageBox.Show(this, $"Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        } else
+                        {
+                            if(MessageBox.Show(
+                                this, 
+                                "Package deployed as zip file\nWould you like to access this location?", 
+                                "Deployment complete. Access location?", MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
+                            {
+                                Process.Start(new ProcessStartInfo("Explorer.exe", $"/select, {zipFilePath}"));
+                            }
+                        }
+                    } 
+                    else
+                    {
+                        MessageBox.Show("Package not deployed");
+                    }
                 }
             }
             catch (Exception ex)
@@ -876,6 +905,25 @@ namespace MinecraftTextureEditorUI
             }
             toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}";
             toolStripBrushSizeLabel.Text = $"Brush = {State.BrushSize} px";
+        }
+
+        /// <summary>
+        /// Rotate/Flip the image
+        /// </summary>
+        private void RotateAndFlip()
+        {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
+            using (var rotateForm = new RotateFlipForm(_log))
+            {
+                if (rotateForm.ShowDialog(this).Equals(DialogResult.OK))
+                {
+                    State.Editor.Rotate(rotateForm.RotateFlip);
+                }
+            }
         }
 
         #endregion Private methods
@@ -1358,6 +1406,16 @@ namespace MinecraftTextureEditorUI
             Undo();
         }
 
+        /// <summary>
+        /// Capture the ToolStripRotateFlipMenuItemClick event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripRotateFlipMenuItemClick(object sender, EventArgs e)
+        {
+            RotateAndFlip();
+        }
+
         #endregion Form events
 
         #region Threadsafe Mehods
@@ -1377,6 +1435,11 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
+                    if(toolStripProgressBarCpu is null || toolStripProgressBarRam is null)
+                    {
+                        return;
+                    }
+
                     toolStripProgressBarCpu.Value = (int)_cpuCounter.NextValue();
                     toolStripProgressBarCpu.ProgressBar.Text = $"CPU: {toolStripProgressBarCpu.Value}%";
 

@@ -78,6 +78,7 @@ namespace MinecraftTextureEditorAPI.Helpers
                 Log?.Debug(ex.Message);
             }
         }
+
         #endregion Public methods
     }
 }

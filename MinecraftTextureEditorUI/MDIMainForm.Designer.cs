@@ -14,6 +14,8 @@ namespace MinecraftTextureEditorUI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
+            _timer.Stop();
+
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -64,6 +66,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTransparencyLock = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDeploymentWizard = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCreateProjectWizard = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -91,8 +95,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripToolTypeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripBrushSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBarCpu = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripProgressBarRam = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripProgressBarCpu = new CustomControls.MyToolStripProgressBar();
+            this.toolStripProgressBarRam = new CustomControls.MyToolStripProgressBar();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -325,6 +329,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY,
             this.toolStripMenuItemTransparencyLock,
             this.toolStripSeparator10,
+            this.toolStripMenuItem1,
+            this.toolStripSeparator7,
             this.toolStripMenuItemDeploymentWizard,
             this.toolStripMenuItemCreateProjectWizard,
             this.toolStripSeparator5,
@@ -412,6 +418,19 @@ namespace MinecraftTextureEditorUI
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(387, 6);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItem1.Text = "Rotate and Flip...";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.ToolStripRotateFlipMenuItemClick);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(387, 6);
             // 
             // toolStripMenuItemDeploymentWizard
             // 
@@ -629,8 +648,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel,
             this.toolStripToolTypeLabel,
             this.toolStripBrushSizeLabel,
-            this.toolStripProgressBarCpu,
-            this.toolStripProgressBarRam });
+            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarCpu,
+            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarRam});
             this.statusStrip.Location = new System.Drawing.Point(0, 431);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
@@ -775,8 +794,10 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripBrushSizeLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBarCpu;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBarRam;
+        private CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
+        private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }
 

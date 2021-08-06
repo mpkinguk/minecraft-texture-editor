@@ -44,6 +44,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             Dim = 98,
             XDim = 50
         }
+
         /// <summary>
         /// Specifies a mode for argb transformations.
         /// </summary>
@@ -330,6 +331,7 @@ namespace MinecraftTextureEditorAPI.Helpers
                 SystemMath.Max(0D, SystemMath.Min(1D, double.Parse($"{l:0.##}")))
             };
         }
+
         /// <summary>
         /// Multiplies the Color's Luminance or Brightness by the argument;
         /// and optionally specifies the output Alpha.

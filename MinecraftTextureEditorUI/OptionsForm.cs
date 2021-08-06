@@ -35,7 +35,7 @@ namespace MinecraftTextureEditorUI
         #region Private properties
 
         private readonly ILog _log;
-        
+
         private bool _hasChanged;
         private bool _hasSaved;
 
@@ -130,6 +130,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         #endregion Private methods
 
         #region Form events
@@ -212,6 +213,7 @@ namespace MinecraftTextureEditorUI
         {
             _hasChanged = true;
         }
+
         #endregion Form events
     }
 }

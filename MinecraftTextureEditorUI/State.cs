@@ -1,6 +1,5 @@
-﻿using MinecraftTextureEditorAPI.Model;
+﻿using System.Drawing;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
-using System.Drawing;
 
 namespace MinecraftTextureEditorUI
 {
@@ -68,10 +67,12 @@ namespace MinecraftTextureEditorUI
         /// Texture Picker form
         /// </summary>
         public static TexturePickerForm TexturePicker;
+
         /// <summary>
         /// The  tooltype
         /// </summary>
         public static ToolType ToolType;
+
         /// <summary>
         /// The  transparency lock setting
         /// </summary>

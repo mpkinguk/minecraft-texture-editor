@@ -99,6 +99,7 @@ namespace GenericUndoRedoManagerAPI
                 _log?.Error(ex.Message);
             }
         }
+
         public void Dispose()
         {
             try
@@ -160,6 +161,7 @@ namespace GenericUndoRedoManagerAPI
                 return default;
             }
         }
+
         /// <summary>
         /// Returns a generic List cast of the Undo stack
         /// </summary>

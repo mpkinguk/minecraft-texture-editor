@@ -17,6 +17,7 @@ namespace MinecraftTextureEditorUI
         /// The image width
         /// </summary>
         public int ImageWidth { get; set; }
+
         #endregion Public properties
 
         #region Private properties
@@ -142,6 +143,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         #endregion Private form events
     }
 }

@@ -64,7 +64,25 @@
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -214,6 +232,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -358,18 +382,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -413,6 +425,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_07CA1AE228D8F2215C3EAB4D5A3612E4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -864,7 +882,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_6FAC1761E81DC0CA0115145770A1B7B7"
@@ -895,7 +913,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_7921DAF7C6189AA0EA0C52ACD65BB03E"
@@ -1105,7 +1123,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_CC55C9A5E1CD5E763336CE53808C23E2"
@@ -1345,15 +1363,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{CD854B12-0580-43B4-9134-CF0FD174883B}"
-        "PackageCode" = "8:{22C456C3-237A-4EB0-A7BE-90FD53216E71}"
+        "ProductCode" = "8:{8DA50D04-7AFC-49A3-9F31-1599350CFA6D}"
+        "PackageCode" = "8:{BAFE820F-4409-45AE-B476-E5D6DFD1AEED}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.0"
+        "ProductVersion" = "8:2.1.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"

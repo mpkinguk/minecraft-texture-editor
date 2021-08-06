@@ -24,6 +24,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             try
             {
+                if (string.IsNullOrEmpty(parentDirectory))
+                {
+                    return null;
+                }
+
                 var directories = Enumerable.Empty<string>();
                 if (searchOpt == SearchOption.AllDirectories)
                 {

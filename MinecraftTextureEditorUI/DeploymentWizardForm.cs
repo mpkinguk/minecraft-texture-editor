@@ -14,9 +14,27 @@ namespace MinecraftTextureEditorUI
     {
         private readonly ILog _log;
 
+        /// <summary>
+        /// Was the packaged deployed?
+        /// </summary>
+        public bool Deployed => _deployed;
+
+        /// <summary>
+        /// Was the package unpacked?
+        /// </summary>
+        public bool UnPacked => _unpack;
+
+        /// <summary>
+        /// The zip file path created
+        /// </summary>
+        public string ZipFilePath => _zipFilePath;
+
         private bool _deployed;
         private bool _onlyTextures;
         private bool _unpack;
+        private bool _updateDescription;
+
+        private string _zipFilePath;
 
         /// <summary>
         /// Constructor
@@ -31,11 +49,24 @@ namespace MinecraftTextureEditorUI
 
             PopulateVersions();
 
+            textBoxPackName.PreviewKeyDown += TextBoxPackName_PreviewKeyDown;
+
             _unpack = checkBoxUnpackZipFile.Checked;
             _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
         }
 
+
         #region Form events
+
+        /// <summary>
+        /// Preview key down event for pack name textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBoxPackName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            _updateDescription = (textBoxPackName.Text.Equals(textBoxDescription.Text));
+        }
 
         /// <summary>
         /// Finish button clicked
@@ -61,11 +92,6 @@ namespace MinecraftTextureEditorUI
                 switch (tabControlDeploy.SelectedIndex)
                 {
                     case 1:
-                        // Validate inputs before trying to create pack
-                        if (!int.TryParse(comboBoxFormat.Text.Split(':')[0], out int format))
-                        {
-                            throw new Exception("Invalid format");
-                        }
                         if (string.IsNullOrEmpty(textBoxDescription.Text))
                         {
                             throw new Exception("Description is empty");
@@ -74,16 +100,25 @@ namespace MinecraftTextureEditorUI
                         {
                             throw new Exception("Pack name is empty");
                         }
-                        if (!CreateMetaFile(textBoxDescription.Text, format))
-                        {
-                            throw new Exception("Could not create meta file");
-                        }
 
                         IncrementTabControl();
 
                         break;
+
                     case 2:
                         IncrementTabControl();
+
+                        // Validate inputs before trying to create pack
+                        if (!int.TryParse(comboBoxFormat.Text.Split(':')[0], out int format))
+                        {
+                            throw new Exception("Invalid format");
+                        }
+
+                        // If we cannot create the pack file, abort!
+                        if (!CreateMetaFile(textBoxDescription.Text, format))
+                        {
+                            throw new Exception("Could not create meta file");
+                        }
 
                         // Clone to prevent threading issues
                         string PackName = (string)textBoxPackName.Text.Clone();
@@ -91,6 +126,8 @@ namespace MinecraftTextureEditorUI
                         var resourcePackFolder = FileHelper.GetResourcePackFolder();
 
                         var outputFile = Path.Combine(resourcePackFolder, string.Concat(PackName, ".zip"));
+
+                        _zipFilePath = outputFile;
 
                         var unpackDirectory = outputFile.Replace(".zip", "");
 
@@ -108,6 +145,7 @@ namespace MinecraftTextureEditorUI
                                         }
                                     }
                                     break;
+
                                 case DialogResult.No:
                                     File.Delete(outputFile);
                                     if (_unpack)
@@ -118,6 +156,7 @@ namespace MinecraftTextureEditorUI
                                         }
                                     }
                                     break;
+
                                 case DialogResult.Cancel:
                                     throw new OperationCanceledException("Operation cancelled");
                             }
@@ -177,11 +216,45 @@ namespace MinecraftTextureEditorUI
             switch (checkBox.Name)
             {
                 case nameof(checkBoxUnpackZipFile):
-                    _unpack = checkBoxUnpackZipFile.Checked;
+                    _unpack = checkBox.Checked;
                     break;
+
                 case nameof(checkBoxOnlyIncludeTextures):
-                    _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
+                    _onlyTextures = checkBox.Checked;
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Only include textures
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxOnlyIncludeTexturesCheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxCheckedChanged(sender, e);
+        }
+
+        /// <summary>
+        /// Unpack zip file in resources folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckBoxUnpackZipFileCheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxCheckedChanged(sender, e);
+        }
+
+        /// <summary>
+        /// Capture the text changed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBoxPackNameTextChanged(object sender, EventArgs e)
+        {
+            if (_updateDescription)
+            {
+                textBoxDescription.Text = textBoxPackName.Text;
             }
         }
 
@@ -194,7 +267,9 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var fileName = Path.Combine(State.Path, "pack.mcmeta");
+                var filesPath = FileHelper.GetProjectRootFolder(State.Path);               
+
+                var fileName = Path.Combine(filesPath, "pack.mcmeta");
 
                 var pack = new Pack() { Description = description, Format = format };
 
@@ -229,11 +304,11 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(true);
 
-                var filesPath = State.Path;
+                var filesPath = FileHelper.GetProjectRootFolder(State.Path);
 
                 var files = await Task.Run(() => FileHelper.GetFiles(filesPath, _onlyTextures ? "*.png" : "*.*", true)).ConfigureAwait(false);
 
-                files.Add(Path.Combine(State.Path, "pack.mcmeta"));
+                files.Add(Path.Combine(filesPath, "pack.mcmeta"));
 
                 UpdateProgressBarMin(0);
                 UpdateProgressBarValue(0);
@@ -243,7 +318,7 @@ namespace MinecraftTextureEditorUI
 
                 zipFileManager.FileProcessed += FileProcessed;
 
-                _deployed = await zipFileManager.ZipFiles(outputFile, State.Path, files).ConfigureAwait(false);
+                _deployed = await zipFileManager.ZipFiles(outputFile, filesPath, files).ConfigureAwait(false);
 
                 return _deployed;
             }
@@ -309,6 +384,7 @@ namespace MinecraftTextureEditorUI
                     break;
             }
         }
+
         /// <summary>
         /// Upack a zip file
         /// </summary>
@@ -352,6 +428,7 @@ namespace MinecraftTextureEditorUI
                 UpdateCursor(false);
             }
         }
+
         #endregion Form events
 
         #region Threadsafe methods
@@ -522,6 +599,7 @@ namespace MinecraftTextureEditorUI
                 progressBarDeploymentProgress.Minimum = value;
             }
         }
+
         /// <summary>
         /// Threadsafe method for updating progressbar value
         /// </summary>
@@ -555,6 +633,7 @@ namespace MinecraftTextureEditorUI
                 labelProgress.Text = message;
             }
         }
+
         #endregion Threadsafe methods
     }
 }

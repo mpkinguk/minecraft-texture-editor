@@ -183,6 +183,7 @@ namespace MinecraftTextureEditorUI
                         buttonNext.Enabled = true;
                         buttonFinish.Enabled = false;
                         break;
+
                     default:
                         if (tabControl.SelectedIndex == lastTab)
                         {
@@ -204,6 +205,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Unpack the version .jar file to the chosen project directory
         /// </summary>
@@ -211,7 +213,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="outputPath">The output path</param>
         private async Task<bool> UnpackZipFile(string packVersion, string outputPath)
         {
-            var result = false;
+            bool result;
 
             try
             {
@@ -255,6 +257,7 @@ namespace MinecraftTextureEditorUI
                 UpdateCursor(false);
             }
         }
+
         #endregion Form events
 
         #region Threadsafe methods
@@ -377,9 +380,9 @@ namespace MinecraftTextureEditorUI
                     MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                _log?.Error(ex.Message); 
+                _log?.Error(ex.Message);
             }
         }
 
@@ -425,11 +428,12 @@ namespace MinecraftTextureEditorUI
                     labelProgress.Text = message;
                 }
             }
-            catch (Exception ex) 
-            { 
-                _log?.Error(ex.Message); 
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
             }
         }
+
         #endregion Threadsafe methods
 
         ///// <summary>

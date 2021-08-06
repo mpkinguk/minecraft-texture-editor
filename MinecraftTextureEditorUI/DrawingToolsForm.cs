@@ -78,6 +78,7 @@ namespace MinecraftTextureEditorUI
                 Invalidate(true);
             }
         }
+
         /// <summary>
         /// The transparency lock
         /// </summary>
@@ -131,6 +132,7 @@ namespace MinecraftTextureEditorUI
         /// Tool type changed event
         /// </summary>
         public event ToolTypeChangedEventHandler ToolTypeChanged;
+
         /// <summary>
         /// Back colour changed event
         /// </summary>
@@ -371,6 +373,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Update the transparency lock button
         /// </summary>
@@ -678,6 +681,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         #endregion Form events
     }
 }

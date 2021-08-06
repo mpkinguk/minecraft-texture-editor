@@ -26,6 +26,7 @@ namespace MinecraftTextureEditorAPI
         /// MinecraftFolder
         /// </summary>
         public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder");
+
         /// <summary>
         /// ResourcePackFolder
         /// </summary>
