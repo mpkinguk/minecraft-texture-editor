@@ -50,7 +50,7 @@ namespace MinecraftTextureEditorAPI.Model
         /// Initialise pixel list using image
         /// </summary>
         /// <param name="image">The image</param>
-        public Texture(Image image)
+        public Texture(Bitmap image)
         {
             PixelList = GetPixelsFromImage(image);
         }

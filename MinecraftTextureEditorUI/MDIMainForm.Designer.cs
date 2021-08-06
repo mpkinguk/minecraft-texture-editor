@@ -91,8 +91,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripToolTypeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripBrushSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBarCpu = new CustomControls.MyToolStripProgressBar();
-            this.toolStripProgressBarRam = new CustomControls.MyToolStripProgressBar();
+            this.toolStripProgressBarCpu = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripProgressBarRam = new System.Windows.Forms.ToolStripProgressBar();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -629,8 +629,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel,
             this.toolStripToolTypeLabel,
             this.toolStripBrushSizeLabel,
-            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarCpu,
-            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarRam});
+            this.toolStripProgressBarCpu,
+            this.toolStripProgressBarRam });
             this.statusStrip.Location = new System.Drawing.Point(0, 431);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
@@ -775,8 +775,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripBrushSizeLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
-        private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBarCpu;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBarRam;
     }
 }
 

@@ -1,4 +1,6 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
+using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,12 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Forms;
-using static MinecraftTextureEditorAPI.Helpers.FileHelper;
-using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
-using MinecraftTextureEditorAPI.Helpers;
 using System.Threading.Tasks;
-using MinecraftTextureEditorAPI;
+using System.Windows.Forms;
+using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
+using static MinecraftTextureEditorAPI.Helpers.FileHelper;
 
 namespace MinecraftTextureEditorUI
 {
@@ -21,7 +21,7 @@ namespace MinecraftTextureEditorUI
 
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
+        private static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
 
         #endregion External methods
 
@@ -221,7 +221,7 @@ namespace MinecraftTextureEditorUI
                 {
                     return;
                 }
-                State.PixelClipboard = State.Editor.Texture.Clone();
+                State.PixelClipboard = (Bitmap)State.Editor.Texture.Clone();
             }
             catch (Exception ex)
             {
@@ -241,7 +241,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                State.PixelClipboard = State.Editor.Texture.Clone();
+                State.PixelClipboard = (Bitmap)State.Editor.Texture.Clone();
 
                 Clear();
             }
@@ -314,9 +314,11 @@ namespace MinecraftTextureEditorUI
                     {
                         case DialogResult.Cancel:
                             return;
+
                         case DialogResult.Yes:
                             await OpenCreateProjectWizardForm().ConfigureAwait(false);
                             return;
+
                         case DialogResult.No:
                             await LoadTextures(browse).ConfigureAwait(false);
                             break;
@@ -429,7 +431,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                if (State.Editor is null)
+                if (State.Editor is null || State.PixelClipboard is null)
                 {
                     return;
                 }
@@ -441,7 +443,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                State.Editor.Texture = data;
+                State.Editor.Texture = (Bitmap)data;
                 State.Editor.HasChanged = true;
                 State.Editor.AddItem();
                 State.Editor.RefreshDisplay();
@@ -520,6 +522,7 @@ namespace MinecraftTextureEditorUI
             ProcessStartInfo info = new ProcessStartInfo(Application.ExecutablePath);
             Process.Start(info);
         }
+
         /// <summary>
         /// Save file
         /// </summary>
@@ -575,6 +578,54 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Modifier has been selected. Inform other controls
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="modifier">The modifier</param>
+        private void SelectModifier(object sender, Modifier modifier)
+        {
+            try
+            {
+                if (sender.GetType().Equals(typeof(ToolStripMenuItem)))
+                {
+                    var selectedMenuItem = (ToolStripMenuItem)sender;
+
+                    // Reset other items
+                    foreach (object item in selectedMenuItem.GetCurrentParent().Items)
+                    {
+                        if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                        {
+                            ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+                            menuItem.Checked = false;
+                        }
+                    }
+
+                    selectedMenuItem.Checked = true;
+                }
+
+                if (modifier.Equals(Modifier.TransparencyLock))
+                {
+                    State.TransparencyLock = !State.TransparencyLock;
+                }
+                else
+                {
+                    State.Modifiers = modifier;
+                }
+
+                if (State.DrawingTools is null)
+                {
+                    return;
+                }
+
+                State.DrawingTools.UpdateButtons();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Tool has been selected. Inform other controls
         /// </summary>
         /// <param name="sender">The sender</param>
@@ -600,16 +651,9 @@ namespace MinecraftTextureEditorUI
                     selectedMenuItem.Checked = true;
                 }
 
-                if (toolType.Equals(ToolType.TransparencyLock))
-                {
-                    State.TransparencyLock = !State.TransparencyLock;
-                }
-                else
-                {
-                    State.ToolType = toolType;
-                }
+                State.ToolType = toolType;
 
-                if(State.DrawingTools is null)
+                if (State.DrawingTools is null)
                 {
                     return;
                 }
@@ -621,6 +665,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Show the about form
         /// </summary>
@@ -868,7 +913,7 @@ namespace MinecraftTextureEditorUI
                 State.Colour2 = colour;
             }
 
-            if(State.DrawingTools is null)
+            if (State.DrawingTools is null)
             {
                 return;
             }
@@ -933,7 +978,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                CheckUndos();             
+                CheckUndos();
             }
             catch (Exception ex)
             {
@@ -1006,11 +1051,11 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MDIMainFormShown(object sender, EventArgs e)
+        private async void MDIMainFormShown(object sender, EventArgs e)
         {
             ShowToolWindows();
 
-            LoadTextures(true);
+            await LoadTextures(true).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1072,6 +1117,7 @@ namespace MinecraftTextureEditorUI
         {
             SaveAs();
         }
+
         /// <summary>
         /// Save (button)
         /// </summary>
@@ -1121,6 +1167,7 @@ namespace MinecraftTextureEditorUI
         {
             toolStrip.Visible = toolBarToolStripMenuItem.Checked;
         }
+
         /// <summary>
         /// Create Project Wizard
         /// </summary>
@@ -1258,7 +1305,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemMirrorXClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.MirrorX);
+            SelectModifier(sender, Modifier.MirrorX);
         }
 
         /// <summary>
@@ -1268,7 +1315,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemMirrorYClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.MirrorY);
+            SelectModifier(sender, Modifier.MirrorY);
         }
 
         /// <summary>
@@ -1298,7 +1345,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemTransparencyLockClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.TransparencyLock);
+            SelectModifier(sender, Modifier.TransparencyLock);
         }
 
         /// <summary>
@@ -1310,6 +1357,7 @@ namespace MinecraftTextureEditorUI
         {
             Undo();
         }
+
         #endregion Form events
 
         #region Threadsafe Mehods
@@ -1336,12 +1384,12 @@ namespace MinecraftTextureEditorUI
                     toolStripProgressBarRam.ProgressBar.Text = $"RAM: {toolStripProgressBarRam.Value} MB of {_totalRam / 1024} MB";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _log?.Error(ex.Message);
             }
         }
 
-        #endregion Threadsafe Methods
+        #endregion Threadsafe Mehods
     }
 }

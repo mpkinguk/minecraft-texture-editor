@@ -379,6 +379,8 @@ namespace MinecraftTextureEditorAPI.Helpers
                 {
                     dialog.InitialDirectory = string.IsNullOrEmpty(selectedPath) ? Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) : selectedPath;
 
+                    dialog.Filter = Constants.Filter;
+
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
                         var filename = dialog.FileName;

@@ -50,6 +50,11 @@ namespace MinecraftTextureEditorUI
         public static Color EraserColor;
 
         /// <summary>
+        /// The modifiers state
+        /// </summary>
+        public static Modifier Modifiers;
+
+        /// <summary>
         /// The path
         /// </summary>
         public static string Path;
@@ -57,7 +62,7 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Pixel clipboard
         /// </summary>
-        public static Texture PixelClipboard;
+        public static Bitmap PixelClipboard;
 
         /// <summary>
         /// Texture Picker form

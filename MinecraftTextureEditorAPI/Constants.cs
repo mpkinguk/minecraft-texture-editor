@@ -40,5 +40,10 @@ namespace MinecraftTextureEditorAPI
         /// VersionsFolder
         /// </summary>
         public static string VersionsFolder = ConfigurationHelper.LoadSetting("VersionsFolder");
+
+        /// <summary>
+        /// Filter
+        /// </summary>
+        public static string Filter = "Png Files(*.png)|*.png|Jpg Files(*.jpg)|*.jpg|All Files(*.*)|*.*";
     }
 }

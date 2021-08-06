@@ -19,6 +19,9 @@ namespace MinecraftTextureEditorUI
         public delegate void ForeColourChangedEventHandler();
 
         public delegate void ToolTypeChangedEventHandler();
+
+        public delegate void ModifierChangedEventHandler();
+
         public delegate void TransparencyLockChangedEventHandler();
 
         #endregion Public delegates
@@ -63,11 +66,6 @@ namespace MinecraftTextureEditorUI
             {
                 State.ToolType = value;
 
-                if (value.Equals(ToolType.TransparencyLock))
-                {
-                    return;
-                }
-
                 var button = (Button)Controls[$"button{value}"];
 
                 if (button is null)
@@ -93,6 +91,18 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// The modifiers flag
+        /// </summary>
+        public Modifier Modifiers
+        {
+            get { return State.Modifiers; }
+            set
+            {
+                State.Modifiers = value;
+            }
+        }
+
         #endregion Public properties
 
         #region Public events
@@ -113,6 +123,11 @@ namespace MinecraftTextureEditorUI
         public event BackColourChangedEventHandler Colour2Changed;
 
         /// <summary>
+        /// Modifier changed event
+        /// </summary>
+        public event ModifierChangedEventHandler ModifierChanged;
+
+        /// <summary>
         /// Tool type changed event
         /// </summary>
         public event ToolTypeChangedEventHandler ToolTypeChanged;
@@ -126,6 +141,10 @@ namespace MinecraftTextureEditorUI
         #region Private properties
 
         private readonly ILog _log;
+
+        private bool _mirrorX;
+
+        private bool _mirrorY;
 
         #endregion Private properties
 
@@ -164,9 +183,9 @@ namespace MinecraftTextureEditorUI
 
                 State.EraserColor = Color.Transparent;
 
-                State.Colour2 = Color.Black;
+                Colour1 = Color.White;
 
-                State.Colour1 = Color.White;
+                Colour2 = Color.Black;
 
                 State.BrushSize = 1;
 
@@ -444,7 +463,9 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonMirrorXClick(object sender, EventArgs e)
         {
-            OnToolTypeChanged(ToolType.MirrorX);
+            _mirrorX = !_mirrorX;
+
+            OnModifierChanged();
         }
 
         /// <summary>
@@ -454,7 +475,9 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonMirrorYClick(object sender, EventArgs e)
         {
-            OnToolTypeChanged(ToolType.MirrorY);
+            _mirrorY = !_mirrorY;
+
+            OnModifierChanged();
         }
 
         /// <summary>
@@ -516,6 +539,16 @@ namespace MinecraftTextureEditorUI
             State.Colour2 = colour;
 
             Colour2Changed?.Invoke();
+        }
+
+        /// <summary>
+        /// Modifier changed event
+        /// </summary>
+        private void OnModifierChanged()
+        {
+            Modifiers = (_mirrorX ? Modifier.MirrorX : 0x0) | (_mirrorX ? Modifier.MirrorY : 0x0);
+
+            ToolTypeChanged?.Invoke();
         }
 
         /// <summary>

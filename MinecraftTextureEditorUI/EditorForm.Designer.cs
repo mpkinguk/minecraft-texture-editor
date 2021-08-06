@@ -53,6 +53,7 @@ namespace MinecraftTextureEditorUI
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ClientSize = new System.Drawing.Size(417, 363);
             this.Controls.Add(this.pictureBoxImage);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);

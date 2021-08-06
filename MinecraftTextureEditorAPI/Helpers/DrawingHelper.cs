@@ -34,10 +34,15 @@ namespace MinecraftTextureEditorAPI.Helpers
             Dropper,
             Texturiser,
             FloodFill,
-            Rainbow,
-            MirrorX,
-            MirrorY,
-            TransparencyLock
+            Rainbow
+        }
+
+        [Flags]
+        public enum Modifier
+        {
+            MirrorX = 1,
+            MirrorY = 2,
+            TransparencyLock = 4
         }
 
         #endregion Enums
@@ -83,7 +88,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <returns>Bool</returns>
         public static bool ColourMatch(Color a, Color b)
         {
-            return (a.ToArgb() & 0xffffff) == (b.ToArgb() & 0xffffff);
+            return (a.ToArgb().Equals(b.ToArgb()));
         }
 
         /// <summary>
@@ -94,37 +99,55 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x">x</param>
         /// <param name="y">y</param>
         /// <param name="texture">The texture</param>
-        public static double FloodFill(Color currentColour, Color newColour, int x, int y, Texture texture)
+        /// <returns>Image</returns>
+        public static Bitmap FloodFill(this Bitmap image, Color currentColour, Color newColour, int x, int y)
         {
-            var start = DateTime.Now;
+            var width = image.Width;
+            var height = image.Height;
 
-            var width = texture.Width;
-            var height = texture.Height;
-
-            var pixelCount = Convert.ToInt32(texture.PixelList.Count * 1.75F);
+            var tmp = new Bitmap(width, height);
 
             Queue<Point> pixels = new Queue<Point>();
+            
             pixels.Enqueue(new Point(x, y));
 
-            Bitmap bmp = BitmapFromTexture(texture);
+            //var found = false;
 
-            if (texture.PixelList.Any(o => !ColourMatch(o.PixelColour, currentColour)))
-            {
-                // The *1.75F denotes the various offshoots from the main coordinates
-                while (pixels.Count > 0 && pixels.Count <= pixelCount)
+            //for (int py = 0; py < height; py++)
+            //{
+            //    for (int px = 0; px < width; px++)
+            //    {
+            //        if(ColourMatch((image).GetPixel(x, y), currentColour))
+            //        {
+            //            found = true;
+            //            break;
+            //        }
+            //    }
+
+            //    if (found)
+            //    {
+            //        break;
+            //    }
+            //}           
+
+            //if (!found)
+            //{
+            var g = Graphics.FromImage(tmp);
+
+            g.DrawImageUnscaled(image, 0, 0);
+
+            while (pixels.Count > 0)
                 {
                     Point a = pixels.Dequeue();
 
                     //make sure we stay within bounds
                     if (InBounds(a.X, a.Y, width, height))
                     {
-                        var currentPixelColour = bmp.GetPixel(a.X, a.Y);
+                        var currentPixelColour = tmp.GetPixel(a.X, a.Y);
 
-                        if (ColourMatch(currentPixelColour, currentColour) && currentColour != newColour)
+                        if (ColourMatch(currentPixelColour, currentColour) && !ColourMatch(currentColour, newColour))
                         {
-                            bmp.SetPixel(a.X, a.Y, newColour);
-
-                            //GetPixel(texture, a.X, a.Y).PixelColour = newColour;
+                             tmp.SetPixel(a.X, a.Y, newColour);
 
                             // Check bounds and colour before queuing next point
                             pixels.Enqueue(new Point(a.X - 1, a.Y));
@@ -134,20 +157,19 @@ namespace MinecraftTextureEditorAPI.Helpers
                         }
                     }
                 }
+            //}
+            //else
+            //{
+            //    var g = Graphics.FromImage(image);
 
-                texture.PixelList = GetTextureFromImage(bmp).PixelList;
-            }
-            else
-            {
-                foreach (var pixel in texture.PixelList)
-                {
-                    pixel.PixelColour = newColour;
-                }
-            }
+            //    g.Clear(newColour);
 
-            TimeSpan ts = DateTime.Now - start;
+            //    g.Flush();
+            //}
 
-            return ts.TotalSeconds;
+            g.Flush();
+
+            return (Bitmap)tmp.Clone();
         }
 
         /// <summary>
@@ -220,21 +242,21 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x">x coordinate</param>
         /// <param name="y">y coordinate</param>
         /// <returns>Color</returns>
-        public static Color GetColour(Image image, int x, int y)
+        public static Color GetColour(Bitmap image, int x, int y)
         {
             try
             {
-                using (var tmp = new Bitmap(1, 1))
-                {
-                    var rectangle = new Rectangle(0, 0, 1, 1);
+                //using (var tmp = new Bitmap(1, 1))
+                //{
+                //    var rectangle = new Rectangle(0, 0, 1, 1);
 
-                    using (var g = Graphics.FromImage(tmp))
-                    {
-                        g.DrawImage(image, rectangle, new Rectangle(x, y, 1, 1), GraphicsUnit.Pixel);
-                    }
+                //    using (var g = Graphics.FromImage(tmp))
+                //    {
+                //        g.DrawImage(image, rectangle, new Rectangle(x, y, 1, 1), GraphicsUnit.Pixel);
+                //    }
 
-                    return tmp.GetPixel(0, 0);
-                }
+                    return image.GetPixel(x, y);
+                //}
             }
             catch
             {
@@ -270,7 +292,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="image">The image</param>
         /// <returns>List(Pixel)</returns>
-        public static List<Pixel> GetPixelsFromImage(Image image)
+        public static List<Pixel> GetPixelsFromImage(Bitmap image)
         {
             var result = new List<Pixel>();
 
@@ -292,7 +314,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="image">The image</param>
         /// <returns>Texture</returns>
-        public static Texture GetTextureFromImage(Image image)
+        public static Texture GetTextureFromImage(Bitmap image)
         {
             return new Texture(image);
         }
@@ -309,6 +331,7 @@ namespace MinecraftTextureEditorAPI.Helpers
             return (x >= 0 && x < width &&
                          y >= 0 && y < height);
         }
+        
         /// <summary>
         /// Rainbow
         /// </summary>
@@ -316,6 +339,46 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="leftButton">Left button used</param>
         /// <returns>Color</returns>
         public static Color Rainbow(Pixel pixel, bool leftButton, ref int currentRainbowColour, ref Pixel lastRainbowPixel)
+        {
+            var colour = RainbowColours[currentRainbowColour];
+
+            var moveNextColour = false;
+
+            if (leftButton)
+            {
+                if (pixel.X != lastRainbowPixel.X && pixel.Y != lastRainbowPixel.Y)
+                {
+                    moveNextColour = true;
+                }
+            }
+            else
+            {
+                if (pixel.X != lastRainbowPixel.X || pixel.Y != lastRainbowPixel.Y)
+                {
+                    moveNextColour = true;
+                }
+            }
+
+            if (moveNextColour)
+            {
+                currentRainbowColour = currentRainbowColour >= RainbowColours.Count - 1 ? 0 : currentRainbowColour + 1;
+
+                lastRainbowPixel.X = pixel.X;
+                lastRainbowPixel.Y = pixel.Y;
+            }
+
+            return colour;
+        }
+
+        /// <summary>
+        /// Rainbow
+        /// </summary>
+        /// <param name="pixel">The position of the pixel</param>
+        /// <param name="leftButton">Left button used</param>
+        /// <param name="currentRainbowColour">The current rainbow colour</param>
+        /// <param name="lastRainbowPixel">The last rainbox position</param>
+        /// <returns></returns>
+        public static Color Rainbow(Point pixel, bool leftButton, ref int currentRainbowColour, ref Point lastRainbowPixel)
         {
             var colour = RainbowColours[currentRainbowColour];
 
@@ -361,6 +424,29 @@ namespace MinecraftTextureEditorAPI.Helpers
             var newColour = ColourHelper.TransformBrightness(colour, ColourHelper.ColorTransformMode.Hsb, brightnessTransform);
 
             return newColour;
+        }
+
+        /// <summary>
+        /// Set colour of image
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="colour"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>Image</returns>
+        public static Bitmap SetColour(this Bitmap image, Color colour, int x, int y)
+        {
+            var tmp = new Bitmap(image.Width, image.Height);
+
+            var g = Graphics.FromImage(tmp);
+
+            g.DrawImageUnscaled(image, 0, 0);
+
+            tmp.SetPixel(x, y, colour);
+
+            g.Flush();
+
+            return (Bitmap)tmp.Clone();
         }
 
         #endregion Public methods
