@@ -265,6 +265,7 @@ namespace MinecraftTextureEditorUI
         private void DrawingToolsToolTypeChanged()
         {
             UpdateLabels();
+            SelectTool(null, State.ToolType);
         }
 
         /// <summary>
@@ -619,27 +620,12 @@ namespace MinecraftTextureEditorUI
                 {
                     var selectedMenuItem = (ToolStripMenuItem)sender;
 
-                    // Reset other items
-                    foreach (object item in selectedMenuItem.GetCurrentParent().Items)
-                    {
-                        if (item.GetType().Equals(typeof(ToolStripMenuItem)))
-                        {
-                            ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
-                            menuItem.Checked = false;
-                        }
-                    }
+                    selectedMenuItem.Checked = !selectedMenuItem.Checked;
 
-                    selectedMenuItem.Checked = true;
-                }
-
-                if (modifier.Equals(Modifier.TransparencyLock))
-                {
-                    State.TransparencyLock = !State.TransparencyLock;
-                }
-                else
-                {
-                    State.Modifiers = modifier;
-                }
+                    State.Modifiers = (toolStripMenuItemMirrorX.Checked ? Modifier.MirrorX : 0) |
+                        (toolStripMenuItemMirrorY.Checked ? Modifier.MirrorY : 0) |
+                        (toolStripMenuItemTransparencyLock.Checked ? Modifier.TransparencyLock : 0);
+                }             
 
                 if (State.DrawingTools is null)
                 {
@@ -663,17 +649,21 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                if (sender.GetType().Equals(typeof(ToolStripMenuItem)))
-                {
-                    var selectedMenuItem = (ToolStripMenuItem)sender;
+                var selectedMenuItem = (ToolStripMenuItem)sender is null? GetMenuItem(toolStripMenuItemDraw.GetCurrentParent(), toolType): (ToolStripMenuItem)sender;
 
-                    // Reset other items
-                    foreach (object item in selectedMenuItem.GetCurrentParent().Items)
+                // Reset other items
+                foreach (object item in selectedMenuItem.GetCurrentParent().Items)
+                {
+                    if (item.GetType().Equals(typeof(ToolStripMenuItem)))
                     {
-                        if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                        ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+
+                        foreach (var toolTypeItem in Enum.GetValues(typeof(ToolType)))
                         {
-                            ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
-                            menuItem.Checked = false;
+                            if (menuItem.Name.Contains($"{toolTypeItem}"))
+                            {
+                                menuItem.Checked = false;
+                            }
                         }
                     }
 
@@ -693,6 +683,31 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Gets a toolstrip menu item based on the selected tooltip
+        /// </summary>
+        /// <param name="toolStrip">The toolstrip</param>
+        /// <param name="toolType">The tool type</param>
+        /// <returns>ToolStripMenuItem</returns>
+        private ToolStripMenuItem GetMenuItem(ToolStrip toolStrip, ToolType toolType)
+        {
+            foreach (object item in toolStrip.Items)
+            {
+                if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                {
+                    ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+
+                    if (menuItem.Name.Contains($"{toolType}"))
+                    {
+                        return menuItem;
+                    }
+
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -814,6 +829,7 @@ namespace MinecraftTextureEditorUI
 
                 State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
                 State.DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
+                State.DrawingTools.ModifierChanged += DrawingToolsModifierChanged;
 
                 State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
 
@@ -823,6 +839,18 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Update menu items if modifier changes
+        /// </summary>
+        private void DrawingToolsModifierChanged()
+        {
+            toolStripMenuItemMirrorX.Checked = State.MirrorX;
+
+            toolStripMenuItemMirrorY.Checked = State.MirrorY;
+
+            toolStripMenuItemTransparencyLock.Checked = State.TransparencyLock;
         }
 
         /// <summary>
@@ -1293,7 +1321,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemColourPickerClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.Dropper);
+            SelectTool(sender, ToolType.ColourPicker);
         }
 
         /// <summary>
@@ -1323,7 +1351,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemDrawClick(object sender, EventArgs e)
         {
-            SelectTool(sender, ToolType.Pen);
+            SelectTool(sender, ToolType.Draw);
         }
 
         /// <summary>

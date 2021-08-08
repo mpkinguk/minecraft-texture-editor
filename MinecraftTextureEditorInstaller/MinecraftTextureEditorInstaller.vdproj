@@ -64,25 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -232,12 +214,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -382,6 +358,18 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -425,12 +413,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_07CA1AE228D8F2215C3EAB4D5A3612E4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -1363,15 +1345,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{8DA50D04-7AFC-49A3-9F31-1599350CFA6D}"
-        "PackageCode" = "8:{BAFE820F-4409-45AE-B476-E5D6DFD1AEED}"
+        "ProductCode" = "8:{AC6E38C0-0C38-4661-AA37-142E1013667C}"
+        "PackageCode" = "8:{6701A3A4-8750-4353-B21A-003EA25086AE}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.1.0"
+        "ProductVersion" = "8:2.1.1"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"

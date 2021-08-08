@@ -2,6 +2,7 @@
 using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -46,6 +47,9 @@ namespace MinecraftTextureEditorUI
             InitializeComponent();
 
             tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
+
+            tabControlDeploy.ItemSize = new Size(0, 1);
+            tabControlDeploy.SizeMode = TabSizeMode.Fixed;
 
             PopulateVersions();
 

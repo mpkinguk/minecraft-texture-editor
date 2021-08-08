@@ -36,9 +36,9 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         public enum ToolType
         {
-            Pen,
+            Draw,
             Eraser,
-            Dropper,
+            ColourPicker,
             Texturiser,
             FloodFill,
             Rainbow

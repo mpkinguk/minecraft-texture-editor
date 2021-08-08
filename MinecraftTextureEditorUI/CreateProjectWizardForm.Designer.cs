@@ -33,7 +33,7 @@ namespace MinecraftTextureEditorUI
             this.buttonFinish = new System.Windows.Forms.Button();
             this.buttonNext = new System.Windows.Forms.Button();
             this.buttonPrevious = new System.Windows.Forms.Button();
-            this.tabControlDeploy = new System.Windows.Forms.TabControl();
+            this.tabControlCreate = new System.Windows.Forms.TabControl();
             this.tabPageCreate1 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -56,7 +56,7 @@ namespace MinecraftTextureEditorUI
             this.labelProgress = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
-            this.tabControlDeploy.SuspendLayout();
+            this.tabControlCreate.SuspendLayout();
             this.tabPageCreate1.SuspendLayout();
             this.tabPageCreate2.SuspendLayout();
             this.tabPageCreate3.SuspendLayout();
@@ -118,18 +118,18 @@ namespace MinecraftTextureEditorUI
             // 
             // tabControlDeploy
             // 
-            this.tabControlDeploy.Controls.Add(this.tabPageCreate1);
-            this.tabControlDeploy.Controls.Add(this.tabPageCreate2);
-            this.tabControlDeploy.Controls.Add(this.tabPageCreate3);
-            this.tabControlDeploy.Controls.Add(this.tabPageCreate4);
-            this.tabControlDeploy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlDeploy.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabControlDeploy.Location = new System.Drawing.Point(0, 0);
-            this.tabControlDeploy.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.tabControlDeploy.Name = "tabControlDeploy";
-            this.tabControlDeploy.SelectedIndex = 0;
-            this.tabControlDeploy.Size = new System.Drawing.Size(639, 398);
-            this.tabControlDeploy.TabIndex = 2;
+            this.tabControlCreate.Controls.Add(this.tabPageCreate1);
+            this.tabControlCreate.Controls.Add(this.tabPageCreate2);
+            this.tabControlCreate.Controls.Add(this.tabPageCreate3);
+            this.tabControlCreate.Controls.Add(this.tabPageCreate4);
+            this.tabControlCreate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlCreate.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabControlCreate.Location = new System.Drawing.Point(0, 0);
+            this.tabControlCreate.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.tabControlCreate.Name = "tabControlDeploy";
+            this.tabControlCreate.SelectedIndex = 0;
+            this.tabControlCreate.Size = new System.Drawing.Size(639, 398);
+            this.tabControlCreate.TabIndex = 2;
             // 
             // tabPageCreate1
             // 
@@ -397,7 +397,7 @@ namespace MinecraftTextureEditorUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(639, 450);
-            this.Controls.Add(this.tabControlDeploy);
+            this.Controls.Add(this.tabControlCreate);
             this.Controls.Add(this.panel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
@@ -406,7 +406,7 @@ namespace MinecraftTextureEditorUI
             this.Name = "CreateProjectWizardForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.panel1.ResumeLayout(false);
-            this.tabControlDeploy.ResumeLayout(false);
+            this.tabControlCreate.ResumeLayout(false);
             this.tabPageCreate1.ResumeLayout(false);
             this.tabPageCreate1.PerformLayout();
             this.tabPageCreate2.ResumeLayout(false);
@@ -424,7 +424,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonNext;
         private System.Windows.Forms.Button buttonPrevious;
         private System.Windows.Forms.Button buttonFinish;
-        private System.Windows.Forms.TabControl tabControlDeploy;
+        private System.Windows.Forms.TabControl tabControlCreate;
         private System.Windows.Forms.TabPage tabPageCreate1;
         private System.Windows.Forms.TabPage tabPageCreate2;
         private System.Windows.Forms.TabPage tabPageCreate4;

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,7 +29,10 @@ namespace MinecraftTextureEditorUI
             {
                 InitializeComponent();
 
-                tabControlDeploy.SelectedIndexChanged += TabControlSelectedIndexChanged;
+                tabControlCreate.SelectedIndexChanged += TabControlSelectedIndexChanged;
+
+                tabControlCreate.ItemSize = new Size(0, 1);
+                tabControlCreate.SizeMode = TabSizeMode.Fixed;
 
                 PopulateVersions();
 
@@ -70,7 +74,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                switch (tabControlDeploy.SelectedIndex)
+                switch (tabControlCreate.SelectedIndex)
                 {
                     case 1:
                         // Validate inputs before trying to create project
@@ -138,9 +142,9 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonPreviousClick(object sender, EventArgs e)
         {
-            if (tabControlDeploy.SelectedIndex > 0)
+            if (tabControlCreate.SelectedIndex > 0)
             {
-                tabControlDeploy.SelectedIndex--;
+                tabControlCreate.SelectedIndex--;
             }
         }
 
@@ -269,16 +273,16 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                if (tabControlDeploy.InvokeRequired)
+                if (tabControlCreate.InvokeRequired)
                 {
                     var d = new Action(DecrementTabControl);
                     Invoke(d);
                 }
                 else
                 {
-                    if (tabControlDeploy.SelectedIndex > 0)
+                    if (tabControlCreate.SelectedIndex > 0)
                     {
-                        tabControlDeploy.SelectedIndex--;
+                        tabControlCreate.SelectedIndex--;
                     }
                 }
             }
@@ -318,16 +322,16 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                if (tabControlDeploy.InvokeRequired)
+                if (tabControlCreate.InvokeRequired)
                 {
                     var d = new Action(IncrementTabControl);
                     Invoke(d);
                 }
                 else
                 {
-                    if (tabControlDeploy.SelectedIndex < tabControlDeploy.TabCount - 1)
+                    if (tabControlCreate.SelectedIndex < tabControlCreate.TabCount - 1)
                     {
-                        tabControlDeploy.SelectedIndex++;
+                        tabControlCreate.SelectedIndex++;
                     }
                 }
             }

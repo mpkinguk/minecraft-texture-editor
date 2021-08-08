@@ -66,7 +66,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTransparencyLock = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemRotateFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDeploymentWizard = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCreateProjectWizard = new System.Windows.Forms.ToolStripMenuItem();
@@ -329,7 +329,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY,
             this.toolStripMenuItemTransparencyLock,
             this.toolStripSeparator10,
-            this.toolStripMenuItem1,
+            this.toolStripMenuItemRotateFlip,
             this.toolStripSeparator7,
             this.toolStripMenuItemDeploymentWizard,
             this.toolStripMenuItemCreateProjectWizard,
@@ -421,11 +421,11 @@ namespace MinecraftTextureEditorUI
             // 
             // toolStripMenuItem1
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(390, 22);
-            this.toolStripMenuItem1.Text = "Rotate and Flip...";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.ToolStripRotateFlipMenuItemClick);
+            this.toolStripMenuItemRotateFlip.Name = "toolStripMenuItemRotateFlip";
+            this.toolStripMenuItemRotateFlip.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItemRotateFlip.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItemRotateFlip.Text = "Rotate and Flip...";
+            this.toolStripMenuItemRotateFlip.Click += new System.EventHandler(this.ToolStripRotateFlipMenuItemClick);
             // 
             // toolStripSeparator7
             // 
@@ -796,7 +796,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
         private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRotateFlip;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }

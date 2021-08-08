@@ -60,7 +60,7 @@ namespace MinecraftTextureEditorUI
             this.MaximizeBox = false;
             this.Name = "EditorForm";
             this.Text = "Editor";
-            this.Load += new System.EventHandler(this.EditorForm_Load);
+            this.Load += new System.EventHandler(this.EditorFormLoad);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

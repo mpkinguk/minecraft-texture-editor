@@ -80,19 +80,6 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// The transparency lock
-        /// </summary>
-        public bool TransparencyLock
-        {
-            get { return State.TransparencyLock; }
-            set
-            {
-                State.TransparencyLock = value;
-                UpdateTransparencyButton();
-            }
-        }
-
-        /// <summary>
         /// The modifiers flag
         /// </summary>
         public Modifier Modifiers
@@ -101,6 +88,7 @@ namespace MinecraftTextureEditorUI
             set
             {
                 State.Modifiers = value;
+                UpdateModifierButtons();
             }
         }
 
@@ -147,6 +135,8 @@ namespace MinecraftTextureEditorUI
         private bool _mirrorX;
 
         private bool _mirrorY;
+
+        private bool _transparencyLock;
 
         #endregion Private properties
 
@@ -209,13 +199,28 @@ namespace MinecraftTextureEditorUI
             try
             {
                 Controls[$"button{State.ToolType}"].Focus();
-
-                UpdateTransparencyButton();
+                UpdateModifierButtons();
             }
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Update the modifier buttons
+        /// </summary>
+        public void UpdateModifierButtons()
+        {
+            _mirrorX = State.MirrorX;
+            _mirrorY = State.MirrorY;
+            _transparencyLock = State.TransparencyLock;
+
+            buttonTransparencyLock.Image = _transparencyLock ? Properties.Resources.lockon : Properties.Resources.lockoff;
+            buttonTransparencyLock.BackColor = _transparencyLock ? Color.FromKnownColor(KnownColor.ControlDark) : Color.FromKnownColor(KnownColor.Control);
+
+            buttonMirrorX.BackColor = _mirrorX ? Color.FromKnownColor(KnownColor.ControlDark) : Color.FromKnownColor(KnownColor.Control);
+            buttonMirrorY.BackColor = _mirrorY ? Color.FromKnownColor(KnownColor.ControlDark) : Color.FromKnownColor(KnownColor.Control);
         }
 
         /// <summary>
@@ -374,14 +379,6 @@ namespace MinecraftTextureEditorUI
             }
         }
 
-        /// <summary>
-        /// Update the transparency lock button
-        /// </summary>
-        private void UpdateTransparencyButton()
-        {
-            buttonTransparencyLock.Image = State.TransparencyLock ? Properties.Resources.lockon : Properties.Resources.lockoff;
-        }
-
         #endregion Private methods
 
         #region Form events
@@ -415,7 +412,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonDropperClick(object sender, EventArgs e)
         {
-            OnToolTypeChanged(ToolType.Dropper);
+            OnToolTypeChanged(ToolType.ColourPicker);
         }
 
         /// <summary>
@@ -447,11 +444,9 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                State.TransparencyLock = !State.TransparencyLock;
+                _transparencyLock = !_transparencyLock;
 
-                UpdateTransparencyButton();
-
-                OnTransparencyLockChanged(State.TransparencyLock);
+                OnModifierChanged();
             }
             catch (Exception ex)
             {
@@ -490,7 +485,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ButtonPenClick(object sender, System.EventArgs e)
         {
-            OnToolTypeChanged(ToolType.Pen);
+            OnToolTypeChanged(ToolType.Draw);
         }
 
         /// <summary>
@@ -549,9 +544,11 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void OnModifierChanged()
         {
-            Modifiers = (_mirrorX ? Modifier.MirrorX : 0x0) | (_mirrorX ? Modifier.MirrorY : 0x0);
+            Modifiers = (_mirrorX ? Modifier.MirrorX : 0) | (_mirrorY ? Modifier.MirrorY : 0) | (_transparencyLock ? Modifier.TransparencyLock : 0);
 
-            ToolTypeChanged?.Invoke();
+            UpdateButtons();
+
+            ModifierChanged?.Invoke();
         }
 
         /// <summary>
@@ -563,17 +560,6 @@ namespace MinecraftTextureEditorUI
             State.ToolType = toolType;
 
             ToolTypeChanged?.Invoke();
-        }
-
-        /// <summary>
-        /// Transparency lock changed event
-        /// </summary>
-        /// <param name="locked">Locked</param>
-        private void OnTransparencyLockChanged(bool locked)
-        {
-            State.TransparencyLock = locked;
-
-            TransparencyLockChanged?.Invoke();
         }
 
         /// <summary>

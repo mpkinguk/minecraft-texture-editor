@@ -74,8 +74,18 @@ namespace MinecraftTextureEditorUI
         public static ToolType ToolType;
 
         /// <summary>
-        /// The  transparency lock setting
+        /// The transparency lock setting
         /// </summary>
-        public static bool TransparencyLock;
+        public static bool TransparencyLock => Modifiers.HasFlag(Modifier.TransparencyLock);
+
+        /// <summary>
+        /// The mirror x setting
+        /// </summary>
+        public static bool MirrorX => Modifiers.HasFlag(Modifier.MirrorX);
+
+        /// <summary>
+        /// The mirror y setting
+        /// </summary>
+        public static bool MirrorY => Modifiers.HasFlag(Modifier.MirrorY);
     }
 }

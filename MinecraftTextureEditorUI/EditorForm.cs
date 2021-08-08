@@ -94,17 +94,16 @@ namespace MinecraftTextureEditorUI
         private const int StartZoom = 16;
 
         private readonly ILog _log;
+        private bool _altIsDown;
+        private bool _ctrlIsDown;
         private Point _cursor;
         private int _height;
         private Point _lastRainbowPosition = new Point();
+        private bool _shiftIsDown;
         private bool _showGrid;
         private bool _showTransparentGrid;
         private UndoManagerAction<Bitmap> _undoManager;
         private int _width;
-        private bool _ctrlIsDown;
-        private bool _altIsDown;
-        private bool _shiftIsDown;
-
         #endregion private variables
 
         #region Event constructors
@@ -194,17 +193,14 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Update flags for modifier keys
+        /// Is the pixel locked?
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditorFormKeyDown(object sender, KeyEventArgs e)
+        /// <param name="colour">The colour</param>
+        /// <returns>Bool</returns>
+        private bool Locked(Color colour)
         {
-            _ctrlIsDown = e.Control;
-            _altIsDown = e.Alt;
-            _shiftIsDown = e.Shift;
+            return colour.A == 0 && State.TransparencyLock;
         }
-
         /// <summary>
         /// Let calling thread know an action has occurred (for updating UI elements)
         /// </summary>
@@ -216,16 +212,6 @@ namespace MinecraftTextureEditorUI
         #endregion Private methods
 
         #region Form events
-
-        /// <summary>
-        /// Form load event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditorForm_Load(object sender, EventArgs e)
-        {
-            KeyPreview = true;
-        }
 
         /// <summary>
         /// Form closing event
@@ -252,6 +238,28 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Update flags for modifier keys
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorFormKeyDown(object sender, KeyEventArgs e)
+        {
+            _ctrlIsDown = e.Control;
+            _altIsDown = e.Alt;
+            _shiftIsDown = e.Shift;
+        }
+
+        /// <summary>
+        /// Form load event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorFormLoad(object sender, EventArgs e)
+        {
+            KeyPreview = true;
         }
 
         /// <summary>
@@ -310,7 +318,7 @@ namespace MinecraftTextureEditorUI
                     case MouseButtons.Left:
                         switch (State.ToolType)
                         {
-                            case ToolType.Dropper:
+                            case ToolType.ColourPicker:
                                 // Only require first pixel
                                 OnColourSelected(cursorColour, true);
                                 return;
@@ -328,7 +336,7 @@ namespace MinecraftTextureEditorUI
                     case MouseButtons.Right:
                         switch (State.ToolType)
                         {
-                            case ToolType.Dropper:
+                            case ToolType.ColourPicker:
                                 // Only require first pixel
                                 OnColourSelected(cursorColour, false);
                                 return;
@@ -353,22 +361,12 @@ namespace MinecraftTextureEditorUI
                     for (var x = 0; x < State.BrushSize; x++)
                     {
                         var pixelPosition = new Point(cursorPosition.X + x, cursorPosition.Y + y);
+                        var pixelColour = GetColour(tmpTexture, pixelPosition.X, pixelPosition.Y);
 
                         // If out of bounds, continue onto next pixel
                         if (pixelPosition.X > Texture.Width - 1 || (pixelPosition.Y > Texture.Height - 1))
                         {
                             continue;
-                        }
-
-                        // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
-                        if (State.TransparencyLock)
-                        {
-                            var pixelColour = GetColour(tmpTexture, pixelPosition.X, pixelPosition.Y);
-
-                            if (pixelColour.A.Equals(0))
-                            {
-                                continue;
-                            }
                         }
 
                         if (State.ToolType.Equals(ToolType.Texturiser))
@@ -382,29 +380,47 @@ namespace MinecraftTextureEditorUI
                         }
 
                         // Use flag so we can do both at the same time :)
-                        if (State.Modifiers.Equals(Modifier.MirrorX) || State.Modifiers.Equals(Modifier.MirrorX | Modifier.MirrorY))
+                        if (State.Modifiers.HasFlag(Modifier.MirrorX) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
                         {
                             Point inversePixel = new Point(_width - 1 - pixelPosition.X, pixelPosition.Y);
 
-                            tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
-
-                            if (State.Modifiers.Equals(Modifier.MirrorY) || State.Modifiers.Equals(Modifier.MirrorX | Modifier.MirrorY))
+                            if(!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                            {
+                                tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                            }
+                            
+                            if (State.Modifiers.HasFlag(Modifier.MirrorY) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
                             {
                                 inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                {
+                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                }
 
                                 inversePixel = new Point(_width - 1 - pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                {
+                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                }
                             }
 
-                            if (State.Modifiers.Equals(Modifier.MirrorY))
+                            if (State.Modifiers.HasFlag(Modifier.MirrorY))
                             {
                                 inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                if (!(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y).A == 0 && State.TransparencyLock))
+                                {
+                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                }
                             }
+                        }
+
+                        // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
+                        if (Locked(pixelColour))
+                        {
+                            continue;
                         }
 
                         // Break out of this as we do not want to it repeat up to 8 times for the brushsize!
