@@ -64,6 +64,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemRainbow = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMirrorX = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMirrorY = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemShape = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTransparencyLock = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemRotateFlip = new System.Windows.Forms.ToolStripMenuItem();
@@ -325,6 +326,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemTexturiser,
             this.toolStripMenuItemFloodFill,
             this.toolStripMenuItemRainbow,
+            this.toolStripMenuItemShape,
             this.toolStripMenuItemMirrorX,
             this.toolStripMenuItemMirrorY,
             this.toolStripMenuItemTransparencyLock,
@@ -390,10 +392,18 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemRainbow.Text = "Rainbow!";
             this.toolStripMenuItemRainbow.Click += new System.EventHandler(this.ToolStripMenuItemRainbowClick);
             // 
+            // toolStripMenuItemShape
+            // 
+            this.toolStripMenuItemShape.Name = "toolStripMenuItemShape";
+            this.toolStripMenuItemShape.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D7)));
+            this.toolStripMenuItemShape.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItemShape.Text = "Shape";
+            this.toolStripMenuItemShape.Click += new System.EventHandler(this.ToolStripMenuItemShapeClick);
+            // 
             // toolStripMenuItemMirrorX
             // 
             this.toolStripMenuItemMirrorX.Name = "toolStripMenuItemMirrorX";
-            this.toolStripMenuItemMirrorX.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D7)));
+            this.toolStripMenuItemMirrorX.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D8)));
             this.toolStripMenuItemMirrorX.Size = new System.Drawing.Size(390, 22);
             this.toolStripMenuItemMirrorX.Text = "Mirror X";
             this.toolStripMenuItemMirrorX.Click += new System.EventHandler(this.ToolStripMenuItemMirrorXClick);
@@ -401,7 +411,7 @@ namespace MinecraftTextureEditorUI
             // toolStripMenuItemMirrorY
             // 
             this.toolStripMenuItemMirrorY.Name = "toolStripMenuItemMirrorY";
-            this.toolStripMenuItemMirrorY.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D8)));
+            this.toolStripMenuItemMirrorY.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D9)));
             this.toolStripMenuItemMirrorY.Size = new System.Drawing.Size(390, 22);
             this.toolStripMenuItemMirrorY.Text = "Mirror Y";
             this.toolStripMenuItemMirrorY.Click += new System.EventHandler(this.ToolStripMenuItemMirrorYClick);
@@ -728,8 +738,8 @@ namespace MinecraftTextureEditorUI
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
+
         #endregion
 
 
@@ -798,6 +808,7 @@ namespace MinecraftTextureEditorUI
         private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRotateFlip;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemShape;
     }
 }
 

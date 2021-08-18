@@ -2,6 +2,7 @@
 using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -63,6 +64,8 @@ namespace MinecraftTextureEditorUI
                 BackgroundImageLayout = ImageLayout.Center;
 
                 InitializeComponent();
+
+                toolStripMenuItemShape.DropDownItems.AddRange(GetShapeMenuItems());
 
                 WindowState = FormWindowState.Maximized;
 
@@ -686,6 +689,55 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Get shape menu items and add click events
+        /// </summary>
+        /// <returns>Array of ToolStripItem</returns>
+        private ToolStripMenuItem[] GetShapeMenuItems()
+        {
+            var items = DrawingHelper.GetShapeMenuItems();
+
+            foreach (ToolStripMenuItem item in items)
+            {
+                item.Click += ToolStripMenuItemShapeClick;
+            }
+
+            return items;
+        }
+
+        /// <summary>
+        /// Select a shape
+        /// </summary>
+        /// <param name="sender">The calling object</param>
+        private void SelectShape(object sender)
+        {
+            var item = (ToolStripMenuItem)sender;
+
+            if (Enum.TryParse<ShapeType>(item.Text, out var result))
+            {
+                State.ShapeType = result;
+            }
+            else
+            {
+                State.ShapeType = 0;
+            }
+
+            CheckShapeTypeMenuItem();
+
+            State.DrawingTools.UpdateShapesMenu();
+        }
+
+        /// <summary>
+        /// Checks the correct shape type menu item based on State.ShapeTypes
+        /// </summary>
+        private void CheckShapeTypeMenuItem()
+        {
+            foreach (ToolStripMenuItem menuItem in toolStripMenuItemShape.DropDownItems)
+            {
+                menuItem.Checked = menuItem.Text.Equals(State.ShapeType.ToString());
+            }
+        }
+
+        /// <summary>
         /// Gets a toolstrip menu item based on the selected tooltip
         /// </summary>
         /// <param name="toolStrip">The toolstrip</param>
@@ -830,6 +882,7 @@ namespace MinecraftTextureEditorUI
                 State.DrawingTools.ToolTypeChanged += DrawingToolsToolTypeChanged;
                 State.DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
                 State.DrawingTools.ModifierChanged += DrawingToolsModifierChanged;
+                State.DrawingTools.ShapeTypeChanged += DrawingToolsShapeTypeChanged;
 
                 State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
 
@@ -839,6 +892,14 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Updates the menu items if the shape type changes
+        /// </summary>
+        private void DrawingToolsShapeTypeChanged()
+        {
+            CheckShapeTypeMenuItem();
         }
 
         /// <summary>
@@ -1402,6 +1463,18 @@ namespace MinecraftTextureEditorUI
         private void ToolStripMenuItemRainbowClick(object sender, EventArgs e)
         {
             SelectTool(sender, ToolType.Rainbow);
+        }
+
+        /// <summary>
+        /// Shape
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemShapeClick(object sender, EventArgs e)
+        {
+            SelectTool(sender, ToolType.Shape);
+
+            SelectShape(sender);
         }
 
         /// <summary>

@@ -41,7 +41,22 @@ namespace MinecraftTextureEditorAPI.Helpers
             ColourPicker,
             Texturiser,
             FloodFill,
-            Rainbow
+            Rainbow,
+            Shape
+        }
+
+        /// <summary>
+        /// Shape types
+        /// </summary>
+        public enum ShapeType
+        {
+            Square,
+            Rectangle,
+            Circle,
+            Ellipse,
+            SemiCircle,
+            Triangle,
+            Star
         }
 
         #endregion Enums
@@ -244,6 +259,25 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
 
             return colour;
+        }
+
+        /// <summary>
+        /// Basic method to add shape menu items to a collection
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns>Array of ToolStripMenuItem</returns>
+        public static ToolStripMenuItem[] GetShapeMenuItems()
+        {
+            List<ToolStripMenuItem> toolStripItems = new List<ToolStripMenuItem>();
+
+            foreach (var shape in typeof(ShapeType).GetEnumNames())
+            {
+                var toolStripItemShape = new ToolStripMenuItem() { Name = shape, Text = shape };
+
+                toolStripItems.Add(toolStripItemShape);
+            }
+
+            return toolStripItems.ToArray();
         }
 
         /// <summary>

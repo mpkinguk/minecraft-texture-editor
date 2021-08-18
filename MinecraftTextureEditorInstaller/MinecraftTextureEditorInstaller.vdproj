@@ -82,7 +82,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3099F9AD16EF311187AC7A1D71338AB5"
-        "OwnerKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
+        "OwnerKey" = "8:_AF80F4A029B19D7B2F803405EDDF13E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -105,6 +105,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_440FBA220BDE4D7FAA32CE82275EA200"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4FC18B9253024049BDDEBE51DD60F9BA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,7 +124,7 @@
         "Entry"
         {
         "MsmKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "OwnerKey" = "8:_6FAC1761E81DC0CA0115145770A1B7B7"
+        "OwnerKey" = "8:_440FBA220BDE4D7FAA32CE82275EA200"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -153,26 +159,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6FAC1761E81DC0CA0115145770A1B7B7"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7921DAF7C6189AA0EA0C52ACD65BB03E"
+        "MsmKey" = "8:_771D3DD50F7EB541715F46A0E3987186"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
-        "OwnerKey" = "8:_7921DAF7C6189AA0EA0C52ACD65BB03E"
+        "OwnerKey" = "8:_771D3DD50F7EB541715F46A0E3987186"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
-        "OwnerKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
+        "OwnerKey" = "8:_AF80F4A029B19D7B2F803405EDDF13E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -184,7 +184,7 @@
         "Entry"
         {
         "MsmKey" = "8:_86141F6F21219C5FE7B560C4468BB0A6"
-        "OwnerKey" = "8:_6FAC1761E81DC0CA0115145770A1B7B7"
+        "OwnerKey" = "8:_440FBA220BDE4D7FAA32CE82275EA200"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -202,6 +202,12 @@
         "Entry"
         {
         "MsmKey" = "8:_AAD023CC2BDC9E0981F5F442CD6034DC"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF80F4A029B19D7B2F803405EDDF13E0"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -249,12 +255,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D3738425B77AA6DFD8C7AA8FE9A090D7"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
@@ -292,7 +292,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F6640E2770EC0BE6A2B62CD63C47FDDC"
-        "OwnerKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
+        "OwnerKey" = "8:_AF80F4A029B19D7B2F803405EDDF13E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -310,19 +310,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CC55C9A5E1CD5E763336CE53808C23E2"
+        "OwnerKey" = "8:_AF80F4A029B19D7B2F803405EDDF13E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6FAC1761E81DC0CA0115145770A1B7B7"
+        "OwnerKey" = "8:_440FBA220BDE4D7FAA32CE82275EA200"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7921DAF7C6189AA0EA0C52ACD65BB03E"
+        "OwnerKey" = "8:_771D3DD50F7EB541715F46A0E3987186"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -716,6 +716,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_440FBA220BDE4D7FAA32CE82275EA200"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.1.1.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_440FBA220BDE4D7FAA32CE82275EA200"
+                    {
+                    "Name" = "8:MinecraftTextureEditorAPI.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:MinecraftTextureEditorAPI.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4FC18B9253024049BDDEBE51DD60F9BA"
             {
             "SourcePath" = "8:..\\MinecraftTextureEditorAPI\\7zip\\7zxa.dll"
@@ -860,45 +891,14 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6FAC1761E81DC0CA0115145770A1B7B7"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_771D3DD50F7EB541715F46A0E3987186"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.1.1.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_6FAC1761E81DC0CA0115145770A1B7B7"
-                    {
-                    "Name" = "8:MinecraftTextureEditorAPI.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:MinecraftTextureEditorAPI.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7921DAF7C6189AA0EA0C52ACD65BB03E"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_7921DAF7C6189AA0EA0C52ACD65BB03E"
+                    "_771D3DD50F7EB541715F46A0E3987186"
                     {
                     "Name" = "8:GenericUndoRedoManagerAPI.dll"
                     "Attributes" = "3:512"
@@ -987,6 +987,37 @@
                     }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AF80F4A029B19D7B2F803405EDDF13E0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.1.1.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_AF80F4A029B19D7B2F803405EDDF13E0"
+                    {
+                    "Name" = "8:ZipFileManager.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ZipFileManager.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
@@ -1098,37 +1129,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CC55C9A5E1CD5E763336CE53808C23E2"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_CC55C9A5E1CD5E763336CE53808C23E2"
-                    {
-                    "Name" = "8:ZipFileManager.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:ZipFileManager.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1345,15 +1345,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{AC6E38C0-0C38-4661-AA37-142E1013667C}"
-        "PackageCode" = "8:{6701A3A4-8750-4353-B21A-003EA25086AE}"
+        "ProductCode" = "8:{866AC75D-355A-4974-827B-8BA3289C3D08}"
+        "PackageCode" = "8:{8EA6C687-D417-4905-88B9-C56B978646E5}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.1.1"
+        "ProductVersion" = "8:2.2.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"

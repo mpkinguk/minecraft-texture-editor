@@ -1,6 +1,7 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -19,6 +20,8 @@ namespace MinecraftTextureEditorUI
         public delegate void ForeColourChangedEventHandler();
 
         public delegate void ToolTypeChangedEventHandler();
+
+        public delegate void ShapeTypeChangedEventHandler();
 
         public delegate void ModifierChangedEventHandler();
 
@@ -80,6 +83,20 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// The current tool type in use
+        /// </summary>
+        public ShapeType CurrentShapeType
+        {
+            get { return State.ShapeType; }
+            set
+            {
+                State.ShapeType = value;
+
+                Invalidate(true);
+            }
+        }
+
+        /// <summary>
         /// The modifiers flag
         /// </summary>
         public Modifier Modifiers
@@ -122,9 +139,9 @@ namespace MinecraftTextureEditorUI
         public event ToolTypeChangedEventHandler ToolTypeChanged;
 
         /// <summary>
-        /// Back colour changed event
+        /// Shape type changed event
         /// </summary>
-        public event TransparencyLockChangedEventHandler TransparencyLockChanged;
+        public event ShapeTypeChangedEventHandler ShapeTypeChanged;
 
         #endregion Public events
 
@@ -153,35 +170,7 @@ namespace MinecraftTextureEditorUI
 
                 DrawAlpha();
 
-                pictureBoxColourPicker.MouseDown += PictureBoxColourPicker_MouseDown;
-
-                pictureBoxColourPicker.MouseMove += PictureBoxColourPicker_MouseMove;
-
-                pictureBoxGamma.MouseDown += PictureBoxSaturationMouseDown;
-
-                pictureBoxGamma.MouseMove += PictureBoxSaturationMouseMove;
-
-                pictureBoxAlpha.MouseDown += PictureBoxAlphaMouseDown;
-
-                pictureBoxAlpha.MouseMove += PictureBoxAlphaMouseMove;
-
-                panelColour1.Click += PanelColourClick;
-
-                panelColour2.Click += PanelColourClick;
-
-                toolTip1.Draw += ToolTipDraw;
-
-                State.CurrentRainbowColourIndex = 0;
-
-                State.EraserColor = Color.Transparent;
-
-                Colour1 = Color.White;
-
-                Colour2 = Color.Black;
-
-                State.BrushSize = 1;
-
-                State.Alpha = 255;
+                Init();
             }
             catch (Exception ex)
             {
@@ -200,6 +189,24 @@ namespace MinecraftTextureEditorUI
             {
                 Controls[$"button{State.ToolType}"].Focus();
                 UpdateModifierButtons();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Update the button states
+        /// </summary>
+        public void UpdateShapesMenu()
+        {
+            try
+            {
+                foreach (ToolStripMenuItem menuItem in contextMenuStripShape.Items)
+                {
+                    menuItem.Checked = State.ShapeType.ToString().Equals(menuItem.Text);
+                }
             }
             catch (Exception ex)
             {
@@ -235,6 +242,67 @@ namespace MinecraftTextureEditorUI
         #endregion Public methods
 
         #region Private methods
+
+        /// <summary>
+        /// Initilaise the form elements
+        /// </summary>
+        private void Init()
+        {
+            pictureBoxColourPicker.MouseDown += PictureBoxColourPicker_MouseDown;
+
+            pictureBoxColourPicker.MouseMove += PictureBoxColourPicker_MouseMove;
+
+            pictureBoxGamma.MouseDown += PictureBoxSaturationMouseDown;
+
+            pictureBoxGamma.MouseMove += PictureBoxSaturationMouseMove;
+
+            pictureBoxAlpha.MouseDown += PictureBoxAlphaMouseDown;
+
+            pictureBoxAlpha.MouseMove += PictureBoxAlphaMouseMove;
+
+            panelColour1.Click += PanelColourClick;
+
+            panelColour2.Click += PanelColourClick;
+
+            toolTip1.Draw += ToolTipDraw;
+
+            State.CurrentRainbowColourIndex = 0;
+
+            State.EraserColor = Color.Transparent;
+
+            Colour1 = Color.White;
+
+            Colour2 = Color.Black;
+
+            State.BrushSize = 1;
+
+            State.Alpha = 255;
+
+            State.ShapeType = ShapeType.Rectangle;
+
+            contextMenuStripShape.Items.AddRange(GetShapeMenuItems());
+        }
+
+        /// <summary>
+        /// Get shape menu items and add click events
+        /// </summary>
+        /// <returns>Array of ToolStripItem</returns>
+        private ToolStripItem[] GetShapeMenuItems()
+        {
+            var items = DrawingHelper.GetShapeMenuItems();
+
+            foreach (ToolStripItem item in items)
+            {
+                item.Click += ToolStripItemShapeClick;
+            }
+
+            return items;
+        }
+
+        private void Tool(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Draw alpha picker
@@ -384,6 +452,22 @@ namespace MinecraftTextureEditorUI
         #region Form events
 
         /// <summary>
+        /// Capture the shape type changed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripItemShapeClick(object sender, EventArgs e)
+        {
+            var item = (ToolStripMenuItem)sender;
+
+            State.ShapeType = (ShapeType)Enum.Parse(typeof(ShapeType), item.Text);
+
+            UpdateShapesMenu();
+
+            ShapeTypeChanged?.Invoke();
+        }
+
+        /// <summary>
         /// Brush size
         /// </summary>
         /// <param name="sender"></param>
@@ -496,6 +580,27 @@ namespace MinecraftTextureEditorUI
         private void ButtonRainbowClick(object sender, EventArgs e)
         {
             OnToolTypeChanged(ToolType.Rainbow);
+        }
+
+        /// <summary>
+        /// Shape
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonShapeClick(object sender, EventArgs e)
+        {
+            var button = (Button)sender;
+            Point screenPoint = button.PointToScreen(new Point(button.Left, button.Bottom));
+            if (screenPoint.Y + contextMenuStripShape.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                contextMenuStripShape.Show(button, new Point(0, -contextMenuStripShape.Size.Height));
+            }
+            else
+            {
+                contextMenuStripShape.Show(button, new Point(0, button.Height));
+            }
+
+            OnToolTypeChanged(ToolType.Shape);
         }
 
         /// <summary>

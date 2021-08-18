@@ -48,7 +48,9 @@ namespace MinecraftTextureEditorUI
             this.buttonSize2 = new System.Windows.Forms.Button();
             this.buttonSize4 = new System.Windows.Forms.Button();
             this.buttonTransparencyLock = new System.Windows.Forms.Button();
+            this.buttonShape = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
+            this.contextMenuStripShape = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColourPicker)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAlpha)).BeginInit();
@@ -269,6 +271,18 @@ namespace MinecraftTextureEditorUI
             this.buttonTransparencyLock.UseVisualStyleBackColor = true;
             this.buttonTransparencyLock.Click += new System.EventHandler(this.ButtonLockTransparencyClick);
             // 
+            // buttonShape
+            // 
+            this.buttonShape.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.shape;
+            this.buttonShape.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonShape.Location = new System.Drawing.Point(65, 423);
+            this.buttonShape.Name = "buttonShape";
+            this.buttonShape.Size = new System.Drawing.Size(32, 32);
+            this.buttonShape.TabIndex = 14;
+            this.toolTip1.SetToolTip(this.buttonShape, "Shape");
+            this.buttonShape.UseVisualStyleBackColor = true;
+            this.buttonShape.Click += new System.EventHandler(this.ButtonShapeClick);
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -282,6 +296,11 @@ namespace MinecraftTextureEditorUI
             this.label7.TabIndex = 5;
             this.label7.Text = "Drawing Tools";
             // 
+            // contextMenuStripShape
+            // 
+            this.contextMenuStripShape.Name = "contextMenuStripShape";
+            this.contextMenuStripShape.Size = new System.Drawing.Size(181, 26);
+            // 
             // DrawingToolsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -289,6 +308,7 @@ namespace MinecraftTextureEditorUI
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.ClientSize = new System.Drawing.Size(251, 549);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonShape);
             this.Controls.Add(this.buttonTransparencyLock);
             this.Controls.Add(this.buttonSize4);
             this.Controls.Add(this.buttonSize2);
@@ -344,5 +364,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonSize2;
         private System.Windows.Forms.Button buttonSize4;
         private System.Windows.Forms.Button buttonTransparencyLock;
+        private System.Windows.Forms.Button buttonShape;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripShape;
     }
 }

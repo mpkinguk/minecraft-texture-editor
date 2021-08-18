@@ -74,6 +74,11 @@ namespace MinecraftTextureEditorUI
         public static ToolType ToolType;
 
         /// <summary>
+        /// The shape type
+        /// </summary>
+        public static ShapeType ShapeType;
+
+        /// <summary>
         /// The transparency lock setting
         /// </summary>
         public static bool TransparencyLock => Modifiers.HasFlag(Modifier.TransparencyLock);
