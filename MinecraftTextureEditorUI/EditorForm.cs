@@ -99,11 +99,17 @@ namespace MinecraftTextureEditorUI
         private Point _cursor;
         private int _height;
         private Point _lastRainbowPosition = new Point();
+        private bool _leftButton;
+        private Point? _firstClick = null;
+        private Point? _lastClick = null;
+        private bool _rightButton;
+        private Rectangle _shapeRectangle = new Rectangle();
         private bool _shiftIsDown;
         private bool _showGrid;
         private bool _showTransparentGrid;
         private UndoManagerAction<Bitmap> _undoManager;
         private int _width;
+
         #endregion private variables
 
         #region Event constructors
@@ -163,7 +169,7 @@ namespace MinecraftTextureEditorUI
 
                 pictureBoxImage.Paint += PictureBoxImagePaint;
                 pictureBoxImage.MouseMove += EditorMousePaintPixel;
-                pictureBoxImage.MouseDown += EditorMousePaintPixel;
+                pictureBoxImage.MouseDown += PictureBoxImageMouseDown;
                 pictureBoxImage.MouseUp += PictureBoxImageMouseUp;
                 pictureBoxImage.MouseWheel += PictureBoxImageMouseWheel;
 
@@ -201,6 +207,7 @@ namespace MinecraftTextureEditorUI
         {
             return colour.A == 0 && State.TransparencyLock;
         }
+
         /// <summary>
         /// Let calling thread know an action has occurred (for updating UI elements)
         /// </summary>
@@ -356,87 +363,114 @@ namespace MinecraftTextureEditorUI
                         return;
                 }
 
-                for (var y = 0; y < State.BrushSize; y++)
+                if (State.ToolType.Equals(ToolType.Shape))
                 {
-                    for (var x = 0; x < State.BrushSize; x++)
+                    if (_leftButton || _rightButton)
                     {
-                        var pixelPosition = new Point(cursorPosition.X + x, cursorPosition.Y + y);
-                        var pixelColour = GetColour(tmpTexture, pixelPosition.X, pixelPosition.Y);
-
-                        // If out of bounds, continue onto next pixel
-                        if (pixelPosition.X > Texture.Width - 1 || (pixelPosition.Y > Texture.Height - 1))
+                        if (_lastClick is null)
                         {
-                            continue;
+                            return;
                         }
 
-                        if (State.ToolType.Equals(ToolType.Texturiser))
-                        {
-                            colour = Randomiser(colour);
-                        }
+                        var tmp = new Bitmap(tmpTexture.Width, tmpTexture.Height);
 
-                        if (State.ToolType.Equals(ToolType.Rainbow))
-                        {
-                            colour = Rainbow(pixelPosition, e.Button.Equals(MouseButtons.Left), ref State.CurrentRainbowColourIndex, ref _lastRainbowPosition);
-                        }
+                        var g = Graphics.FromImage(tmp);
 
-                        // Use flag so we can do both at the same time :)
-                        if (State.Modifiers.HasFlag(Modifier.MirrorX) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
-                        {
-                            Point inversePixel = new Point(_width - 1 - pixelPosition.X, pixelPosition.Y);
+                        g.DrawImageUnscaled(tmpTexture, 0, 0);
 
-                            if(!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                        var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, _shapeRectangle.Width / Zoom, _shapeRectangle.Height / Zoom);
+
+                        GetShape(ref g, colour, rectangle, State.ShapeType, State.BrushSize, _rightButton);
+
+                        g.Flush();
+
+                        tmpTexture = (Bitmap)tmp.Clone();
+                    }
+                }
+                else
+                {
+                    for (var y = 0; y < State.BrushSize; y++)
+                    {
+                        for (var x = 0; x < State.BrushSize; x++)
+                        {
+                            var pixelPosition = new Point(cursorPosition.X + x, cursorPosition.Y + y);
+                            var pixelColour = GetColour(tmpTexture, pixelPosition.X, pixelPosition.Y);
+
+                            // If out of bounds, continue onto next pixel
+                            if (pixelPosition.X > Texture.Width - 1 || (pixelPosition.Y > Texture.Height - 1))
                             {
-                                tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                continue;
                             }
-                            
-                            if (State.Modifiers.HasFlag(Modifier.MirrorY) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
+
+                            if (State.ToolType.Equals(ToolType.Texturiser))
                             {
-                                inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
+                                colour = Randomiser(colour);
+                            }
+
+                            if (State.ToolType.Equals(ToolType.Rainbow))
+                            {
+                                colour = Rainbow(pixelPosition, e.Button.Equals(MouseButtons.Left), ref State.CurrentRainbowColourIndex, ref _lastRainbowPosition);
+                            }
+
+                            // Use flag so we can do both at the same time :)
+                            if (State.Modifiers.HasFlag(Modifier.MirrorX) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
+                            {
+                                Point inversePixel = new Point(_width - 1 - pixelPosition.X, pixelPosition.Y);
 
                                 if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
                                 {
                                     tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
                                 }
 
-                                inversePixel = new Point(_width - 1 - pixelPosition.X, _height - 1 - pixelPosition.Y);
-
-                                if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                if (State.Modifiers.HasFlag(Modifier.MirrorY) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
                                 {
-                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                    inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
+
+                                    if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                    {
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                    }
+
+                                    inversePixel = new Point(_width - 1 - pixelPosition.X, _height - 1 - pixelPosition.Y);
+
+                                    if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                    {
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                    }
+                                }
+
+                                if (State.Modifiers.HasFlag(Modifier.MirrorY))
+                                {
+                                    inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
+
+                                    if (!(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y).A == 0 && State.TransparencyLock))
+                                    {
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                    }
                                 }
                             }
 
-                            if (State.Modifiers.HasFlag(Modifier.MirrorY))
+                            // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
+                            if (Locked(pixelColour))
                             {
-                                inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
-
-                                if (!(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y).A == 0 && State.TransparencyLock))
-                                {
-                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
-                                }
+                                continue;
                             }
-                        }
 
-                        // Do not draw pixel if transparency lock is on and the underlying pixel is transparent
-                        if (Locked(pixelColour))
-                        {
-                            continue;
-                        }
+                            // Break out of this as we do not want to it repeat up to 8 times for the brushsize!
+                            if (State.ToolType.Equals(ToolType.FloodFill))
+                            {
+                                var currentColour = cursorColour;
 
-                        // Break out of this as we do not want to it repeat up to 8 times for the brushsize!
-                        if (State.ToolType.Equals(ToolType.FloodFill))
-                        {
-                            var currentColour = cursorColour;
+                                var floodX = pixelPosition.X;
 
-                            var floodX = pixelPosition.X;
+                                var floodY = pixelPosition.Y;
 
-                            var floodY = pixelPosition.Y;
-
-                            tmpTexture = tmpTexture.FloodFill(currentColour, colour, floodX, floodY);
-                        }
-                        else
-                        {
-                            tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
+                                tmpTexture = tmpTexture.FloodFill(currentColour, colour, floodX, floodY);
+                            }
+                            else
+                            {
+                                tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
+                            }
                         }
                     }
                 }
@@ -464,14 +498,55 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Check for mouse down event
+        /// </summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">MouseEventArgs</param>
+        private void PictureBoxImageMouseDown(object sender, MouseEventArgs e)
+        {
+            GetButtons(e);
+
+            if (State.ToolType.Equals(ToolType.Shape))
+            {
+                _firstClick = _cursor;
+                _lastClick = null;
+            }
+
+            EditorMousePaintPixel(sender, e);
+        }
+
+        /// <summary>
         /// Check for mouse up event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void PictureBoxImageMouseUp(object sender, MouseEventArgs e)
         {
+            GetButtons(e);
+
+            if (State.ToolType.Equals(ToolType.Shape))
+            {
+                _lastClick = _cursor;
+                _shapeRectangle = new Rectangle(_firstClick.Value, new Size(_lastClick.Value.X - _firstClick.Value.X, _lastClick.Value.Y - _firstClick.Value.Y));
+            }
+
+            EditorMousePaintPixel(sender, e);
+
+            _firstClick = null;
+            _lastClick = null;
+
             AddItem();
             RefreshDisplay();
+        }
+
+        /// <summary>
+        /// Get the buttons pressed
+        /// </summary>
+        /// <param name="e">MouseEventArgs</param>
+        private void GetButtons(MouseEventArgs e)
+        {
+            _leftButton = e.Button.Equals(MouseButtons.Left);
+            _rightButton = e.Button.Equals(MouseButtons.Right);
         }
 
         /// <summary>
@@ -567,6 +642,17 @@ namespace MinecraftTextureEditorUI
                 if (!CursorOutOfBounds())
                 {
                     g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Yellow)), cursorX, cursorY, Zoom * State.BrushSize, Zoom * State.BrushSize);
+
+                    if (State.ToolType.Equals(ToolType.Shape))
+                    {
+                        if (_leftButton || _rightButton)
+                        {
+                            if (_lastClick is null && _firstClick != null)
+                            {
+                                GetShape(ref g, _leftButton ? State.Colour1 : State.Colour2, _shapeRectangle, State.ShapeType, State.BrushSize * Zoom, _shiftIsDown);
+                            }
+                        }
+                    }
                 }
 
                 g.Flush();

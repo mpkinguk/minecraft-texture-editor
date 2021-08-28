@@ -278,9 +278,11 @@ namespace MinecraftTextureEditorUI
 
             State.Alpha = 255;
 
-            State.ShapeType = ShapeType.Rectangle;
+            State.ShapeType = ShapeType.Square;
 
             contextMenuStripShape.Items.AddRange(GetShapeMenuItems());
+
+            UpdateShapesMenu();
         }
 
         /// <summary>

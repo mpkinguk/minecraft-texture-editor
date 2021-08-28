@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorAPI.Helpers
@@ -259,6 +260,90 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
 
             return colour;
+        }
+
+        /// <summary>
+        /// Draw a shape
+        /// </summary>
+        /// <param name="image">The image to draw on</param>
+        /// <param name="colour1">Colour 1</param>
+        /// <param name="colour2">Colour 2</param>
+        /// <param name="rectangle">The rectangle</param>
+        /// <param name="shapeType">The shape type</param>
+        /// <param name="brushSize">The brush size</param>
+        /// <param name="fill">Fill or not</param>
+        /// <returns>Bitmap</returns>
+        public static void GetShape(ref Graphics g, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false)
+        {
+            var square = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Width);
+            var colourBrush = new SolidBrush(colour);
+            var colourPen = new Pen(colour, brushSize);
+
+            switch (shapeType)
+            {
+                case ShapeType.Rectangle:
+                    if (fill)
+                    {
+                        g.FillRectangle(colourBrush, rectangle);
+                    }
+
+                    g.DrawRectangle(colourPen, rectangle);
+                    break;
+
+                case ShapeType.Circle:
+                    if (fill)
+                    {
+                        g.FillEllipse(colourBrush, square);
+                    }
+
+                    g.DrawEllipse(colourPen, square);
+
+                    break;
+
+                case ShapeType.Ellipse:
+                    if (fill)
+                    {
+                        g.FillEllipse(colourBrush, rectangle);
+                    }
+
+                    g.DrawEllipse(colourPen, rectangle);
+                    break;
+
+                case ShapeType.SemiCircle:
+                    if (fill)
+                    {
+                        g.FillPie(colourBrush, square, 0, 180);
+                    }
+
+                    g.DrawPie(colourPen, square, 0, 180);
+                    break;
+
+                case ShapeType.Triangle:
+
+                    var triangle = new GraphicsPath();
+
+                    triangle.AddLines(new PointF[] {new PointF(rectangle.Left, rectangle.Bottom), new PointF(rectangle.Left + (rectangle.Width / 2), rectangle.Top), new PointF(rectangle.Right, rectangle.Bottom)});
+                    triangle.CloseFigure();
+
+                    if (fill)
+                    {
+                        g.FillPath(colourBrush, triangle);
+                    }
+                    g.DrawPath(colourPen, triangle);
+                    break;
+
+                case ShapeType.Star:
+                    break;
+
+                case ShapeType.Square:
+                default:
+                    if (fill)
+                    {
+                        g.FillRectangle(colourBrush, square);
+                    }
+                    g.DrawRectangle(colourPen, square);
+                    break;
+            }
         }
 
         /// <summary>

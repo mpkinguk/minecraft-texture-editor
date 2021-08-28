@@ -407,14 +407,21 @@ namespace MinecraftTextureEditorAPI.Helpers
                     }
                     else
                     {
-                        return string.Empty;
+                        throw new FileNotFoundException();
                     }
                 }
             }
             catch (Exception ex)
             {
                 Log?.Error(ex.Message);
-                return selectedPath;
+                if (string.IsNullOrEmpty(selectedPath))
+                {
+                    throw new FileNotFoundException();
+                }
+                else
+                {
+                    return selectedPath;
+                }
             }
         }
 

@@ -59,7 +59,6 @@ namespace MinecraftTextureEditorUI
             _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
         }
 
-
         #region Form events
 
         /// <summary>
@@ -271,7 +270,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var filesPath = FileHelper.GetProjectRootFolder(State.Path);               
+                var filesPath = FileHelper.GetProjectRootFolder(State.Path);
 
                 var fileName = Path.Combine(filesPath, "pack.mcmeta");
 
