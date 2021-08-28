@@ -322,7 +322,7 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                     var triangle = new GraphicsPath();
 
-                    triangle.AddLines(new PointF[] {new PointF(rectangle.Left, rectangle.Bottom), new PointF(rectangle.Left + (rectangle.Width / 2), rectangle.Top), new PointF(rectangle.Right, rectangle.Bottom)});
+                    triangle.AddLines(new PointF[] { new PointF(rectangle.Left, rectangle.Bottom), new PointF(rectangle.Left + (rectangle.Width / 2), rectangle.Top), new PointF(rectangle.Right, rectangle.Bottom) });
                     triangle.CloseFigure();
 
                     if (fill)

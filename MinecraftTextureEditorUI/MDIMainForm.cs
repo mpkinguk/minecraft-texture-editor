@@ -2,7 +2,6 @@
 using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -434,17 +433,18 @@ namespace MinecraftTextureEditorUI
                         if (unPacked)
                         {
                             MessageBox.Show(this, $"Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        } else
+                        }
+                        else
                         {
-                            if(MessageBox.Show(
-                                this, 
-                                "Package deployed as zip file\nWould you like to access this location?", 
+                            if (MessageBox.Show(
+                                this,
+                                "Package deployed as zip file\nWould you like to access this location?",
                                 "Deployment complete. Access location?", MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
                             {
                                 Process.Start(new ProcessStartInfo("Explorer.exe", $"/select, {zipFilePath}"));
                             }
                         }
-                    } 
+                    }
                     else
                     {
                         MessageBox.Show("Package not deployed");
@@ -628,7 +628,7 @@ namespace MinecraftTextureEditorUI
                     State.Modifiers = (toolStripMenuItemMirrorX.Checked ? Modifier.MirrorX : 0) |
                         (toolStripMenuItemMirrorY.Checked ? Modifier.MirrorY : 0) |
                         (toolStripMenuItemTransparencyLock.Checked ? Modifier.TransparencyLock : 0);
-                }             
+                }
 
                 if (State.DrawingTools is null)
                 {
@@ -652,7 +652,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var selectedMenuItem = (ToolStripMenuItem)sender is null? GetMenuItem(toolStripMenuItemDraw.GetCurrentParent(), toolType): (ToolStripMenuItem)sender;
+                var selectedMenuItem = (ToolStripMenuItem)sender is null ? GetMenuItem(toolStripMenuItemDraw.GetCurrentParent(), toolType) : (ToolStripMenuItem)sender;
 
                 // Reset other items
                 foreach (object item in selectedMenuItem.GetCurrentParent().Items)
@@ -755,7 +755,6 @@ namespace MinecraftTextureEditorUI
                     {
                         return menuItem;
                     }
-
                 }
             }
 
@@ -1536,7 +1535,7 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    if(toolStripProgressBarCpu is null || toolStripProgressBarRam is null)
+                    if (toolStripProgressBarCpu is null || toolStripProgressBarRam is null)
                     {
                         return;
                     }
