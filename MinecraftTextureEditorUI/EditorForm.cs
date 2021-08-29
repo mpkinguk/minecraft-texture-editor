@@ -168,7 +168,22 @@ namespace MinecraftTextureEditorUI
                 FormClosing += EditorFormFormClosing;
 
                 pictureBoxImage.Paint += PictureBoxImagePaint;
-                pictureBoxImage.MouseMove += EditorMousePaintPixel;
+
+                pictureBoxImage.MouseMove += (sender, e) =>
+                {
+                    GetButtons(e);
+
+                    if (State.ToolType.Equals(ToolType.Shape))
+                    {
+                        _lastClick = _cursor;
+                    }
+                    else
+                    {
+                        EditorMousePaintPixel(sender, e);
+                    }
+                    EditorFormMouseMove(sender, e);
+                };
+
                 pictureBoxImage.MouseDown += PictureBoxImageMouseDown;
                 pictureBoxImage.MouseUp += PictureBoxImageMouseUp;
                 pictureBoxImage.MouseWheel += PictureBoxImageMouseWheel;
@@ -287,6 +302,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void EditorFormMouseMove(object sender, MouseEventArgs e)
         {
+            GetButtons(e);
             _cursor = e.Location;
             RefreshDisplay();
         }
@@ -372,19 +388,9 @@ namespace MinecraftTextureEditorUI
                             return;
                         }
 
-                        var tmp = new Bitmap(tmpTexture.Width, tmpTexture.Height);
-
-                        var g = Graphics.FromImage(tmp);
-
-                        g.DrawImageUnscaled(tmpTexture, 0, 0);
-
                         var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, _shapeRectangle.Width / Zoom, _shapeRectangle.Height / Zoom);
 
-                        GetShape(ref g, colour, rectangle, State.ShapeType, State.BrushSize, _rightButton);
-
-                        g.Flush();
-
-                        tmpTexture = (Bitmap)tmp.Clone();
+                        tmpTexture = (Bitmap)GetShape(tmpTexture, colour, rectangle, State.ShapeType, State.BrushSize, _shiftIsDown, State.TransparencyLock).Clone();
                     }
                 }
                 else
@@ -647,9 +653,17 @@ namespace MinecraftTextureEditorUI
                     {
                         if (_leftButton || _rightButton)
                         {
-                            if (_lastClick is null && _firstClick != null)
+                            if (_firstClick.HasValue)
                             {
-                                GetShape(ref g, _leftButton ? State.Colour1 : State.Colour2, _shapeRectangle, State.ShapeType, State.BrushSize * Zoom, _shiftIsDown);
+                                int firstX = _firstClick.Value.X / Zoom * Zoom;
+                                int firstY = _firstClick.Value.Y / Zoom * Zoom;
+
+                                if (State.ShapeType != ShapeType.Line)
+                                {
+                                    g.DrawRectangle(new Pen(Color.Blue, 2), firstX, firstY, cursorX - firstX, cursorY - firstY);
+                                }
+
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Red)), firstX, firstY, Zoom * State.BrushSize, Zoom * State.BrushSize);
                             }
                         }
                     }
@@ -779,12 +793,8 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                //pictureBoxImage.SizeMode = PictureBoxSizeMode.Normal;
-
                 pictureBoxImage.Width = Texture.Width * Zoom;
                 pictureBoxImage.Height = Texture.Height * Zoom;
-
-                //pictureBoxImage.SizeMode = PictureBoxSizeMode.AutoSize;
 
                 pictureBoxImage.Invalidate(true);
             }

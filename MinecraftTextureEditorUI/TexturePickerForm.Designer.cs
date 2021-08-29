@@ -73,12 +73,12 @@ namespace MinecraftTextureEditorUI
             // buttonRefresh
             // 
             this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRefresh.Location = new System.Drawing.Point(224, 27);
+            this.buttonRefresh.Location = new System.Drawing.Point(224, 29);
             this.buttonRefresh.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonRefresh.Name = "buttonRefresh";
-            this.buttonRefresh.Size = new System.Drawing.Size(120, 30);
+            this.buttonRefresh.Size = new System.Drawing.Size(120, 28);
             this.buttonRefresh.TabIndex = 1;
-            this.buttonRefresh.Text = "&Refresh";
+            this.buttonRefresh.Text = "&Reload All";
             this.toolTip1.SetToolTip(this.buttonRefresh, "Click here to refresh your textures");
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.ButtonRefreshClick);

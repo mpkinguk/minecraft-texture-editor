@@ -1,7 +1,6 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -278,7 +277,7 @@ namespace MinecraftTextureEditorUI
 
             State.Alpha = 255;
 
-            State.ShapeType = ShapeType.Square;
+            State.ShapeType = 0;
 
             contextMenuStripShape.Items.AddRange(GetShapeMenuItems());
 
@@ -299,11 +298,6 @@ namespace MinecraftTextureEditorUI
             }
 
             return items;
-        }
-
-        private void Tool(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

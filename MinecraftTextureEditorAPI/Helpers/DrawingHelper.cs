@@ -1,6 +1,7 @@
 ﻿using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -51,6 +52,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         public enum ShapeType
         {
+            Line,
             Square,
             Rectangle,
             Circle,
@@ -273,14 +275,25 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="brushSize">The brush size</param>
         /// <param name="fill">Fill or not</param>
         /// <returns>Bitmap</returns>
-        public static void GetShape(ref Graphics g, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false)
+        public static Image GetShape(Image image, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false, bool transparencyLock = false)
         {
+            var tmp = new Bitmap(image.Width, image.Height);
+
+            var transparencyMap = (Bitmap)image.Clone();
+
             var square = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Width);
             var colourBrush = new SolidBrush(colour);
             var colourPen = new Pen(colour, brushSize);
 
+            var g = Graphics.FromImage(tmp);
+
+            g.DrawImageUnscaled(image, 0, 0);
+
             switch (shapeType)
             {
+                case ShapeType.Line:
+                    g.DrawLine(colourPen, rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
+                    break;
                 case ShapeType.Rectangle:
                     if (fill)
                     {
@@ -310,12 +323,7 @@ namespace MinecraftTextureEditorAPI.Helpers
                     break;
 
                 case ShapeType.SemiCircle:
-                    if (fill)
-                    {
-                        g.FillPie(colourBrush, square, 0, 180);
-                    }
-
-                    g.DrawPie(colourPen, square, 0, 180);
+                    g.DrawArc(colourPen, rectangle, 0, 180);
                     break;
 
                 case ShapeType.Triangle:
@@ -344,6 +352,27 @@ namespace MinecraftTextureEditorAPI.Helpers
                     g.DrawRectangle(colourPen, square);
                     break;
             }
+
+            g.Flush();
+
+            if (transparencyLock)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+                    for (int x = 0; x < image.Width; x++)
+                    {
+                        var transparentColour = GetColour(transparencyMap, x, y);
+
+                        if (transparentColour.A.Equals(0))
+                        {
+                            tmp.SetPixel(x, y, transparentColour);
+                        }
+                    }
+                }
+            }
+
+            return tmp;
+
         }
 
         /// <summary>
