@@ -388,7 +388,7 @@ namespace MinecraftTextureEditorUI
                             return;
                         }
 
-                        var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, _shapeRectangle.Width / Zoom, _shapeRectangle.Height / Zoom);
+                        var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, (_shapeRectangle.Width / Zoom) + State.BrushSize, (_shapeRectangle.Height / Zoom) + State.BrushSize);
 
                         tmpTexture = (Bitmap)GetShape(tmpTexture, colour, rectangle, State.ShapeType, State.BrushSize, _shiftIsDown, State.TransparencyLock).Clone();
                     }
@@ -658,12 +658,15 @@ namespace MinecraftTextureEditorUI
                                 int firstX = _firstClick.Value.X / Zoom * Zoom;
                                 int firstY = _firstClick.Value.Y / Zoom * Zoom;
 
+                                bool square = State.ShapeType.Equals(ShapeType.Circle) || State.ShapeType.Equals(ShapeType.Square);
+
                                 if (State.ShapeType != ShapeType.Line)
                                 {
-                                    g.DrawRectangle(new Pen(Color.Blue, 2), firstX, firstY, cursorX - firstX, cursorY - firstY);
+                                    g.DrawRectangle(new Pen(Color.Blue, 2), firstX, firstY, (cursorX - firstX) + State.BrushSize * Zoom, 
+                                        ((square ? cursorX:cursorY) - (square ? firstX : firstY)) + State.BrushSize * Zoom);
                                 }
 
-                                g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Red)), firstX, firstY, Zoom * State.BrushSize, Zoom * State.BrushSize);
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Red)), firstX, firstY, State.BrushSize * Zoom, State.BrushSize * Zoom);
                             }
                         }
                     }
