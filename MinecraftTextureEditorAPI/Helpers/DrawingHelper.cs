@@ -279,6 +279,9 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             var tmp = new Bitmap(image.Width, image.Height);
 
+            //Correct the rectangle if width or height is negative
+            rectangle.Validate();
+
             var transparencyMap = (Bitmap)image.Clone();
 
             var square = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Width);
@@ -341,6 +344,27 @@ namespace MinecraftTextureEditorAPI.Helpers
                     break;
 
                 case ShapeType.Star:
+                    var star = fill? Properties.Resources.star:Properties.Resources.star_outline;
+                    var tmpStar = new Bitmap(rectangle.Width, rectangle.Height);
+                    var s = Graphics.FromImage(tmpStar);
+
+                    s.Clear(Color.FromArgb(0, 0, 0, 0));
+
+                    s.DrawImage(star, 0,0,rectangle.Width, rectangle.Height);
+
+                    for(int y =0; y< tmpStar.Height; y++)
+                    {
+                        for(int x = 0; x< tmpStar.Width; x++)
+                        {
+                            if(tmpStar.GetPixel(x,y).R.Equals(0))
+                            {
+                                //Add the pixels with the new colour
+                                tmp.SetPixel(x + rectangle.X, y+rectangle.Y, colour);
+                            }
+                        }
+                    }
+
+                    s.Flush();
                     break;
 
                 case ShapeType.Square:
@@ -452,6 +476,41 @@ namespace MinecraftTextureEditorAPI.Helpers
             g.Flush();
 
             return (Bitmap)tmp.Clone();
+        }
+
+        /// <summary>
+        /// Validate a rectangle and return correct coords
+        /// </summary>
+        /// <param name="rectangle">The rectangle</param>
+        public static void Validate(this ref Rectangle rectangle)
+        {
+            //Sort out reverse rectangles
+            if (rectangle.Width < 0)
+            {
+                var width = Math.Abs(rectangle.Width);
+
+                rectangle.X -= width;
+                rectangle.Width = width;
+            }
+
+            if (rectangle.Height < 0)
+            {
+                var height = Math.Abs(rectangle.Height);
+
+                rectangle.Y -= height;
+                rectangle.Height = height;
+            }
+        }
+
+        /// <summary>
+        /// Round out the value to the zoom equivalent
+        /// </summary>
+        /// <param name="value">The value</param>
+        /// <param name="zoom">The zoom value</param>
+        /// <returns>int</returns>
+        public static int Zoomify(this int value, int zoom)
+        {
+            return value / zoom * zoom;
         }
 
         #endregion Public methods

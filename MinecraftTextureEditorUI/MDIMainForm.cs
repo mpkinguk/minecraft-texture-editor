@@ -689,6 +689,23 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Display the MDI form
+        /// </summary>
+        private async Task ShowMDIForm()
+        {
+            try
+            {
+                ShowToolWindows();
+
+                await LoadTextures(true).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Get shape menu items and add click events
         /// </summary>
         /// <returns>Array of ToolStripItem</returns>
@@ -1189,9 +1206,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private async void MDIMainFormShown(object sender, EventArgs e)
         {
-            ShowToolWindows();
-
-            await LoadTextures(true).ConfigureAwait(false);
+            await ShowMDIForm();
         }
 
         /// <summary>
@@ -1211,7 +1226,14 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private async void NewProjectToolStripMenuItemClick(object sender, EventArgs e)
         {
-            await LoadTextures(true).ConfigureAwait(false);
+            try
+            {
+                await LoadTextures(true).ConfigureAwait(false);
+            }
+            catch(Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
         }
 
         /// <summary>

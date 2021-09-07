@@ -415,7 +415,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="text"></param>
         private void FilterImages(string text)
-        {
+        {          
             if (flowLayoutPanelTextures.InvokeRequired)
             {
                 var d = new Action<string>(FilterImages);
@@ -423,6 +423,8 @@ namespace MinecraftTextureEditorUI
             }
             else
             {
+                UseWaitCursor = true;
+
                 flowLayoutPanelTextures.Visible = false;
 
                 foreach (Button item in flowLayoutPanelTextures.Controls)
@@ -431,6 +433,8 @@ namespace MinecraftTextureEditorUI
                 }
 
                 flowLayoutPanelTextures.Visible = true;
+
+                UseWaitCursor = false;
             }
         }
 

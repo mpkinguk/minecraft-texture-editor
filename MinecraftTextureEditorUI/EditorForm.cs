@@ -390,7 +390,7 @@ namespace MinecraftTextureEditorUI
 
                         var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, (_shapeRectangle.Width / Zoom) + State.BrushSize, (_shapeRectangle.Height / Zoom) + State.BrushSize);
 
-                        tmpTexture = (Bitmap)GetShape(tmpTexture, colour, rectangle, State.ShapeType, State.BrushSize, _shiftIsDown, State.TransparencyLock).Clone();
+                        tmpTexture = (Bitmap)GetShape(tmpTexture, colour, rectangle, State.ShapeType, State.BrushSize, !_shiftIsDown, State.TransparencyLock).Clone();
                     }
                 }
                 else
@@ -610,6 +610,8 @@ namespace MinecraftTextureEditorUI
             {
                 var g = e.Graphics;
 
+                var zoomBrushSize = Zoom * State.BrushSize;
+
                 e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 
                 var srcRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
@@ -642,12 +644,12 @@ namespace MinecraftTextureEditorUI
 
                 // Show cursor
 
-                int cursorX = _cursor.X / Zoom * Zoom;
-                int cursorY = _cursor.Y / Zoom * Zoom;
+                int cursorX = _cursor.X.Zoomify(Zoom);
+                int cursorY = _cursor.Y.Zoomify(Zoom);
 
                 if (!CursorOutOfBounds())
                 {
-                    g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Yellow)), cursorX, cursorY, Zoom * State.BrushSize, Zoom * State.BrushSize);
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Yellow)), cursorX, cursorY, zoomBrushSize, zoomBrushSize);
 
                     if (State.ToolType.Equals(ToolType.Shape))
                     {
@@ -655,18 +657,28 @@ namespace MinecraftTextureEditorUI
                         {
                             if (_firstClick.HasValue)
                             {
-                                int firstX = _firstClick.Value.X / Zoom * Zoom;
-                                int firstY = _firstClick.Value.Y / Zoom * Zoom;
+                                int firstX = _firstClick.Value.X.Zoomify(Zoom);
+                                int firstY = _firstClick.Value.Y.Zoomify(Zoom);
 
-                                bool square = State.ShapeType.Equals(ShapeType.Circle) || State.ShapeType.Equals(ShapeType.Square);
+                                var square = State.ShapeType.Equals(ShapeType.Circle) || State.ShapeType.Equals(ShapeType.Square);
+
+                                var cursorPen = new Pen(Color.Blue, State.BrushSize * Zoom);
 
                                 if (State.ShapeType != ShapeType.Line)
                                 {
-                                    g.DrawRectangle(new Pen(Color.Blue, 2), firstX, firstY, (cursorX - firstX) + State.BrushSize * Zoom, 
-                                        ((square ? cursorX:cursorY) - (square ? firstX : firstY)) + State.BrushSize * Zoom);
+                                    var rectangle = new Rectangle(firstX, firstY, (cursorX - firstX) + zoomBrushSize,
+                                        ((square ? cursorX : cursorY) - (square ? firstX : firstY)) + zoomBrushSize);
+
+                                    rectangle.Validate();
+
+                                    g.DrawRectangle(cursorPen, rectangle);
+                                }
+                                else
+                                {
+                                    g.DrawLine(cursorPen, firstX, firstY, cursorX, cursorY);
                                 }
 
-                                g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Red)), firstX, firstY, State.BrushSize * Zoom, State.BrushSize * Zoom);
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Red)), firstX, firstY, zoomBrushSize, zoomBrushSize);
                             }
                         }
                     }

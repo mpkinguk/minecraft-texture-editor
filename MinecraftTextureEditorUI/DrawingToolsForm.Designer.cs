@@ -299,14 +299,14 @@ namespace MinecraftTextureEditorUI
             // contextMenuStripShape
             // 
             this.contextMenuStripShape.Name = "contextMenuStripShape";
-            this.contextMenuStripShape.Size = new System.Drawing.Size(181, 26);
+            this.contextMenuStripShape.Size = new System.Drawing.Size(61, 4);
             // 
             // DrawingToolsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
-            this.ClientSize = new System.Drawing.Size(251, 549);
+            this.ClientSize = new System.Drawing.Size(264, 589);
             this.ControlBox = false;
             this.Controls.Add(this.buttonShape);
             this.Controls.Add(this.buttonTransparencyLock);
@@ -329,8 +329,10 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.pictureBoxColourPicker);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(294, 639);
             this.MinimizeBox = false;
             this.Name = "DrawingToolsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
