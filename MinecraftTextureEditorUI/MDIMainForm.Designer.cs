@@ -94,6 +94,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripButtonDeploymentWizard = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripModifierLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripToolTypeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripBrushSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBarCpu = new CustomControls.MyToolStripProgressBar();
@@ -657,6 +658,7 @@ namespace MinecraftTextureEditorUI
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel,
             this.toolStripToolTypeLabel,
+            this.toolStripModifierLabel,
             this.toolStripBrushSizeLabel,
             (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarCpu,
             (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarRam});
@@ -677,6 +679,17 @@ namespace MinecraftTextureEditorUI
             this.toolStripStatusLabel.Font = new System.Drawing.Font("Minecraft", 9F);
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(4, 17);
+            // 
+            // toolStripModifierLabel
+            // 
+            this.toolStripModifierLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.toolStripModifierLabel.BorderStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.toolStripModifierLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripModifierLabel.Font = new System.Drawing.Font("Minecraft", 9F);
+            this.toolStripModifierLabel.Name = "toolStripModifierLabel";
+            this.toolStripModifierLabel.Size = new System.Drawing.Size(4, 17);
             // 
             // toolStripToolTypeLabel
             // 
@@ -804,6 +817,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripBrushSizeLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripModifierLabel;
         private CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
         private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRotateFlip;

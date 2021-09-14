@@ -464,42 +464,42 @@ namespace MinecraftTextureEditorUI
                     foreach (var filter in filters)
                     {
                         // Invalid filter name, move on
-                        if (filter.Equals(string.Empty))
+                        if (!filter.Equals(string.Empty))
                         {
-                            continue;
-                        }
 
-                        var filterSplit = filter.Split(FilterValueDelimiter);
 
-                        if (filterSplit.Length > 1)
-                        {
-                            var tuple = Tuple.Create(filterSplit[0], filterSplit[1]);
+                            var filterSplit = filter.Split(FilterValueDelimiter);
 
-                            if (Enum.TryParse<FilterType>(tuple.Item1, true, out var filtertype))
+                            if (filterSplit.Length > 1)
                             {
-                                switch (filtertype)
+                                var tuple = Tuple.Create(filterSplit[0], filterSplit[1]);
+
+                                if (Enum.TryParse<FilterType>(tuple.Item1, true, out var filtertype))
                                 {
-                                    case FilterType.Width:
-                                        isWidth = width.Equals(tuple.Item2);
-                                        break;
+                                    switch (filtertype)
+                                    {
+                                        case FilterType.Width:
+                                            isWidth = width.Equals(tuple.Item2);
+                                            break;
 
-                                    case FilterType.Height:
-                                        isHeight = height.Equals(tuple.Item2);
-                                        break;
+                                        case FilterType.Height:
+                                            isHeight = height.Equals(tuple.Item2);
+                                            break;
 
-                                    case FilterType.Category:
-                                        isCategory = category.Contains(tuple.Item2);
-                                        break;
+                                        case FilterType.Category:
+                                            isCategory = category.Contains(tuple.Item2);
+                                            break;
 
-                                    case FilterType.Name:
-                                        isName = filename.Contains(tuple.Item2);
-                                        break;
+                                        case FilterType.Name:
+                                            isName = filename.Contains(tuple.Item2);
+                                            break;
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            isName = filename.Contains(text);
+                            else
+                            {
+                                isName = filename.Contains(text);
+                            }
                         }
 
                         var visible = isName || isCategory || isWidth || isHeight || string.IsNullOrEmpty(text);

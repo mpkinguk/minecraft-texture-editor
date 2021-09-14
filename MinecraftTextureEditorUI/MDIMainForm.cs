@@ -282,6 +282,8 @@ namespace MinecraftTextureEditorUI
             toolStripMenuItemMirrorY.Checked = State.MirrorY;
 
             toolStripMenuItemTransparencyLock.Checked = State.TransparencyLock;
+
+            UpdateLabels();
         }
 
         /// <summary>
@@ -290,6 +292,7 @@ namespace MinecraftTextureEditorUI
         private void DrawingToolsShapeTypeChanged()
         {
             CheckShapeTypeMenuItem();
+            UpdateLabels();
         }
 
         /// <summary>
@@ -297,8 +300,8 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         private void DrawingToolsToolTypeChanged()
         {
-            UpdateLabels();
             SelectTool(null, State.ToolType);
+            UpdateLabels();
         }
 
         /// <summary>
@@ -732,6 +735,8 @@ namespace MinecraftTextureEditorUI
                 }
 
                 State.DrawingTools.UpdateButtons();
+
+                UpdateLabels();
             }
             catch (Exception ex)
             {
@@ -759,6 +764,8 @@ namespace MinecraftTextureEditorUI
             CheckShapeTypeMenuItem();
 
             State.DrawingTools.UpdateShapesMenu();
+
+            UpdateLabels();
         }
 
         /// <summary>
@@ -799,6 +806,8 @@ namespace MinecraftTextureEditorUI
                 }
 
                 State.DrawingTools.UpdateButtons();
+
+                UpdateLabels();
             }
             catch (Exception ex)
             {
@@ -1033,8 +1042,9 @@ namespace MinecraftTextureEditorUI
             {
                 toolStripStatusLabel.Text = $"Current texture is {State.Editor.Text}";
             }
-            toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}";
+            toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}{(State.ToolType.Equals(ToolType.Shape) ? $" - {State.ShapeType}" : "")}";
             toolStripBrushSizeLabel.Text = $"Brush = {State.BrushSize} px";
+            toolStripModifierLabel.Text = $"Modifiers = {(State.Modifiers == 0 ? "None" : $"{ State.Modifiers}")}";
         }
 
         #endregion Private methods
