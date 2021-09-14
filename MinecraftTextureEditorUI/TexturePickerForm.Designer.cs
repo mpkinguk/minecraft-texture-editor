@@ -32,6 +32,7 @@ namespace MinecraftTextureEditorUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TexturePickerForm));
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanelTextures = new System.Windows.Forms.FlowLayoutPanel();
             this.textBoxFilter = new System.Windows.Forms.TextBox();
@@ -43,7 +44,12 @@ namespace MinecraftTextureEditorUI
             // 
             // toolTip1
             // 
+            this.toolTip1.AutomaticDelay = 200;
+            this.toolTip1.AutoPopDelay = 10000;
+            this.toolTip1.InitialDelay = 200;
             this.toolTip1.OwnerDraw = true;
+            this.toolTip1.ReshowDelay = 40;
+            this.toolTip1.ShowAlways = true;
             this.toolTip1.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.ToolTipDraw);
             // 
             // flowLayoutPanelTextures
@@ -67,7 +73,7 @@ namespace MinecraftTextureEditorUI
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(225, 24);
             this.textBoxFilter.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.textBoxFilter, "Type in your text and press enter to filter the textures!");
+            this.toolTip1.SetToolTip(this.textBoxFilter, resources.GetString("textBoxFilter.ToolTip"));
             this.textBoxFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxFilterKeyDown);
             // 
             // buttonRefresh

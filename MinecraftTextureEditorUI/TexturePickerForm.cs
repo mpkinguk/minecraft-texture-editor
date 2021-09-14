@@ -1,12 +1,14 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI.Helpers;
+using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static MinecraftTextureEditorAPI.Constants;
+
 using Constants = MinecraftTextureEditorAPI.Constants;
 
 namespace MinecraftTextureEditorUI
@@ -211,7 +213,10 @@ namespace MinecraftTextureEditorUI
         private void LoadTexture(object sender, EventArgs e)
         {
             var button = (Button)sender;
-            OnTextureClicked(Convert.ToString(button.Tag));
+
+            var imageInfo = (ImageInfo)button.Tag;
+
+            OnTextureClicked(imageInfo.FullPath);
         }
 
         /// <summary>
@@ -268,13 +273,14 @@ namespace MinecraftTextureEditorUI
                 {
                     e.DrawBackground();
 
-                    // Top.
                     sf.LineAlignment = StringAlignment.Center;
 
-                    // Top/Left.
-                    sf.Alignment = StringAlignment.Center;
+                    sf.Alignment = e.ToolTipText.Length > 30 ? StringAlignment.Near : StringAlignment.Center;
 
-                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, e.Bounds, sf);
+                    // Create margin
+                    var rectangle = new Rectangle(3, 3, e.Bounds.Width - 6, e.Bounds.Height - 6);
+
+                    g.DrawString(e.ToolTipText, new Font("Minecraft", 6F), Brushes.Black, rectangle, sf);
 
                     e.DrawBorder();
                 }
@@ -286,6 +292,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Update the listview with files
         /// </summary>
@@ -318,7 +325,7 @@ namespace MinecraftTextureEditorUI
 
                     var itemText = fileInfo.Name.Length > 6 ? $"{fileInfo.Name.Substring(0, 7)}..." : fileInfo.Name;
 
-                    var item = new Button() { Tag = file, Text = itemText, Location = new Point(0, 0), Size = new Size(Constants.ItemSize, Constants.ItemSize), Font = new Font("Minecraft", 6F) };
+                    var item = new Button() { Text = itemText, Location = new Point(0, 0), Size = new Size(Constants.ItemSize, Constants.ItemSize), Font = new Font("Minecraft", 6F) };
 
                     toolTip1.SetToolTip(item, fileInfo.Name);
 
@@ -337,6 +344,12 @@ namespace MinecraftTextureEditorUI
                         _log.Error(ex.Message);
                         continue;
                     }
+
+                    var category = new DirectoryInfo(fileInfo.DirectoryName).Name;
+
+                    var imageInfo = new ImageInfo() { FullPath = file, Filename = fileInfo.Name, Size = tmp.Size, Category = category };
+
+                    item.Tag = imageInfo;
 
                     item.Image = tmp;
 
@@ -381,6 +394,7 @@ namespace MinecraftTextureEditorUI
                 UpdateCursor(false);
             }
         }
+
         #endregion Private form events
 
         #region Threadsafe methods
@@ -415,7 +429,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="text"></param>
         private void FilterImages(string text)
-        {          
+        {
             if (flowLayoutPanelTextures.InvokeRequired)
             {
                 var d = new Action<string>(FilterImages);
@@ -425,14 +439,78 @@ namespace MinecraftTextureEditorUI
             {
                 UseWaitCursor = true;
 
+                UpdateCursor(true);
+
                 flowLayoutPanelTextures.Visible = false;
 
-                foreach (Button item in flowLayoutPanelTextures.Controls)
-                {
-                    item.Visible = item.Text.Contains(text) || string.IsNullOrEmpty(text);
-                }
+                var filters = text.Split(FilterTypeDelimiter);
 
+                foreach (Button imageButton in flowLayoutPanelTextures.Controls)
+                {
+                    var imageInfo = (ImageInfo)imageButton.Tag;
+                    var size = imageInfo.Size;
+
+                    var width = size.Width.ToString();
+                    var height = size.Height.ToString();
+
+                    var filename = imageInfo.Filename;
+                    var category = imageInfo.Category;
+
+                    var isCategory = false;
+                    var isHeight = false;
+                    var isName = false;
+                    var isWidth = false;
+
+                    foreach (var filter in filters)
+                    {
+                        // Invalid filter name, move on
+                        if (filter.Equals(string.Empty))
+                        {
+                            continue;
+                        }
+
+                        var filterSplit = filter.Split(FilterValueDelimiter);
+
+                        if (filterSplit.Length > 1)
+                        {
+                            var tuple = Tuple.Create(filterSplit[0], filterSplit[1]);
+
+                            if (Enum.TryParse<FilterType>(tuple.Item1, true, out var filtertype))
+                            {
+                                switch (filtertype)
+                                {
+                                    case FilterType.Width:
+                                        isWidth = width.Equals(tuple.Item2);
+                                        break;
+
+                                    case FilterType.Height:
+                                        isHeight = height.Equals(tuple.Item2);
+                                        break;
+
+                                    case FilterType.Category:
+                                        isCategory = category.Contains(tuple.Item2);
+                                        break;
+
+                                    case FilterType.Name:
+                                        isName = filename.Contains(tuple.Item2);
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            isName = filename.Contains(text);
+                        }
+
+                        var visible = isName || isCategory || isWidth || isHeight || string.IsNullOrEmpty(text);
+
+                        imageButton.Visible = visible;
+                    }
+                }
+                
                 flowLayoutPanelTextures.Visible = true;
+
+                UpdateCursor(false);
 
                 UseWaitCursor = false;
             }
@@ -543,6 +621,7 @@ namespace MinecraftTextureEditorUI
                 _log?.Error(ex.Message);
             }
         }
+
         /// <summary>
         /// Thread safe method for updating form text
         /// </summary>

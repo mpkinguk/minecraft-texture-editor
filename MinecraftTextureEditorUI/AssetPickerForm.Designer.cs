@@ -42,7 +42,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCancel.Location = new System.Drawing.Point(412, 198);
+            this.buttonCancel.Location = new System.Drawing.Point(540, 192);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(80, 35);
@@ -85,14 +85,14 @@ namespace MinecraftTextureEditorUI
             this.comboBoxAsset.FormattingEnabled = true;
             this.comboBoxAsset.Location = new System.Drawing.Point(12, 157);
             this.comboBoxAsset.Name = "comboBoxAsset";
-            this.comboBoxAsset.Size = new System.Drawing.Size(480, 25);
+            this.comboBoxAsset.Size = new System.Drawing.Size(608, 25);
             this.comboBoxAsset.TabIndex = 7;
             // 
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOK.Location = new System.Drawing.Point(322, 198);
+            this.buttonOK.Location = new System.Drawing.Point(450, 192);
             this.buttonOK.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(80, 35);
@@ -106,7 +106,7 @@ namespace MinecraftTextureEditorUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
-            this.ClientSize = new System.Drawing.Size(506, 246);
+            this.ClientSize = new System.Drawing.Size(634, 240);
             this.ControlBox = false;
             this.Controls.Add(this.comboBoxAsset);
             this.Controls.Add(this.labelWidth);
@@ -115,6 +115,7 @@ namespace MinecraftTextureEditorUI
             this.Controls.Add(this.buttonCancel);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Minecraft", 10F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "AssetPickerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

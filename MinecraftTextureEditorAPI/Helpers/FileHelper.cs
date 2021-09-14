@@ -142,7 +142,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Get the root path of the project folder so it includes the assets path
         /// </summary>
         /// <param name="path">The path</param>
-        /// <returns>String</returns>
+        /// <returns>string</returns>
         public static string GetProjectRootFolder(string path)
         {
             var filesPath = path;

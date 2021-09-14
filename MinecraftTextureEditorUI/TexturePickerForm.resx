@@ -120,4 +120,13 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="textBoxFilter.ToolTip" xml:space="preserve">
+    <value>Use the following filters and press Enter:
+name=&lt;the name of the texture&gt;
+category=&lt;the category of the texture, e.g. block&gt;
+width=&lt;the texture width in pixels&gt;
+height=&lt;the texture height in pixels&gt;
+Separate filters with commas for an OR search
+Otherwise type in a filter value without = to search on name only.</value>
+  </data>
 </root>
