@@ -864,7 +864,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.4.2.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.4.3.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_6FAC1761E81DC0CA0115145770A1B7B7"
@@ -895,7 +895,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.4.2.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.4.3.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_7921DAF7C6189AA0EA0C52ACD65BB03E"
@@ -1105,7 +1105,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.4.2.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.4.3.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_CC55C9A5E1CD5E763336CE53808C23E2"
@@ -1345,15 +1345,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{199B7E00-DB82-4D21-9AFE-0DD3EF328529}"
-        "PackageCode" = "8:{E01CF2DC-A234-408F-A07A-A5D5D6AEAA4E}"
+        "ProductCode" = "8:{A9285F45-6458-47CB-866E-6C69FA75EDB2}"
+        "PackageCode" = "8:{F4642D7C-C2DC-413A-91B1-5852F94E8460}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.4.3"
+        "ProductVersion" = "8:2.5.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"
