@@ -354,7 +354,7 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                 if (File.Exists(filename))
                 {
-                    if (MessageBox.Show("File already exists. Create a backup?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    if (MessageBox.Show(Constants.FileExistsCreateBackupMessage, Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         var backupFilename = $"{filename}.bak";
 

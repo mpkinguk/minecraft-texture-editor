@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
@@ -176,7 +177,8 @@ namespace MinecraftTextureEditorUI
             {
                 if (_hasChanged && !_hasSaved)
                 {
-                    switch (MessageBox.Show(this, "Some options have been changed.\nDo you wish to save your settings?", "Save settings?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                    switch (MessageBox.Show(this, Constants.OptionsChangedMessage, Constants.Warning, 
+                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
                     {
                         case DialogResult.Yes:
                             SaveSettings();

@@ -279,8 +279,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             var tmp = new Bitmap(image.Width, image.Height);
 
-            //Correct the rectangle if width or height is negative
-            rectangle.Validate();
+            //Correct the rectangle if width or height is negative, but not for line
+            if (!shapeType.Equals(ShapeType.Line))
+            {
+                rectangle.Validate();
+            }
 
             var transparencyMap = (Bitmap)image.Clone();
 

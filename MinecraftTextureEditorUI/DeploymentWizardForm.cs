@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using MinecraftTextureEditorAPI.Model;
 using System;
@@ -136,7 +137,7 @@ namespace MinecraftTextureEditorUI
 
                         if (File.Exists(outputFile))
                         {
-                            switch (MessageBox.Show(this, "This pack already exists. Create a backup?", "Warning", MessageBoxButtons.YesNoCancel))
+                            switch (MessageBox.Show(this, Constants.PackageExistsCreateBackupMessage, Constants.Warning, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
                             {
                                 case DialogResult.Yes:
                                     File.Move(outputFile, $"{outputFile}.bak");
@@ -538,17 +539,17 @@ namespace MinecraftTextureEditorUI
         /// Threadsafe method for displaying error messagebox
         /// </summary>
         /// <param name="error">The error message</param>
-        private void ShowErrorBox(string error, string caption = "Error")
+        private void ShowErrorBox(string error)
         {
             if (InvokeRequired)
             {
                 //var d = new Action<string>(ShowErrorBox);
-                BeginInvoke((MethodInvoker)delegate { ShowErrorBox(error, caption); });
+                BeginInvoke((MethodInvoker)delegate { ShowErrorBox(error); });
                 //Invoke(d, new object[] { error });
             }
             else
             {
-                MessageBox.Show(this, error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, error, Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

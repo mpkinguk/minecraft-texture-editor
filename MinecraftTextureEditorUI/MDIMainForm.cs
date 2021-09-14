@@ -50,7 +50,7 @@ namespace MinecraftTextureEditorUI
             {
                 var message = "Could not load font. Please check this Fonts directory for MINECRAFT_FONT.TTF";
 
-                MessageBox.Show(this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, message, Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
 
@@ -118,7 +118,7 @@ namespace MinecraftTextureEditorUI
 
                 if (string.IsNullOrEmpty(systemFolder))
                 {
-                    MessageBox.Show(this, "Could not find system directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, Constants.SystemDirectoryNotFoundMessage, Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -129,7 +129,7 @@ namespace MinecraftTextureEditorUI
                     return true;
                 }
 
-                if (MessageBox.Show(this, "Minecraft font needs to be installed.\nPlease click OK to install font", "Font not found", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
+                if (MessageBox.Show(this, Constants.MinecraftFolderNotFoundMessage, Constants.NotFound, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.Cancel)
                 {
                     return false;
                 }
@@ -148,8 +148,19 @@ namespace MinecraftTextureEditorUI
             catch (Exception ex)
             {
                 _log?.Error(ex.Message);
-                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.Message, Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks the correct shape type menu item based on State.ShapeTypes
+        /// </summary>
+        private void CheckShapeTypeMenuItem()
+        {
+            foreach (ToolStripMenuItem menuItem in toolStripMenuItemShape.DropDownItems)
+            {
+                menuItem.Checked = menuItem.Text.Equals(State.ShapeType.ToString());
             }
         }
 
@@ -262,12 +273,72 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Update menu items if modifier changes
+        /// </summary>
+        private void DrawingToolsModifierChanged()
+        {
+            toolStripMenuItemMirrorX.Checked = State.MirrorX;
+
+            toolStripMenuItemMirrorY.Checked = State.MirrorY;
+
+            toolStripMenuItemTransparencyLock.Checked = State.TransparencyLock;
+        }
+
+        /// <summary>
+        /// Updates the menu items if the shape type changes
+        /// </summary>
+        private void DrawingToolsShapeTypeChanged()
+        {
+            CheckShapeTypeMenuItem();
+        }
+
+        /// <summary>
         /// Captures the tool type changed event from the drawing tools window
         /// </summary>
         private void DrawingToolsToolTypeChanged()
         {
             UpdateLabels();
             SelectTool(null, State.ToolType);
+        }
+
+        /// <summary>
+        /// Gets a toolstrip menu item based on the selected tooltip
+        /// </summary>
+        /// <param name="toolStrip">The toolstrip</param>
+        /// <param name="toolType">The tool type</param>
+        /// <returns>ToolStripMenuItem</returns>
+        private ToolStripMenuItem GetMenuItem(ToolStrip toolStrip, ToolType toolType)
+        {
+            foreach (object item in toolStrip.Items)
+            {
+                if (item.GetType().Equals(typeof(ToolStripMenuItem)))
+                {
+                    ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
+
+                    if (menuItem.Name.Contains($"{toolType}"))
+                    {
+                        return menuItem;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get shape menu items and add click events
+        /// </summary>
+        /// <returns>Array of ToolStripItem</returns>
+        private ToolStripMenuItem[] GetShapeMenuItems()
+        {
+            var items = DrawingHelper.GetShapeMenuItems();
+
+            foreach (ToolStripMenuItem item in items)
+            {
+                item.Click += ToolStripMenuItemShapeClick;
+            }
+
+            return items;
         }
 
         /// <summary>
@@ -309,20 +380,24 @@ namespace MinecraftTextureEditorUI
                 // if the user cancels, exit the application, as no textures will be loaded and it will not be usable
                 if (string.IsNullOrEmpty(State.Path))
                 {
-                    var message = "No path selected to load textures. Do you want to use the Create Deployment Wizard?\nClick \"Yes\" to use the wizard\nClick \"No\" to choose another path\nClick \"Cancel\" to choose you own file or create a new one";
                     _log.Debug("No path selected");
-                    var result = MessageBox.Show(this, message, "Information", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+
+                    var message = "No path selected to load textures. Do you want to use the Create Project Wizard?\n\"Yes\" to use the wizard\n\"No\" to choose another path\n\"Cancel\" to choose you own file or create a new one";
+                    var result = MessageBox.Show(this, message, Constants.Information, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
 
                     switch (result)
                     {
                         case DialogResult.Cancel:
+                            _log.Debug("Cancelled");
                             return;
 
                         case DialogResult.Yes:
+                            _log.Debug("Create project wizard selected");
                             await OpenCreateProjectWizardForm().ConfigureAwait(false);
                             return;
 
                         case DialogResult.No:
+                            _log.Debug("Choose path selected");
                             await LoadTextures(browse).ConfigureAwait(false);
                             break;
                     }
@@ -346,7 +421,8 @@ namespace MinecraftTextureEditorUI
                     }
                     else
                     {
-                        if (MessageBox.Show(this, "This path does not contain an asset folder.\nClick OK to choose a different path, or click cancel to continue without using a project.", "Information", MessageBoxButtons.OKCancel).Equals(DialogResult.OK))
+                        if (MessageBox.Show(this, Constants.AssetsFolderNotFoundMessage, Constants.Warning,
+                            MessageBoxButtons.OKCancel, MessageBoxIcon.Warning).Equals(DialogResult.OK))
                         {
                             await LoadTextures(browse).ConfigureAwait(false);
                             return;
@@ -400,7 +476,7 @@ namespace MinecraftTextureEditorUI
                     {
                         if (createProjectWizard.Success)
                         {
-                            MessageBox.Show("Project Created!", "Deployment complete");
+                            MessageBox.Show(Constants.ProjectCreatedMessage, Constants.Complete);
 
                             await LoadTextures().ConfigureAwait(false);
                         }
@@ -432,14 +508,15 @@ namespace MinecraftTextureEditorUI
                     {
                         if (unPacked)
                         {
-                            MessageBox.Show(this, $"Package deployed\nPlease open Minecraft and select your texture pack to test it out!", "Deployment complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show(this, Constants.PackageDeployedMessage, Constants.Complete,
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
                             if (MessageBox.Show(
                                 this,
-                                "Package deployed as zip file\nWould you like to access this location?",
-                                "Deployment complete. Access location?", MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
+                                Constants.PackageDeployedAsZipMessage,
+                                "Deployment complete", MessageBoxButtons.YesNo, MessageBoxIcon.Question).Equals(DialogResult.Yes))
                             {
                                 Process.Start(new ProcessStartInfo("Explorer.exe", $"/select, {zipFilePath}"));
                             }
@@ -447,7 +524,7 @@ namespace MinecraftTextureEditorUI
                     }
                     else
                     {
-                        MessageBox.Show("Package not deployed");
+                        MessageBox.Show(Constants.PackageNotDeployedMessage);
                     }
                 }
             }
@@ -557,6 +634,25 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Rotate/Flip the image
+        /// </summary>
+        private void RotateAndFlip()
+        {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
+            using (var rotateForm = new RotateFlipForm(_log))
+            {
+                if (rotateForm.ShowDialog(this).Equals(DialogResult.OK))
+                {
+                    State.Editor.Rotate(rotateForm.RotateFlip);
+                }
+            }
+        }
+
+        /// <summary>
         /// Save file
         /// </summary>
         private void Save()
@@ -615,7 +711,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="sender">The sender</param>
         /// <param name="modifier">The modifier</param>
-        private void SelectModifier(object sender, Modifier modifier)
+        private void SelectModifier(object sender)
         {
             try
             {
@@ -641,6 +737,28 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Select a shape
+        /// </summary>
+        /// <param name="sender">The calling object</param>
+        private void SelectShape(object sender)
+        {
+            var item = (ToolStripMenuItem)sender;
+
+            if (Enum.TryParse<ShapeType>(item.Text, out var result))
+            {
+                State.ShapeType = result;
+            }
+            else
+            {
+                State.ShapeType = 0;
+            }
+
+            CheckShapeTypeMenuItem();
+
+            State.DrawingTools.UpdateShapesMenu();
         }
 
         /// <summary>
@@ -689,6 +807,17 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Show the about form
+        /// </summary>
+        private void ShowAbout()
+        {
+            using (var aboutForm = new AboutForm(_log))
+            {
+                aboutForm.ShowDialog(this);
+            }
+        }
+
+        /// <summary>
         /// Display the MDI form
         /// </summary>
         private async Task ShowMDIForm()
@@ -702,90 +831,6 @@ namespace MinecraftTextureEditorUI
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
-            }
-        }
-
-        /// <summary>
-        /// Get shape menu items and add click events
-        /// </summary>
-        /// <returns>Array of ToolStripItem</returns>
-        private ToolStripMenuItem[] GetShapeMenuItems()
-        {
-            var items = DrawingHelper.GetShapeMenuItems();
-
-            foreach (ToolStripMenuItem item in items)
-            {
-                item.Click += ToolStripMenuItemShapeClick;
-            }
-
-            return items;
-        }
-
-        /// <summary>
-        /// Select a shape
-        /// </summary>
-        /// <param name="sender">The calling object</param>
-        private void SelectShape(object sender)
-        {
-            var item = (ToolStripMenuItem)sender;
-
-            if (Enum.TryParse<ShapeType>(item.Text, out var result))
-            {
-                State.ShapeType = result;
-            }
-            else
-            {
-                State.ShapeType = 0;
-            }
-
-            CheckShapeTypeMenuItem();
-
-            State.DrawingTools.UpdateShapesMenu();
-        }
-
-        /// <summary>
-        /// Checks the correct shape type menu item based on State.ShapeTypes
-        /// </summary>
-        private void CheckShapeTypeMenuItem()
-        {
-            foreach (ToolStripMenuItem menuItem in toolStripMenuItemShape.DropDownItems)
-            {
-                menuItem.Checked = menuItem.Text.Equals(State.ShapeType.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Gets a toolstrip menu item based on the selected tooltip
-        /// </summary>
-        /// <param name="toolStrip">The toolstrip</param>
-        /// <param name="toolType">The tool type</param>
-        /// <returns>ToolStripMenuItem</returns>
-        private ToolStripMenuItem GetMenuItem(ToolStrip toolStrip, ToolType toolType)
-        {
-            foreach (object item in toolStrip.Items)
-            {
-                if (item.GetType().Equals(typeof(ToolStripMenuItem)))
-                {
-                    ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
-
-                    if (menuItem.Name.Contains($"{toolType}"))
-                    {
-                        return menuItem;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Show the about form
-        /// </summary>
-        private void ShowAbout()
-        {
-            using (var aboutForm = new AboutForm(_log))
-            {
-                aboutForm.ShowDialog(this);
             }
         }
 
@@ -804,8 +849,8 @@ namespace MinecraftTextureEditorUI
                 if (_skipResolutionCheck)
                 {
                     // Default to 16x16 if loading
-                    width = 16;
-                    height = 16;
+                    width = Constants.DefaultWidth;
+                    height = Constants.DefaultHeight;
                 }
                 else
                 {
@@ -911,26 +956,6 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
-        /// Updates the menu items if the shape type changes
-        /// </summary>
-        private void DrawingToolsShapeTypeChanged()
-        {
-            CheckShapeTypeMenuItem();
-        }
-
-        /// <summary>
-        /// Update menu items if modifier changes
-        /// </summary>
-        private void DrawingToolsModifierChanged()
-        {
-            toolStripMenuItemMirrorX.Checked = State.MirrorX;
-
-            toolStripMenuItemMirrorY.Checked = State.MirrorY;
-
-            toolStripMenuItemTransparencyLock.Checked = State.TransparencyLock;
-        }
-
-        /// <summary>
         /// Captures the texture clicked event from the texture picker window
         /// </summary>
         /// <param name="filename"></param>
@@ -1010,25 +1035,6 @@ namespace MinecraftTextureEditorUI
             }
             toolStripToolTypeLabel.Text = $"Tool = {State.ToolType}";
             toolStripBrushSizeLabel.Text = $"Brush = {State.BrushSize} px";
-        }
-
-        /// <summary>
-        /// Rotate/Flip the image
-        /// </summary>
-        private void RotateAndFlip()
-        {
-            if (State.Editor is null)
-            {
-                return;
-            }
-
-            using (var rotateForm = new RotateFlipForm(_log))
-            {
-                if (rotateForm.ShowDialog(this).Equals(DialogResult.OK))
-                {
-                    State.Editor.Rotate(rotateForm.RotateFlip);
-                }
-            }
         }
 
         #endregion Private methods
@@ -1230,7 +1236,7 @@ namespace MinecraftTextureEditorUI
             {
                 await LoadTextures(true).ConfigureAwait(false);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
             }
@@ -1463,7 +1469,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemMirrorXClick(object sender, EventArgs e)
         {
-            SelectModifier(sender, Modifier.MirrorX);
+            SelectModifier(sender);
         }
 
         /// <summary>
@@ -1473,7 +1479,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemMirrorYClick(object sender, EventArgs e)
         {
-            SelectModifier(sender, Modifier.MirrorY);
+            SelectModifier(sender);
         }
 
         /// <summary>
@@ -1515,17 +1521,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void ToolStripMenuItemTransparencyLockClick(object sender, EventArgs e)
         {
-            SelectModifier(sender, Modifier.TransparencyLock);
-        }
-
-        /// <summary>
-        /// Redo (menu)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            Undo();
+            SelectModifier(sender);
         }
 
         /// <summary>
@@ -1536,6 +1532,16 @@ namespace MinecraftTextureEditorUI
         private void ToolStripRotateFlipMenuItemClick(object sender, EventArgs e)
         {
             RotateAndFlip();
+        }
+
+        /// <summary>
+        /// Redo (menu)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            Undo();
         }
 
         #endregion Form events

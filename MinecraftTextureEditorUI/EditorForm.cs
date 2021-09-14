@@ -1,5 +1,6 @@
 ﻿using GenericUndoRedoManagerAPI;
 using log4net;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
@@ -91,10 +92,8 @@ namespace MinecraftTextureEditorUI
 
         #region private variables
 
-        private const int StartZoom = 16;
-
         private readonly ILog _log;
-        private bool _altIsDown;
+        private bool _altIsDown; // Not currently used, but keeping just in case :)
         private bool _ctrlIsDown;
         private Point _cursor;
         private int _height;
@@ -197,7 +196,7 @@ namespace MinecraftTextureEditorUI
                 KeyDown += EditorFormKeyDown;
                 KeyUp += EditorFormKeyDown;
 
-                Zoom = StartZoom;
+                Zoom = Constants.StartZoom;
 
                 HasChanged = false;
 
@@ -246,10 +245,19 @@ namespace MinecraftTextureEditorUI
             {
                 if (HasChanged)
                 {
-                    if (MessageBox.Show("Changes have been made. Do you wish to save them?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    var result = MessageBox.Show(Constants.ChangesMadeMessage, Constants.Warning, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                    switch (result)
                     {
-                        SaveFile(FileName);
-                    }
+                        case DialogResult.Yes:
+                            SaveFile(FileName);
+                            // Refresh the image
+                            State.TexturePicker.RefreshImage(FileName);
+                            break;
+                        case DialogResult.Cancel:
+                            e.Cancel = true;
+                            return;
+                    }                   
 
                     _undoManager.Dispose();
 
