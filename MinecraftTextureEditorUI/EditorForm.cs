@@ -4,6 +4,7 @@ using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 using static MinecraftTextureEditorAPI.Helpers.FileHelper;
@@ -403,7 +404,7 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    for (var y = 0; y < State.BrushSize; y++)
+                    Parallel.For(0, State.BrushSize, y =>
                     {
                         for (var x = 0; x < State.BrushSize; x++)
                         {
@@ -480,13 +481,15 @@ namespace MinecraftTextureEditorUI
                                 var floodY = pixelPosition.Y;
 
                                 tmpTexture = tmpTexture.FloodFill(currentColour, colour, floodX, floodY);
+
+                                break;
                             }
                             else
                             {
                                 tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
                             }
                         }
-                    }
+                    });
                 }
 
                 Texture = (Bitmap)tmpTexture.Clone();
@@ -509,6 +512,22 @@ namespace MinecraftTextureEditorUI
         private void OnColourSelected(Color colour, bool isColour1)
         {
             ColourSelected?.Invoke(colour, isColour1);
+        }
+
+        /// <summary>
+        /// Paste an image
+        /// </summary>
+        /// <param name="image">The image</param>
+        public void Paste(Bitmap image, bool shift = false)
+        {
+            var x = _cursor.X / Zoom;
+            var y = _cursor.Y / Zoom;
+
+            Texture = (Bitmap)DrawingHelper.Paste(Texture, image, x, y, State.TransparencyLock, shift).Clone();
+
+            HasChanged = true;
+            AddItem();
+            RefreshDisplay();
         }
 
         /// <summary>

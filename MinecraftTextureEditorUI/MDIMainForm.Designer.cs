@@ -14,7 +14,7 @@ namespace MinecraftTextureEditorUI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            _timer.Stop();
+            _timer?.Stop();
 
             if (disposing && (components != null))
             {
@@ -51,6 +51,7 @@ namespace MinecraftTextureEditorUI
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -220,6 +221,7 @@ namespace MinecraftTextureEditorUI
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem,
+            this.pasteCursorToolStripMenuItem,
             this.clearToolStripMenuItem});
             this.editMenu.Font = new System.Drawing.Font("Minecraft", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.editMenu.Name = "editMenu";
@@ -280,6 +282,16 @@ namespace MinecraftTextureEditorUI
             this.pasteToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.pasteToolStripMenuItem.Text = "&Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
+            // 
+            // pasteCursorToolStripMenuItem
+            // 
+            this.pasteCursorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteCursorToolStripMenuItem.Image")));
+            this.pasteCursorToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
+            this.pasteCursorToolStripMenuItem.Name = "pasteCursorToolStripMenuItem";
+            this.pasteCursorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.pasteCursorToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.pasteCursorToolStripMenuItem.Text = "&Paste at cursor";
+            this.pasteCursorToolStripMenuItem.Click += new System.EventHandler(this.PasteCursorToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
@@ -777,6 +789,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteCursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewMenu;
         private System.Windows.Forms.ToolStripMenuItem toolBarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem statusBarToolStripMenuItem;

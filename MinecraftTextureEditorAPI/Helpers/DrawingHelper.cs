@@ -1,9 +1,8 @@
-﻿using MinecraftTextureEditorAPI.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorAPI.Helpers
@@ -34,20 +33,6 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
-        /// Tool types
-        /// </summary>
-        public enum ToolType
-        {
-            Draw,
-            Eraser,
-            ColourPicker,
-            Texturiser,
-            FloodFill,
-            Rainbow,
-            Shape
-        }
-
-        /// <summary>
         /// Shape types
         /// </summary>
         public enum ShapeType
@@ -60,6 +45,20 @@ namespace MinecraftTextureEditorAPI.Helpers
             SemiCircle,
             Triangle,
             Star
+        }
+
+        /// <summary>
+        /// Tool types
+        /// </summary>
+        public enum ToolType
+        {
+            Draw,
+            Eraser,
+            ColourPicker,
+            Texturiser,
+            FloodFill,
+            Rainbow,
+            Shape
         }
 
         #endregion Enums
@@ -89,6 +88,17 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
+        /// Does the color match exactly
+        /// </summary>
+        /// <param name="a">Colour a</param>
+        /// <param name="b">Colour b</param>
+        /// <returns>Bool</returns>
+        public static unsafe bool ColourMatch(PixelData a, Color b)
+        {
+            return (a.alpha == b.A && a.red == b.R && a.green == b.G && a.blue == b.B);
+        }
+
+        /// <summary>
         /// Stack-based floodfill routine
         /// </summary>
         /// <param name="currentColour">The current colour</param>
@@ -97,20 +107,20 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="y">y</param>
         /// <param name="texture">The texture</param>
         /// <returns>Image</returns>
-        public static Bitmap FloodFill(this Bitmap image, Color currentColour, Color newColour, int x, int y)
+        public unsafe static Bitmap FloodFill(this Bitmap image, Color currentColour, Color newColour, int x, int y)
         {
             var width = image.Width;
             var height = image.Height;
 
-            var tmp = new Bitmap(width, height);
+            var pixelColour = new PixelData { alpha = newColour.A, red = newColour.R, green = newColour.G, blue = newColour.B };
+
+            var tmp = new UnsafeBitmapHelper(image);
 
             Queue<Point> pixels = new Queue<Point>();
 
             pixels.Enqueue(new Point(x, y));
 
-            var g = Graphics.FromImage(tmp);
-
-            g.DrawImageUnscaled(image, 0, 0);
+            tmp.LockBitmap();
 
             while (pixels.Count > 0)
             {
@@ -123,7 +133,7 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                     if (ColourMatch(currentPixelColour, currentColour) && !ColourMatch(currentColour, newColour))
                     {
-                        tmp.SetPixel(a.X, a.Y, newColour);
+                        tmp.SetPixel(a.X, a.Y, pixelColour);
 
                         // Check bounds and colour before queuing next point
                         pixels.Enqueue(new Point(a.X - 1, a.Y));
@@ -134,32 +144,9 @@ namespace MinecraftTextureEditorAPI.Helpers
                 }
             }
 
-            g.Flush();
+            tmp.UnlockBitmap();
 
-            return (Bitmap)tmp.Clone();
-        }
-
-        /// <summary>
-        /// Returns a blank list of pixels using the correct coodrinate structure
-        /// </summary>
-        /// <param name="width">Pixels wide</param>
-        /// <param name="height">Pixels high</param>
-        /// <returns>List(Pixel)</returns>
-        public static List<Pixel> GetBlankPixels(int width, int height)
-        {
-            var result = new List<Pixel>();
-
-            for (int y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var pixel = new Pixel() { X = x, Y = y, PixelColour = EraserColour };
-
-                    result.Add(pixel);
-                }
-            }
-
-            return result;
+            return (Bitmap)tmp.Bitmap.Clone();
         }
 
         /// <summary>
@@ -198,16 +185,217 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x">x coordinate</param>
         /// <param name="y">y coordinate</param>
         /// <returns>Color</returns>
-        public static Color GetColour(Bitmap image, int x, int y)
+        public unsafe static Color GetColour(Bitmap image, int x, int y)
         {
             try
             {
-                return image.GetPixel(x, y);
+                var tmp = new UnsafeBitmapHelper(image);
+
+                tmp.LockBitmap();
+
+                var colour = tmp.GetPixel(x, y);
+
+                tmp.UnlockBitmap();
+
+                return colour.ToColour();
             }
             catch
             {
                 return EraserColour;
             }
+        }
+
+        /// <summary>
+        /// Draw a shape
+        /// </summary>
+        /// <param name="image">The image to draw on</param>
+        /// <param name="colour1">Colour 1</param>
+        /// <param name="colour2">Colour 2</param>
+        /// <param name="rectangle">The rectangle</param>
+        /// <param name="shapeType">The shape type</param>
+        /// <param name="brushSize">The brush size</param>
+        /// <param name="fill">Fill or not</param>
+        /// <returns>Bitmap</returns>
+        public static Image GetShape(Image image, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false, bool transparencyLock = false)
+        {
+            var tmp = new Bitmap(image.Width, image.Height);
+
+            //Correct the rectangle if width or height is negative, but not for line
+            if (!shapeType.Equals(ShapeType.Line))
+            {
+                rectangle.Validate();
+            }
+
+            var transparencyMap = (Bitmap)image.Clone();
+            var transparentColour = new PixelData() { alpha = 0, red = 0, green = 0, blue = 0 };
+
+            var square = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Width);
+            var colourBrush = new SolidBrush(colour);
+            var colourPen = new Pen(colour, brushSize);
+
+            var g = Graphics.FromImage(tmp);
+
+            g.DrawImageUnscaled(image, 0, 0);
+
+            switch (shapeType)
+            {
+                case ShapeType.Line:
+                    g.DrawLine(colourPen, rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
+                    break;
+
+                case ShapeType.Rectangle:
+                    if (fill)
+                    {
+                        g.FillRectangle(colourBrush, rectangle);
+                    }
+
+                    g.DrawRectangle(colourPen, rectangle);
+                    break;
+
+                case ShapeType.Circle:
+                    if (fill)
+                    {
+                        g.FillEllipse(colourBrush, square);
+                    }
+
+                    g.DrawEllipse(colourPen, square);
+
+                    break;
+
+                case ShapeType.Ellipse:
+                    if (fill)
+                    {
+                        g.FillEllipse(colourBrush, rectangle);
+                    }
+
+                    g.DrawEllipse(colourPen, rectangle);
+                    break;
+
+                case ShapeType.SemiCircle:
+                    if (fill)
+                    {
+                        g.FillPie(colourBrush, rectangle, 0, 180);
+                    }
+
+                    g.DrawPie(colourPen, rectangle, 0, 180);
+                    break;
+
+                case ShapeType.Triangle:
+
+                    var triangle = new GraphicsPath();
+
+                    triangle.AddLines(new PointF[] { new PointF(rectangle.Left, rectangle.Bottom), new PointF(rectangle.Left + (rectangle.Width / 2), rectangle.Top), new PointF(rectangle.Right, rectangle.Bottom) });
+                    triangle.CloseFigure();
+
+                    if (fill)
+                    {
+                        g.FillPath(colourBrush, triangle);
+                    }
+                    g.DrawPath(colourPen, triangle);
+                    break;
+
+                case ShapeType.Star:
+                    var star = fill ? Properties.Resources.star : Properties.Resources.star_outline;
+
+                    var tmpStar = new Bitmap(star, rectangle.Width, rectangle.Height);
+
+                    var h = tmpStar.Height;
+                    var w = tmpStar.Width;
+
+                    var t = new UnsafeBitmapHelper(tmpStar);
+                    var i = new UnsafeBitmapHelper(tmp);
+
+                    unsafe
+                    {
+                        var pixelColour = colour.ToPixelData();
+
+                        t.LockBitmap();
+                        i.LockBitmap();
+
+                        for (int y = 0; y < h; y++)
+                        {
+                            for (int x = 0; x < w; x++)
+                            {
+                                if (t.GetPixel(x, y).red == 0)
+                                {
+                                    i.SetPixel(x + rectangle.X, y + rectangle.Y, pixelColour);
+                                }
+                            }
+                        }
+
+                        i.UnlockBitmap();
+                        t.UnlockBitmap();
+                    }
+
+                    tmp = (Bitmap)i.Bitmap.Clone();
+
+                    break;
+
+                case ShapeType.Square:
+                default:
+                    if (fill)
+                    {
+                        g.FillRectangle(colourBrush, square);
+                    }
+                    g.DrawRectangle(colourPen, square);
+                    break;
+            }
+
+            g.Flush();
+
+            if (transparencyLock)
+            {
+                var h = tmp.Height;
+                var w = tmp.Width;
+
+                var t = new UnsafeBitmapHelper(transparencyMap);
+                var i = new UnsafeBitmapHelper(tmp);
+
+                unsafe
+                {
+                    i.LockBitmap();
+                    t.LockBitmap();
+
+                    Parallel.For(0, h, y =>
+                    {
+                        for (int x = 0; x < w; x++)
+                        {
+                            var pixelColour = t.GetPixel(x, y);
+
+                            if (pixelColour.alpha.Equals(0))
+                            {
+                                i.SetPixel(x, y, pixelColour);
+                            }
+                        }
+                    });
+
+                    t.UnlockBitmap();
+                    i.UnlockBitmap();
+                }
+
+                tmp = (Bitmap)i.Bitmap.Clone();
+            }
+
+            return tmp;
+        }
+
+        /// <summary>
+        /// Basic method to add shape menu items to a collection
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns>Array of ToolStripMenuItem</returns>
+        public static ToolStripMenuItem[] GetShapeMenuItems()
+        {
+            List<ToolStripMenuItem> toolStripItems = new List<ToolStripMenuItem>();
+
+            foreach (var shape in typeof(ShapeType).GetEnumNames())
+            {
+                var toolStripItemShape = new ToolStripMenuItem() { Name = shape, Text = shape };
+
+                toolStripItems.Add(toolStripItemShape);
+            }
+
+            return toolStripItems.ToArray();
         }
 
         /// <summary>
@@ -223,6 +411,73 @@ namespace MinecraftTextureEditorAPI.Helpers
             return (x >= 0 && x < width &&
                          y >= 0 && y < height);
         }
+
+        /// <summary>
+        /// Paste
+        /// </summary>
+        /// <param name="image">The original image</param>
+        /// <param name="pasteImage">The paste image</param>
+        /// <param name="x">x coordinate of cursor</param>
+        /// <param name="y">y coordinate of cursor</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap Paste(this Bitmap image, Bitmap pasteImage, int x, int y, bool transparencyLock = false, bool shift = false)
+        {
+            var tmp = new Bitmap(image.Width, image.Height);
+            
+            var transparencyMap = (Bitmap)image.Clone();
+            var transparentColour = new PixelData() { alpha = 0, red = 0, green = 0, blue = 0 };        
+
+            if (shift)
+            {
+                var g = Graphics.FromImage(tmp);
+
+                g.DrawImageUnscaled(image, 0, 0);
+
+                g.DrawImage(pasteImage, x, y);
+
+                g.Flush();
+            }
+            else
+            {
+                tmp = new Bitmap(pasteImage); 
+            }
+
+            if (transparencyLock)
+            {
+                var h = tmp.Height;
+                var w = tmp.Width;
+
+                var t = new UnsafeBitmapHelper(transparencyMap);
+                var i = new UnsafeBitmapHelper(tmp);
+
+                unsafe
+                {
+                    i.LockBitmap();
+                    t.LockBitmap();
+
+                    Parallel.For(0, h, py =>
+                    {
+                        for (int px = 0; px < w; px++)
+                        {
+                            var pixelColour = t.GetPixel(px, py);
+
+                            if (pixelColour.alpha.Equals(0))
+                            {
+                                i.SetPixel(px, py, pixelColour);
+                            }
+                        }
+                    });
+
+                    t.UnlockBitmap();
+                    i.UnlockBitmap();
+                }
+
+                tmp = (Bitmap)i.Bitmap.Clone();
+            }
+
+            return tmp;
+        }
+
 
         /// <summary>
         /// Rainbow
@@ -262,163 +517,6 @@ namespace MinecraftTextureEditorAPI.Helpers
             }
 
             return colour;
-        }
-
-        /// <summary>
-        /// Draw a shape
-        /// </summary>
-        /// <param name="image">The image to draw on</param>
-        /// <param name="colour1">Colour 1</param>
-        /// <param name="colour2">Colour 2</param>
-        /// <param name="rectangle">The rectangle</param>
-        /// <param name="shapeType">The shape type</param>
-        /// <param name="brushSize">The brush size</param>
-        /// <param name="fill">Fill or not</param>
-        /// <returns>Bitmap</returns>
-        public static Image GetShape(Image image, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false, bool transparencyLock = false)
-        {
-            var tmp = new Bitmap(image.Width, image.Height);
-
-            //Correct the rectangle if width or height is negative, but not for line
-            if (!shapeType.Equals(ShapeType.Line))
-            {
-                rectangle.Validate();
-            }
-
-            var transparencyMap = (Bitmap)image.Clone();
-
-            var square = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Width);
-            var colourBrush = new SolidBrush(colour);
-            var colourPen = new Pen(colour, brushSize);
-
-            var g = Graphics.FromImage(tmp);
-
-            g.DrawImageUnscaled(image, 0, 0);
-
-            switch (shapeType)
-            {
-                case ShapeType.Line:
-                    g.DrawLine(colourPen, rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
-                    break;
-                case ShapeType.Rectangle:
-                    if (fill)
-                    {
-                        g.FillRectangle(colourBrush, rectangle);
-                    }
-
-                    g.DrawRectangle(colourPen, rectangle);
-                    break;
-
-                case ShapeType.Circle:
-                    if (fill)
-                    {
-                        g.FillEllipse(colourBrush, square);
-                    }
-
-                    g.DrawEllipse(colourPen, square);
-
-                    break;
-
-                case ShapeType.Ellipse:
-                    if (fill)
-                    {
-                        g.FillEllipse(colourBrush, rectangle);
-                    }
-
-                    g.DrawEllipse(colourPen, rectangle);
-                    break;
-
-                case ShapeType.SemiCircle:
-                    g.DrawArc(colourPen, rectangle, 0, 180);
-                    break;
-
-                case ShapeType.Triangle:
-
-                    var triangle = new GraphicsPath();
-
-                    triangle.AddLines(new PointF[] { new PointF(rectangle.Left, rectangle.Bottom), new PointF(rectangle.Left + (rectangle.Width / 2), rectangle.Top), new PointF(rectangle.Right, rectangle.Bottom) });
-                    triangle.CloseFigure();
-
-                    if (fill)
-                    {
-                        g.FillPath(colourBrush, triangle);
-                    }
-                    g.DrawPath(colourPen, triangle);
-                    break;
-
-                case ShapeType.Star:
-                    var star = fill? Properties.Resources.star:Properties.Resources.star_outline;
-                    var tmpStar = new Bitmap(rectangle.Width, rectangle.Height);
-                    var s = Graphics.FromImage(tmpStar);
-
-                    s.Clear(Color.FromArgb(0, 0, 0, 0));
-
-                    s.DrawImage(star, 0,0,rectangle.Width, rectangle.Height);
-
-                    for(int y =0; y< tmpStar.Height; y++)
-                    {
-                        for(int x = 0; x< tmpStar.Width; x++)
-                        {
-                            if(tmpStar.GetPixel(x,y).R.Equals(0))
-                            {
-                                //Add the pixels with the new colour
-                                tmp.SetPixel(x + rectangle.X, y+rectangle.Y, colour);
-                            }
-                        }
-                    }
-
-                    s.Flush();
-                    break;
-
-                case ShapeType.Square:
-                default:
-                    if (fill)
-                    {
-                        g.FillRectangle(colourBrush, square);
-                    }
-                    g.DrawRectangle(colourPen, square);
-                    break;
-            }
-
-            g.Flush();
-
-            if (transparencyLock)
-            {
-                for (int y = 0; y < image.Height; y++)
-                {
-                    for (int x = 0; x < image.Width; x++)
-                    {
-                        var transparentColour = GetColour(transparencyMap, x, y);
-
-                        if (transparentColour.A.Equals(0))
-                        {
-                            tmp.SetPixel(x, y, transparentColour);
-                        }
-                    }
-                }
-            }
-
-            return tmp;
-
-        }
-
-        /// <summary>
-        /// Basic method to add shape menu items to a collection
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <returns>Array of ToolStripMenuItem</returns>
-        public static ToolStripMenuItem[] GetShapeMenuItems()
-        {
-            List<ToolStripMenuItem> toolStripItems = new List<ToolStripMenuItem>();
-
-            foreach (var shape in typeof(ShapeType).GetEnumNames())
-            {
-                var toolStripItemShape = new ToolStripMenuItem() { Name = shape, Text = shape };
-
-                toolStripItems.Add(toolStripItemShape);
-            }
-
-            return toolStripItems.ToArray();
         }
 
         /// <summary>
@@ -466,19 +564,37 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns>Image</returns>
-        public static Bitmap SetColour(this Bitmap image, Color colour, int x, int y)
+        public unsafe static Bitmap SetColour(this Bitmap image, Color colour, int x, int y)
         {
-            var tmp = new Bitmap(image.Width, image.Height);
+            var tmp = new UnsafeBitmapHelper(image);
 
-            var g = Graphics.FromImage(tmp);
+            tmp.LockBitmap();
 
-            g.DrawImageUnscaled(image, 0, 0);
+            tmp.SetPixel(x, y, colour.ToPixelData());
 
-            tmp.SetPixel(x, y, colour);
+            tmp.UnlockBitmap();
 
-            g.Flush();
+            return tmp.Bitmap;
+        }
 
-            return (Bitmap)tmp.Clone();
+        /// <summary>
+        /// Returns a colour object from pixeldata object
+        /// </summary>
+        /// <param name="colour">The pixeldata</param>
+        /// <returns>colour</returns>
+        public static Color ToColour(this PixelData pixelData)
+        {
+            return Color.FromArgb(pixelData.alpha, pixelData.red, pixelData.green, pixelData.blue);
+        }
+
+        /// <summary>
+        /// Returns a pixeldata object from colour object
+        /// </summary>
+        /// <param name="colour">The colour</param>
+        /// <returns>pixeldata</returns>
+        public static PixelData ToPixelData(this Color colour)
+        {
+            return new PixelData() { alpha = colour.A, red = colour.R, green = colour.G, blue = colour.B };
         }
 
         /// <summary>

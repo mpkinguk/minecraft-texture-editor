@@ -540,7 +540,7 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Paste
         /// </summary>
-        private void Paste()
+        private void Paste(bool shift = false)
         {
             try
             {
@@ -556,10 +556,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                State.Editor.Texture = (Bitmap)data;
-                State.Editor.HasChanged = true;
-                State.Editor.AddItem();
-                State.Editor.RefreshDisplay();
+                State.Editor.Paste((Bitmap)data, shift);
             }
             catch (Exception ex)
             {
@@ -1270,6 +1267,16 @@ namespace MinecraftTextureEditorUI
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Paste();
+        }
+
+        /// <summary>
+        /// Paste At Cursor (menu)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PasteCursorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Paste(true);
         }
 
         /// <summary>

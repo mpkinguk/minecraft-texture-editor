@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static MinecraftTextureEditorAPI.Constants;
@@ -137,6 +138,8 @@ namespace MinecraftTextureEditorUI
             }
             finally
             {
+                ThreadsafeInvalidate();
+
                 UpdateText("Texture Picker");
             }
         }
@@ -315,6 +318,8 @@ namespace MinecraftTextureEditorUI
 
                 int inc = 0;
 
+                var categoryCounter = string.Empty;
+
                 var items = new List<Control>();
 
                 foreach (var file in files)
@@ -347,6 +352,21 @@ namespace MinecraftTextureEditorUI
 
                     var category = new DirectoryInfo(fileInfo.DirectoryName).Name;
 
+                    if (!categoryCounter.Equals(category))
+                    {
+                        items.Add(new Label()
+                        {
+                            Name = category,
+                            Width = (int)(ItemSize * 6.7F),
+                            Height = 25,
+                            Text = category,
+                            Tag = new ImageInfo() { Category = category },
+                            ForeColor = Color.Yellow,
+                            BackColor = Color.FromArgb(50, 0, 0, 0)
+                        });
+                        categoryCounter = category;
+                    }
+
                     var imageInfo = new ImageInfo() { FullPath = file, Filename = fileInfo.Name, Size = tmp.Size, Category = category };
 
                     item.Tag = imageInfo;
@@ -355,6 +375,7 @@ namespace MinecraftTextureEditorUI
 
                     items.Add(item);
 
+                    // Keeping these in helps the block breaking graphic update. I guess it breaks up the loop?
                     col++;
 
                     inc++;
@@ -363,6 +384,7 @@ namespace MinecraftTextureEditorUI
                     if (inc.Equals(100))
                     {
                         inc = 0;
+
                         _imageCounter++;
 
                         if (_imageCounter.Equals(10))
@@ -373,6 +395,7 @@ namespace MinecraftTextureEditorUI
                         ThreadsafeInvalidate();
                     }
 
+                    // Keeping these in helps the block breaking graphic update. I guess it breaks up the loop?
                     if (col.Equals(5))
                     {
                         col = 0;
@@ -445,7 +468,7 @@ namespace MinecraftTextureEditorUI
 
                 var filters = text.Split(FilterTypeDelimiter);
 
-                foreach (Button imageButton in flowLayoutPanelTextures.Controls)
+                foreach (Control imageButton in flowLayoutPanelTextures.Controls)
                 {
                     var imageInfo = (ImageInfo)imageButton.Tag;
                     var size = imageInfo.Size;
@@ -461,13 +484,13 @@ namespace MinecraftTextureEditorUI
                     var isName = false;
                     var isWidth = false;
 
+                    var categoryList = new List<string>();
+
                     foreach (var filter in filters)
                     {
                         // Invalid filter name, move on
                         if (!filter.Equals(string.Empty))
                         {
-
-
                             var filterSplit = filter.Split(FilterValueDelimiter);
 
                             if (filterSplit.Length > 1)
@@ -505,9 +528,33 @@ namespace MinecraftTextureEditorUI
                         var visible = isName || isCategory || isWidth || isHeight || string.IsNullOrEmpty(text);
 
                         imageButton.Visible = visible;
+
+                        // Add assigned category to list that should be shown
+                        if (visible)
+                        {
+                            categoryList.Add(imageInfo.Category);
+                        }
+                    }
+
+                    // Show labels if apropriate
+                    var labels = flowLayoutPanelTextures.Controls.Cast<Control>().ToList();
+
+                    // Shrink it down a bit
+                    var categories = categoryList.Distinct().ToList();
+
+                    foreach (var control in labels.Where(x => x.GetType().Equals(typeof(Label))))
+                    {
+                        var label = (Label)control;
+
+                        var labelInfo = (ImageInfo)label.Tag;
+
+                        if (categories.Contains(labelInfo.Category))
+                        {
+                            label.Visible = true;
+                        }
                     }
                 }
-                
+
                 flowLayoutPanelTextures.Visible = true;
 
                 UpdateCursor(false);

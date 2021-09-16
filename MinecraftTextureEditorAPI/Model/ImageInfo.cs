@@ -29,6 +29,21 @@ namespace MinecraftTextureEditorAPI.Model
         /// </summary>
         public string Category { get; set; }
 
-        #endregion Public methods
+        #endregion Properties
+
+        #region Constructor
+
+        /// <summary>
+        /// Initialise the properties
+        /// </summary>
+        public ImageInfo()
+        {
+            Size = new Size(0,0);
+            Filename = string.Empty;
+            FullPath = string.Empty;
+            Category = string.Empty;
+        }
+
+        #endregion
     }
 }
