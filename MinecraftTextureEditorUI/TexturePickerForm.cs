@@ -152,13 +152,16 @@ namespace MinecraftTextureEditorUI
         {
             foreach (var item in flowLayoutPanelTextures.Controls)
             {
-                var button = (Button)item;
-
-                var imageFilename = (string)button.Tag;
-                if (imageFilename.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
+                if (item.GetType().Equals(typeof(Button)))
                 {
-                    button.Image = (Image)FileHelper.LoadFile(imageFilename);
-                    return;
+                    var button = (Button)item;
+
+                    var imageInfo = (ImageInfo)button.Tag;
+                    if (imageInfo.FullPath.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        button.Image = (Image)FileHelper.LoadFile(filename);
+                        return;
+                    }
                 }
             }
         }

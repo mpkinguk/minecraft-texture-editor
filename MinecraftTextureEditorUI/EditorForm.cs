@@ -404,7 +404,7 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    Parallel.For(0, State.BrushSize, y =>
+                    for (var y = 0; y < State.BrushSize; y++)
                     {
                         for (var x = 0; x < State.BrushSize; x++)
                         {
@@ -489,7 +489,7 @@ namespace MinecraftTextureEditorUI
                                 tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
                             }
                         }
-                    });
+                    }
                 }
 
                 Texture = (Bitmap)tmpTexture.Clone();
