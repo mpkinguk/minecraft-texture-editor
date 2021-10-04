@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -171,6 +171,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6FAC1761E81DC0CA0115145770A1B7B7"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
@@ -213,12 +219,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AAD023CC2BDC9E0981F5F442CD6034DC"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
@@ -227,6 +227,24 @@
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
+        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -310,12 +328,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -370,7 +382,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
+        "OwnerKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -383,18 +395,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_1BB980EF5BD9845CB5ECE421831A7507"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_92C2BA6BD2284505B7448FFFA82A0C9B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -878,11 +878,31 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
+            {
+            "SourcePath" = "8:..\\MinecraftTextureEditorAPI\\Resources\\banner.bmp"
+            "TargetName" = "8:banner.bmp"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6FAC1761E81DC0CA0115145770A1B7B7"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.5.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:MinecraftTextureEditorAPI, Version=2.6.0.1, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_6FAC1761E81DC0CA0115145770A1B7B7"
@@ -913,7 +933,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.5.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:GenericUndoRedoManagerAPI, Version=2.6.0.1, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_7921DAF7C6189AA0EA0C52ACD65BB03E"
@@ -969,26 +989,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A8B7A908D715480CB7B1F7169F4BA488"
-            {
-            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\banner.bmp"
-            "TargetName" = "8:banner.bmp"
-            "Tag" = "8:"
-            "Folder" = "8:_9D7605F1495D4F0DB69032A856FD7744"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AAD023CC2BDC9E0981F5F442CD6034DC"
@@ -1123,7 +1123,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.5.0.0, Culture=neutral, processorArchitecture=AMD64"
+            "AssemblyAsmDisplayName" = "8:ZipFileManager, Version=2.6.0.1, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
                     "_CC55C9A5E1CD5E763336CE53808C23E2"
@@ -1363,15 +1363,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{E3711D0E-556B-473C-B9E8-1AE686318648}"
-        "PackageCode" = "8:{5028F771-096E-4A7C-8233-E8DB09E422A4}"
+        "ProductCode" = "8:{C19309B4-05EE-4408-A312-1D61CD9D845A}"
+        "PackageCode" = "8:{9DFAA93D-02F5-4035-ABC2-254AEA36C695}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.6.0"
+        "ProductVersion" = "8:2.6.1"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"
@@ -1540,7 +1540,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1572,7 +1572,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -1608,7 +1608,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -1657,7 +1657,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1689,7 +1689,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1712,7 +1712,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -1761,7 +1761,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -1793,7 +1793,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -1844,7 +1844,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -1889,7 +1889,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A8B7A908D715480CB7B1F7169F4BA488"
+                            "Value" = "8:_6B8A42A0DCD24B6EBC6F2F4E4D058CEC"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"

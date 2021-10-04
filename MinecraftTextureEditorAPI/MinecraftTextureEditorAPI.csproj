@@ -82,6 +82,9 @@
     <Content Include="7zip\7zxa.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\banner.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\star.png" />
     <None Include="Resources\star_outline.png" />
   </ItemGroup>
