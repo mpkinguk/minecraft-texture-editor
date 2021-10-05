@@ -93,30 +93,45 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="a">Colour a</param>
         /// <param name="b">Colour b</param>
         /// <returns>Bool</returns>
-        public static unsafe bool ColourMatch(PixelData a, Color b)
+        public static bool ColourMatch(PixelData a, Color b)
         {
-            return (a.alpha == b.A && a.red == b.R && a.green == b.G && a.blue == b.B);
+            return a.alpha == b.A && a.red == b.R && a.green == b.G && a.blue == b.B;
         }
 
         /// <summary>
-        /// Stack-based floodfill routine
+        /// Stack-based flood-fill routine
+        /// Override for PointF
         /// </summary>
+        /// <param name="bitmap">The bitmap</param>
+        /// <param name="currentColour">The current colour</param>
+        /// <param name="newColour">The new colour</param>
+        /// <param name="position">The texture</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap FloodFill(this Bitmap bitmap, Color currentColour, Color newColour, PointF position)
+        {
+            return FloodFill(bitmap, currentColour, newColour, (int)position.X, (int)position.Y);
+        }
+
+
+        /// <summary>
+        /// Stack-based flood-fill routine
+        /// </summary>
+        /// <param name="bitmap">The bitmap</param>
         /// <param name="currentColour">The current colour</param>
         /// <param name="newColour">The new colour</param>
         /// <param name="x">x</param>
         /// <param name="y">y</param>
-        /// <param name="texture">The texture</param>
         /// <returns>Image</returns>
-        public unsafe static Bitmap FloodFill(this Bitmap image, Color currentColour, Color newColour, int x, int y)
+        public static Bitmap FloodFill(this Bitmap bitmap, Color currentColour, Color newColour, int x, int y)
         {
-            var width = image.Width;
-            var height = image.Height;
+            var width = bitmap.Width;
+            var height = bitmap.Height;
 
             var pixelColour = new PixelData { alpha = newColour.A, red = newColour.R, green = newColour.G, blue = newColour.B };
 
-            var tmp = new UnsafeBitmapHelper(image);
+            var tmp = new UnsafeBitmapHelper(bitmap);
 
-            Queue<Point> pixels = new Queue<Point>();
+            var pixels = new Queue<Point>();
 
             pixels.Enqueue(new Point(x, y));
 
@@ -124,7 +139,7 @@ namespace MinecraftTextureEditorAPI.Helpers
 
             while (pixels.Count > 0)
             {
-                Point a = pixels.Dequeue();
+                var a = pixels.Dequeue();
 
                 //make sure we stay within bounds
                 if (InBounds(a.X, a.Y, width, height))
@@ -181,15 +196,29 @@ namespace MinecraftTextureEditorAPI.Helpers
 
         /// <summary>
         /// Get colour using Image object
+        /// Override for float
         /// </summary>
+        /// <param name="bitmap">The bitmap</param>
         /// <param name="x">x coordinate</param>
         /// <param name="y">y coordinate</param>
         /// <returns>Color</returns>
-        public unsafe static Color GetColour(Bitmap image, int x, int y)
+        public static Color GetColour(Bitmap bitmap, float x, float y)
+        {
+            return GetColour(bitmap, (int)x, (int)y);
+        }
+
+        /// <summary>
+        /// Get colour using Image object
+        /// </summary>
+        /// <param name="bitmap">The bitmap</param>
+        /// <param name="x">x coordinate</param>
+        /// <param name="y">y coordinate</param>
+        /// <returns>Color</returns>
+        public static Color GetColour(Bitmap bitmap, int x, int y)
         {
             try
             {
-                var tmp = new UnsafeBitmapHelper(image);
+                var tmp = new UnsafeBitmapHelper(bitmap);
 
                 tmp.LockBitmap();
 
@@ -207,14 +236,35 @@ namespace MinecraftTextureEditorAPI.Helpers
 
         /// <summary>
         /// Draw a shape
+        /// Override for RectangleF
         /// </summary>
         /// <param name="image">The image to draw on</param>
-        /// <param name="colour1">Colour 1</param>
-        /// <param name="colour2">Colour 2</param>
+        /// <param name="colour">The colour</param>
         /// <param name="rectangle">The rectangle</param>
         /// <param name="shapeType">The shape type</param>
         /// <param name="brushSize">The brush size</param>
         /// <param name="fill">Fill or not</param>
+        /// <param name="transparencyLock">Use transparency lock</param>
+        /// <returns>Bitmap</returns>
+        public static Image GetShape(Image image, Color colour, RectangleF rectangle, ShapeType shapeType, int brushSize,
+            bool fill = false, bool transparencyLock = false)
+        {
+            var rectangleInt = new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width,
+                (int)rectangle.Height);
+
+            return GetShape(image, colour, rectangleInt, shapeType, brushSize, fill, transparencyLock);
+        }
+
+        /// <summary>
+        /// Draw a shape
+        /// </summary>
+        /// <param name="image">The image to draw on</param>
+        /// <param name="colour">The colour</param>
+        /// <param name="rectangle">The rectangle</param>
+        /// <param name="shapeType">The shape type</param>
+        /// <param name="brushSize">The brush size</param>
+        /// <param name="fill">Fill or not</param>
+        /// <param name="transparencyLock">Use transparency lock</param>
         /// <returns>Bitmap</returns>
         public static Image GetShape(Image image, Color colour, Rectangle rectangle, ShapeType shapeType, int brushSize, bool fill = false, bool transparencyLock = false)
         {
@@ -478,7 +528,6 @@ namespace MinecraftTextureEditorAPI.Helpers
             return tmp;
         }
 
-
         /// <summary>
         /// Rainbow
         /// </summary>
@@ -487,7 +536,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="currentRainbowColour">The current rainbow colour</param>
         /// <param name="lastRainbowPixel">The last rainbox position</param>
         /// <returns></returns>
-        public static Color Rainbow(Point pixel, bool leftButton, ref int currentRainbowColour, ref Point lastRainbowPixel)
+        public static Color Rainbow(PointF pixel, bool leftButton, ref int currentRainbowColour, ref PointF lastRainbowPixel)
         {
             var colour = RainbowColours[currentRainbowColour];
 
@@ -495,14 +544,14 @@ namespace MinecraftTextureEditorAPI.Helpers
 
             if (leftButton)
             {
-                if (pixel.X != lastRainbowPixel.X && pixel.Y != lastRainbowPixel.Y)
+                if ((int)pixel.X != (int)lastRainbowPixel.X && (int)pixel.Y != (int)lastRainbowPixel.Y)
                 {
                     moveNextColour = true;
                 }
             }
             else
             {
-                if (pixel.X != lastRainbowPixel.X || pixel.Y != lastRainbowPixel.Y)
+                if ((int)pixel.X != (int)lastRainbowPixel.X || (int)pixel.Y != (int)lastRainbowPixel.Y)
                 {
                     moveNextColour = true;
                 }
@@ -512,8 +561,8 @@ namespace MinecraftTextureEditorAPI.Helpers
             {
                 currentRainbowColour = currentRainbowColour >= RainbowColours.Count - 1 ? 0 : currentRainbowColour + 1;
 
-                lastRainbowPixel.X = pixel.X;
-                lastRainbowPixel.Y = pixel.Y;
+                lastRainbowPixel.X = (int)pixel.X;
+                lastRainbowPixel.Y = (int)pixel.Y;
             }
 
             return colour;
@@ -558,15 +607,30 @@ namespace MinecraftTextureEditorAPI.Helpers
 
         /// <summary>
         /// Set colour of image
+        /// Override for float
         /// </summary>
-        /// <param name="image"></param>
-        /// <param name="colour"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns>Image</returns>
-        public unsafe static Bitmap SetColour(this Bitmap image, Color colour, int x, int y)
+        /// <param name="bitmap">The bitmap</param>
+        /// <param name="colour">The colour</param>
+        /// <param name="x">The x coordinate</param>
+        /// <param name="y">The y coordinate</param>
+        /// <param name="position">The position</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap SetColour(this Bitmap bitmap, Color colour, PointF position)
         {
-            var tmp = new UnsafeBitmapHelper(image);
+            return SetColour(bitmap, colour, (int)position.X, (int)position.Y);
+        }
+
+        /// <summary>
+        /// Set colour of image
+        /// </summary>
+        /// <param name="bitmap">The bitmap</param>
+        /// <param name="colour">The colour</param>
+        /// <param name="x">The x coordinate</param>
+        /// <param name="y">The y coordinate</param>
+        /// <returns>Bitmap</returns>
+        public static Bitmap SetColour(this Bitmap bitmap, Color colour, int x, int y)
+        {
+            var tmp = new UnsafeBitmapHelper(bitmap);
 
             tmp.LockBitmap();
 
@@ -626,10 +690,10 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="value">The value</param>
         /// <param name="zoom">The zoom value</param>
-        /// <returns>int</returns>
-        public static int Zoomify(this int value, int zoom)
+        /// <returns>float</returns>
+        public static int Zoomify(this float value, int zoom)
         {
-            return value / zoom * zoom;
+            return (int)value / zoom * zoom;
         }
 
         #endregion Public methods

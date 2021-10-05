@@ -4,7 +4,6 @@ using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static MinecraftTextureEditorAPI.Helpers.DrawingHelper;
 using static MinecraftTextureEditorAPI.Helpers.FileHelper;
@@ -25,7 +24,6 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Undo manager has done something
         /// </summary>
-        /// <param name="undo"></param>
         public delegate void UndoManagerActionEventHandler();
 
         #endregion Public delegates
@@ -96,14 +94,14 @@ namespace MinecraftTextureEditorUI
         private readonly ILog _log;
         private bool _altIsDown; // Not currently used, but keeping just in case :)
         private bool _ctrlIsDown;
-        private Point _cursor;
+        private PointF _cursor;
+        private PointF? _firstClick;
         private int _height;
-        private Point _lastRainbowPosition = new Point();
+        private PointF? _lastClick;
+        private PointF _lastRainbowPosition = new Point();
         private bool _leftButton;
-        private Point? _firstClick = null;
-        private Point? _lastClick = null;
         private bool _rightButton;
-        private Rectangle _shapeRectangle = new Rectangle();
+        private RectangleF _shapeRectangle = new Rectangle();
         private bool _shiftIsDown;
         private bool _showGrid;
         private bool _showTransparentGrid;
@@ -179,7 +177,7 @@ namespace MinecraftTextureEditorUI
                     }
                     else
                     {
-                        EditorMousePaintPixel(sender, e);
+                        EditorMousePaintPixel(e);
                     }
                     EditorFormMouseMove(sender, e);
                 };
@@ -236,10 +234,27 @@ namespace MinecraftTextureEditorUI
         #region Form events
 
         /// <summary>
+        /// Paste an image
+        /// </summary>
+        /// <param name="image">The image</param>
+        /// <param name="shift">Has shift been pressed</param>
+        public void Paste(Bitmap image, bool shift = false)
+        {
+            var x = _cursor.X / Zoom;
+            var y = _cursor.Y / Zoom;
+
+            Texture = (Bitmap)Texture.Paste(image, (int)x, (int)y, State.TransparencyLock, shift).Clone();
+
+            HasChanged = true;
+            AddItem();
+            RefreshDisplay();
+        }
+
+        /// <summary>
         /// Form closing event
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">FormClosingEventArgs</param>
         private void EditorFormFormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -255,10 +270,11 @@ namespace MinecraftTextureEditorUI
                             // Refresh the image
                             State.TexturePicker.RefreshImage(FileName);
                             break;
+
                         case DialogResult.Cancel:
                             e.Cancel = true;
                             return;
-                    }                   
+                    }
 
                     _undoManager.Dispose();
 
@@ -275,7 +291,7 @@ namespace MinecraftTextureEditorUI
         /// Update flags for modifier keys
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">KeyEventArgs</param>
         private void EditorFormKeyDown(object sender, KeyEventArgs e)
         {
             _ctrlIsDown = e.Control;
@@ -287,7 +303,7 @@ namespace MinecraftTextureEditorUI
         /// Form load event
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">EventArgs</param>
         private void EditorFormLoad(object sender, EventArgs e)
         {
             KeyPreview = true;
@@ -297,7 +313,7 @@ namespace MinecraftTextureEditorUI
         /// Track focus of form
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">EventArgs</param>
         private void EditorFormLostFocus(object sender, EventArgs e)
         {
             _cursor = new Point(_width + 1, _height + 1);
@@ -308,7 +324,7 @@ namespace MinecraftTextureEditorUI
         /// Track cursor movement around editor form
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">MouseEventArgs</param>
         private void EditorFormMouseMove(object sender, MouseEventArgs e)
         {
             GetButtons(e);
@@ -319,9 +335,8 @@ namespace MinecraftTextureEditorUI
         /// <summary>
         /// Paint pixels using fore or back color where appropriate
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditorMousePaintPixel(object sender, MouseEventArgs e)
+        /// <param name="e">MouseEventArgs</param>
+        private void EditorMousePaintPixel(MouseEventArgs e)
         {
             try
             {
@@ -339,7 +354,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                var cursorPosition = new Point((_cursor.X / Zoom), (_cursor.Y / Zoom));
+                var cursorPosition = new PointF((_cursor.X / Zoom), (_cursor.Y / Zoom));
 
                 var tmpTexture = (Bitmap)Texture.Clone();
 
@@ -397,7 +412,7 @@ namespace MinecraftTextureEditorUI
                             return;
                         }
 
-                        var rectangle = new Rectangle(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, (_shapeRectangle.Width / Zoom) + State.BrushSize, (_shapeRectangle.Height / Zoom) + State.BrushSize);
+                        var rectangle = new RectangleF(_shapeRectangle.X / Zoom, _shapeRectangle.Y / Zoom, (_shapeRectangle.Width / Zoom) + State.BrushSize, (_shapeRectangle.Height / Zoom) + State.BrushSize);
 
                         tmpTexture = (Bitmap)GetShape(tmpTexture, colour, rectangle, State.ShapeType, State.BrushSize, !_shiftIsDown, State.TransparencyLock).Clone();
                     }
@@ -408,7 +423,7 @@ namespace MinecraftTextureEditorUI
                     {
                         for (var x = 0; x < State.BrushSize; x++)
                         {
-                            var pixelPosition = new Point(cursorPosition.X + x, cursorPosition.Y + y);
+                            var pixelPosition = new PointF(cursorPosition.X + x, cursorPosition.Y + y);
                             var pixelColour = GetColour(tmpTexture, pixelPosition.X, pixelPosition.Y);
 
                             // If out of bounds, continue onto next pixel
@@ -430,37 +445,37 @@ namespace MinecraftTextureEditorUI
                             // Use flag so we can do both at the same time :)
                             if (State.Modifiers.HasFlag(Modifier.MirrorX) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
                             {
-                                Point inversePixel = new Point(_width - 1 - pixelPosition.X, pixelPosition.Y);
+                                var inversePixel = new PointF(_width - 1 - pixelPosition.X, pixelPosition.Y);
 
-                                if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                if (!Locked(tmpTexture.GetPixel((int)inversePixel.X, (int)inversePixel.Y)))
                                 {
-                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                    tmpTexture = tmpTexture.SetColour(colour, inversePixel);
                                 }
 
                                 if (State.Modifiers.HasFlag(Modifier.MirrorY) || (State.Modifiers.HasFlag(Modifier.MirrorX) && State.Modifiers.HasFlag(Modifier.MirrorY)))
                                 {
-                                    inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
+                                    inversePixel = new PointF(pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                    if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                    if (!Locked(tmpTexture.GetPixel((int)inversePixel.X, (int)inversePixel.Y)))
                                     {
-                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel);
                                     }
 
-                                    inversePixel = new Point(_width - 1 - pixelPosition.X, _height - 1 - pixelPosition.Y);
+                                    inversePixel = new PointF(_width - 1 - pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                    if (!Locked(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y)))
+                                    if (!Locked(tmpTexture.GetPixel((int)inversePixel.X, (int)inversePixel.Y)))
                                     {
-                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel);
                                     }
                                 }
 
                                 if (State.Modifiers.HasFlag(Modifier.MirrorY))
                                 {
-                                    inversePixel = new Point(pixelPosition.X, _height - 1 - pixelPosition.Y);
+                                    inversePixel = new PointF(pixelPosition.X, _height - 1 - pixelPosition.Y);
 
-                                    if (!(tmpTexture.GetPixel(inversePixel.X, inversePixel.Y).A == 0 && State.TransparencyLock))
+                                    if (!(tmpTexture.GetPixel((int)inversePixel.X, (int)inversePixel.Y).A == 0 && State.TransparencyLock))
                                     {
-                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel.X, inversePixel.Y);
+                                        tmpTexture = tmpTexture.SetColour(colour, inversePixel);
                                     }
                                 }
                             }
@@ -476,18 +491,12 @@ namespace MinecraftTextureEditorUI
                             {
                                 var currentColour = cursorColour;
 
-                                var floodX = pixelPosition.X;
-
-                                var floodY = pixelPosition.Y;
-
-                                tmpTexture = tmpTexture.FloodFill(currentColour, colour, floodX, floodY);
+                                tmpTexture = tmpTexture.FloodFill(currentColour, colour, pixelPosition);
 
                                 break;
                             }
-                            else
-                            {
-                                tmpTexture = tmpTexture.SetColour(colour, pixelPosition.X, pixelPosition.Y);
-                            }
+
+                            tmpTexture = tmpTexture.SetColour(colour, pixelPosition);
                         }
                     }
                 }
@@ -505,6 +514,16 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Get the buttons pressed
+        /// </summary>
+        /// <param name="e">MouseEventArgs</param>
+        private void GetButtons(MouseEventArgs e)
+        {
+            _leftButton = e.Button.Equals(MouseButtons.Left);
+            _rightButton = e.Button.Equals(MouseButtons.Right);
+        }
+
+        /// <summary>
         /// Fire colour selected event
         /// </summary>
         /// <param name="colour">The colour selected</param>
@@ -512,22 +531,6 @@ namespace MinecraftTextureEditorUI
         private void OnColourSelected(Color colour, bool isColour1)
         {
             ColourSelected?.Invoke(colour, isColour1);
-        }
-
-        /// <summary>
-        /// Paste an image
-        /// </summary>
-        /// <param name="image">The image</param>
-        public void Paste(Bitmap image, bool shift = false)
-        {
-            var x = _cursor.X / Zoom;
-            var y = _cursor.Y / Zoom;
-
-            Texture = (Bitmap)DrawingHelper.Paste(Texture, image, x, y, State.TransparencyLock, shift).Clone();
-
-            HasChanged = true;
-            AddItem();
-            RefreshDisplay();
         }
 
         /// <summary>
@@ -545,7 +548,7 @@ namespace MinecraftTextureEditorUI
                 _lastClick = null;
             }
 
-            EditorMousePaintPixel(sender, e);
+            EditorMousePaintPixel(e);
         }
 
         /// <summary>
@@ -560,26 +563,21 @@ namespace MinecraftTextureEditorUI
             if (State.ToolType.Equals(ToolType.Shape))
             {
                 _lastClick = _cursor;
-                _shapeRectangle = new Rectangle(_firstClick.Value, new Size(_lastClick.Value.X - _firstClick.Value.X, _lastClick.Value.Y - _firstClick.Value.Y));
+
+                if (_firstClick != null)
+                {
+                    _shapeRectangle = new RectangleF(_firstClick.Value,
+                        new SizeF(_lastClick.Value.X - _firstClick.Value.X, _lastClick.Value.Y - _firstClick.Value.Y));
+                }
             }
 
-            EditorMousePaintPixel(sender, e);
+            EditorMousePaintPixel(e);
 
             _firstClick = null;
             _lastClick = null;
 
             AddItem();
             RefreshDisplay();
-        }
-
-        /// <summary>
-        /// Get the buttons pressed
-        /// </summary>
-        /// <param name="e">MouseEventArgs</param>
-        private void GetButtons(MouseEventArgs e)
-        {
-            _leftButton = e.Button.Equals(MouseButtons.Left);
-            _rightButton = e.Button.Equals(MouseButtons.Right);
         }
 
         /// <summary>
@@ -671,8 +669,8 @@ namespace MinecraftTextureEditorUI
 
                 // Show cursor
 
-                int cursorX = _cursor.X.Zoomify(Zoom);
-                int cursorY = _cursor.Y.Zoomify(Zoom);
+                var cursorX = _cursor.X.Zoomify(Zoom);
+                var cursorY = _cursor.Y.Zoomify(Zoom);
 
                 if (!CursorOutOfBounds())
                 {
@@ -684,8 +682,8 @@ namespace MinecraftTextureEditorUI
                         {
                             if (_firstClick.HasValue)
                             {
-                                int firstX = _firstClick.Value.X.Zoomify(Zoom);
-                                int firstY = _firstClick.Value.Y.Zoomify(Zoom);
+                                var firstX = _firstClick.Value.X.Zoomify(Zoom);
+                                var firstY = _firstClick.Value.Y.Zoomify(Zoom);
 
                                 var square = State.ShapeType.Equals(ShapeType.Circle) || State.ShapeType.Equals(ShapeType.Square);
 
