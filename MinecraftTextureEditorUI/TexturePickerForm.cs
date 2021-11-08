@@ -189,21 +189,24 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var button = (Button)sender;
+                if (e.ClipRectangle.IntersectsWith(flowLayoutPanelTextures.ClientRectangle))
+                {
+                    var button = (Button)sender;
 
-                var g = e.Graphics;
+                    var g = e.Graphics;
 
-                g.Clear(Color.LightGray);
+                    g.Clear(Color.LightGray);
 
-                var rectangle = new Rectangle(button.ClientRectangle.Width / 6, button.ClientRectangle.Height / 6, button.ClientRectangle.Width / 6 * 4, button.ClientRectangle.Height / 6 * 4);
+                    var rectangle = new Rectangle(button.ClientRectangle.Width / 6, button.ClientRectangle.Height / 6, button.ClientRectangle.Width / 6 * 4, button.ClientRectangle.Height / 6 * 4);
 
-                g.DrawImage(button.Image, rectangle);
+                    g.DrawImage(button.Image, rectangle);
 
-                g.DrawString(button.Text, new Font(button.Font.Name, 6F), new SolidBrush(button.ForeColor), new Point(2, button.ClientRectangle.Height - 12));
+                    g.DrawString(button.Text, new Font(button.Font.Name, 6F), new SolidBrush(button.ForeColor), new Point(2, button.ClientRectangle.Height - 12));
 
-                g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0, 0, button.ClientRectangle.Width - 1, button.ClientRectangle.Height - 1));
+                    g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0, 0, button.ClientRectangle.Width - 1, button.ClientRectangle.Height - 1));
 
-                g.Flush();
+                    g.Flush();
+                }
             }
             catch (Exception ex)
             {
@@ -463,8 +466,6 @@ namespace MinecraftTextureEditorUI
             }
             else
             {
-                UseWaitCursor = true;
-
                 UpdateCursor(true);
 
                 flowLayoutPanelTextures.Visible = false;
@@ -561,8 +562,6 @@ namespace MinecraftTextureEditorUI
                 flowLayoutPanelTextures.Visible = true;
 
                 UpdateCursor(false);
-
-                UseWaitCursor = false;
             }
         }
 
@@ -663,6 +662,8 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
+                    UseWaitCursor = waiting;
+
                     Cursor = waiting ? Cursors.WaitCursor : Cursors.Default;
                 }
             }
