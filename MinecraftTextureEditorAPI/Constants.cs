@@ -1,4 +1,5 @@
 ﻿using MinecraftTextureEditorAPI.Helpers;
+using System;
 
 namespace MinecraftTextureEditorAPI
 {
@@ -147,6 +148,11 @@ namespace MinecraftTextureEditorAPI
         /// System directory not found
         /// </summary>
         public static string SystemDirectoryNotFoundMessage = "Could not find system directory";
+
+        /// <summary>
+        /// Less lag flag
+        /// </summary>
+        public static bool LessLag => Convert.ToBoolean(ConfigurationHelper.LoadSetting("LessLag"));
 
         #endregion Messages
 
