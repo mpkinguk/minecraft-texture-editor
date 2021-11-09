@@ -8,7 +8,7 @@ namespace MinecraftTextureEditorAPI
     /// </summary>
     public static class Constants
     {
-        #region Folders
+        #region Enums
 
         /// <summary>
         /// Filter type
@@ -20,6 +20,10 @@ namespace MinecraftTextureEditorAPI
             Width,
             Height
         }
+
+        #endregion Enums
+
+        #region Folders
 
         /// <summary>
         /// AssetsFolder
@@ -152,7 +156,7 @@ namespace MinecraftTextureEditorAPI
         /// <summary>
         /// Less lag flag
         /// </summary>
-        public static bool LessLag => Convert.ToBoolean(ConfigurationHelper.LoadSetting("LessLag"));
+        public static bool LessLag = Convert.ToBoolean(ConfigurationHelper.LoadSetting("LessLag"));
 
         #endregion Messages
 

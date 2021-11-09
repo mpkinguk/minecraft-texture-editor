@@ -38,7 +38,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSave.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSave.Location = new System.Drawing.Point(511, 416);
+            this.buttonSave.Location = new System.Drawing.Point(511, 496);
             this.buttonSave.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(120, 30);
@@ -51,7 +51,7 @@ namespace MinecraftTextureEditorUI
             // 
             this.buttonReload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonReload.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonReload.Location = new System.Drawing.Point(381, 416);
+            this.buttonReload.Location = new System.Drawing.Point(381, 496);
             this.buttonReload.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonReload.Name = "buttonReload";
             this.buttonReload.Size = new System.Drawing.Size(120, 30);
@@ -79,7 +79,7 @@ namespace MinecraftTextureEditorUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(645, 461);
+            this.ClientSize = new System.Drawing.Size(645, 541);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.buttonReload);
             this.Controls.Add(this.buttonSave);

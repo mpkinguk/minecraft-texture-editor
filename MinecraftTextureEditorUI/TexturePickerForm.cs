@@ -82,6 +82,14 @@ namespace MinecraftTextureEditorUI
 
                 // Reduce display flicker
                 SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
+
+                if (LessLag)
+                {
+                    panel1.BackgroundImage = null;
+                    flowLayoutPanelTextures.BackgroundImage = null;
+                    panel1.BackColor = Color.DimGray;
+                    flowLayoutPanelTextures.BackColor = Color.DimGray;
+                }
             }
             catch (Exception ex)
             {
@@ -96,16 +104,19 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void TexturePickerFormPaint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
-
-            g.DrawImage(Properties.Resources.texturewallpaper2, e.ClipRectangle.X, e.ClipRectangle.Y);
-
-            if (_loading)
+            if (!LessLag)
             {
-                g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
-            }
+                var g = e.Graphics;
 
-            g.Flush();
+                g.DrawImage(Properties.Resources.texturewallpaper2, e.ClipRectangle.X, e.ClipRectangle.Y);
+
+                if (_loading)
+                {
+                    g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
+                }
+
+                g.Flush();
+            }
         }
 
         #region Public methods

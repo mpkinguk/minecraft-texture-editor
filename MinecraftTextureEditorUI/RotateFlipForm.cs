@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -50,6 +51,12 @@ namespace MinecraftTextureEditorUI
                 }
 
                 comboBoxRotateFlip.SelectedIndex = 0;
+
+                if (Constants.LessLag)
+                {
+                    BackgroundImage = null;
+                    BackColor = Color.DimGray;
+                }
             }
             catch (Exception ex)
             {

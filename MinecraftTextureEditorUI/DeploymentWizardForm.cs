@@ -58,6 +58,15 @@ namespace MinecraftTextureEditorUI
 
             _unpack = checkBoxUnpackZipFile.Checked;
             _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
+
+            if (Constants.LessLag)
+            {
+                foreach (TabPage tabControlPage in tabControlDeploy.TabPages)
+                {
+                    tabControlPage.BackgroundImage = null;
+                    tabControlPage.BackColor = Color.DimGray;
+                }
+            }
         }
 
         #region Form events

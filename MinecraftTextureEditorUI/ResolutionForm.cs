@@ -1,5 +1,7 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorUI
@@ -48,6 +50,12 @@ namespace MinecraftTextureEditorUI
                 comboBoxWidth.SelectedIndex = 0;
 
                 checkBoxSquareImage.Checked = true;
+
+                if (Constants.LessLag)
+                {
+                    BackgroundImage = null;
+                    BackColor = Color.DimGray;
+                }
             }
             catch (Exception ex)
             {

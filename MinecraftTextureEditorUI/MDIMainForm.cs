@@ -75,28 +75,31 @@ namespace MinecraftTextureEditorUI
 
                 UpdateLabels();
 
-                RandomiseWallpaper();
-
-                GetPhysicallyInstalledSystemMemory(out _totalRam);
-
-                _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-
-                toolStripProgressBarCpu.Maximum = 100;
-                toolStripProgressBarCpu.Value = 0;
-
-                // Make this MB
-                toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
-                toolStripProgressBarRam.Value = 0;
-
-                _timer = new System.Timers.Timer
+                if (!Constants.LessLag)
                 {
-                    Interval = 1200
-                };
+                    RandomiseWallpaper();
 
-                _timer.Elapsed += TimerElapsed;
+                    GetPhysicallyInstalledSystemMemory(out _totalRam);
 
-                _timer.Start();
+                    _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                    _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+                    toolStripProgressBarCpu.Maximum = 100;
+                    toolStripProgressBarCpu.Value = 0;
+
+                    // Make this MB
+                    toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
+                    toolStripProgressBarRam.Value = 0;
+
+                    _timer = new System.Timers.Timer
+                    {
+                        Interval = 1200
+                    };
+
+                    _timer.Elapsed += TimerElapsed;
+
+                    _timer.Start();
+                }
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorUI
@@ -39,6 +41,12 @@ namespace MinecraftTextureEditorUI
                 comboBoxAsset.Items.AddRange(assets.ToArray());
 
                 comboBoxAsset.SelectedIndex = 0;
+
+                if (Constants.LessLag)
+                {
+                    BackgroundImage = null;
+                    BackColor = Color.DimGray;
+                }
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
@@ -37,6 +38,15 @@ namespace MinecraftTextureEditorUI
                 PopulateVersions();
 
                 textBoxProjectPath.Text = FileHelper.GetDefaultProjectFolder();
+
+                if (Constants.LessLag)
+                {
+                    foreach (TabPage tabControlPage in tabControlCreate.TabPages)
+                    {
+                        tabControlPage.BackgroundImage = null;
+                        tabControlPage.BackColor = Color.DimGray;
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -54,6 +54,12 @@ namespace MinecraftTextureEditorUI
             Load += OptionsForm_Load;
 
             FormClosing += OptionsFormFormClosing;
+
+            if (Constants.LessLag)
+            {
+                BackgroundImage = null;
+                BackColor = Color.DimGray;
+            }
         }
 
         #region Private methods

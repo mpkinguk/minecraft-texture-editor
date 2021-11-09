@@ -201,9 +201,9 @@ namespace MinecraftTextureEditorUI
 
                 HasChanged = false;
 
-                ShowGrid = true;
+                ShowGrid = !Constants.LessLag;
 
-                ShowTransparentGrid = true;
+                ShowTransparentGrid = !Constants.LessLag;
 
                 RefreshDisplay();
             }

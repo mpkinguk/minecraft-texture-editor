@@ -1,4 +1,5 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
 using System.Drawing;
@@ -282,6 +283,12 @@ namespace MinecraftTextureEditorUI
             contextMenuStripShape.Items.AddRange(GetShapeMenuItems());
 
             UpdateShapesMenu();
+
+            if (Constants.LessLag)
+            {
+                BackgroundImage = null;
+                BackColor = Color.DimGray;
+            }
         }
 
         /// <summary>
