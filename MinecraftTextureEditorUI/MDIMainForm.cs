@@ -75,31 +75,36 @@ namespace MinecraftTextureEditorUI
 
                 UpdateLabels();
 
-                if (!Constants.LessLag)
+                if (Constants.LessLag)
                 {
-                    RandomiseWallpaper();
+                    BackgroundImage = null;
+                    BackColor = Color.DimGray;
 
-                    GetPhysicallyInstalledSystemMemory(out _totalRam);
-
-                    _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                    _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-
-                    toolStripProgressBarCpu.Maximum = 100;
-                    toolStripProgressBarCpu.Value = 0;
-
-                    // Make this MB
-                    toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
-                    toolStripProgressBarRam.Value = 0;
-
-                    _timer = new System.Timers.Timer
-                    {
-                        Interval = 1200
-                    };
-
-                    _timer.Elapsed += TimerElapsed;
-
-                    _timer.Start();
+                    return;
                 }
+
+                RandomiseWallpaper();
+
+                GetPhysicallyInstalledSystemMemory(out _totalRam);
+
+                _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+                toolStripProgressBarCpu.Maximum = 100;
+                toolStripProgressBarCpu.Value = 0;
+
+                // Make this MB
+                toolStripProgressBarRam.Maximum = (int)_totalRam / 1024;
+                toolStripProgressBarRam.Value = 0;
+
+                _timer = new System.Timers.Timer
+                {
+                    Interval = 1200
+                };
+
+                _timer.Elapsed += TimerElapsed;
+
+                _timer.Start();
             }
             catch (Exception ex)
             {
@@ -910,9 +915,12 @@ namespace MinecraftTextureEditorUI
                 {
                     if (optionsForm.HasSaved)
                     {
-                        toolStripStatusLabel.Text = "Restarting App...";
+                        if(MessageBox.Show(this, Constants.OptionsChangedRestartMessage, Constants.Information, MessageBoxButtons.YesNo, MessageBoxIcon.Information).Equals(DialogResult.Yes))
+                        {
+                            toolStripStatusLabel.Text = "Restarting App...";
 
-                        RestartApplication();
+                            RestartApplication();
+                        }                   
                     }
                 }
             }
@@ -953,7 +961,6 @@ namespace MinecraftTextureEditorUI
                 State.DrawingTools.BrushSizeChanged += DrawingToolsBrushSizeChanged;
                 State.DrawingTools.ModifierChanged += DrawingToolsModifierChanged;
                 State.DrawingTools.ShapeTypeChanged += DrawingToolsShapeTypeChanged;
-
                 State.DrawingTools.Location = new Point(ClientSize.Width / 8 * 5, 50);
 
                 State.DrawingTools.Show();

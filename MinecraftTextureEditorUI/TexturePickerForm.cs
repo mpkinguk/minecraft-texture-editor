@@ -104,19 +104,21 @@ namespace MinecraftTextureEditorUI
         /// <param name="e"></param>
         private void TexturePickerFormPaint(object sender, PaintEventArgs e)
         {
-            if (!LessLag)
+            if (LessLag)
             {
-                var g = e.Graphics;
-
-                g.DrawImage(Properties.Resources.texturewallpaper2, e.ClipRectangle.X, e.ClipRectangle.Y);
-
-                if (_loading)
-                {
-                    g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
-                }
-
-                g.Flush();
+                return;
             }
+
+            var g = e.Graphics;
+
+            g.DrawImage(Properties.Resources.texturewallpaper2, e.ClipRectangle.X, e.ClipRectangle.Y);
+
+            if (_loading)
+            {
+                g.DrawImage(_images[_imageCounter], new Rectangle(40, 80, ClientRectangle.Width - 80, ClientRectangle.Width - 80));
+            }
+
+            g.Flush();
         }
 
         #region Public methods

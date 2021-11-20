@@ -32,6 +32,7 @@ namespace MinecraftTextureEditorUI
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonReload = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
+            this.panelOptions = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // buttonSave
@@ -73,6 +74,18 @@ namespace MinecraftTextureEditorUI
             this.label7.TabIndex = 4;
             this.label7.Text = "Options";
             // 
+            // panelOptions
+            // 
+            this.panelOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOptions.AutoScroll = true;
+            this.panelOptions.BackColor = System.Drawing.Color.Transparent;
+            this.panelOptions.Location = new System.Drawing.Point(12, 46);
+            this.panelOptions.Name = "panelOptions";
+            this.panelOptions.Size = new System.Drawing.Size(619, 443);
+            this.panelOptions.TabIndex = 5;
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 17F);
@@ -80,6 +93,7 @@ namespace MinecraftTextureEditorUI
             this.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(645, 541);
+            this.Controls.Add(this.panelOptions);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.buttonReload);
             this.Controls.Add(this.buttonSave);
@@ -99,5 +113,6 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonReload;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panelOptions;
     }
 }

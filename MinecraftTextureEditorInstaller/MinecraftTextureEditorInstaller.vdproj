@@ -69,24 +69,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2688A18EA65FA52AC6503B9126EDF771"
-        "OwnerKey" = "8:_14842FBB73801D307A80E2F86F10C7C5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_26CAE5346A1A459193E314A92217A61E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -232,12 +214,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
-        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B8CEAD70B09E57AA7115F71773EB9CFC"
         "OwnerKey" = "8:_390BF987D06D49D4F241798A59301BCF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -377,6 +353,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D3FD4711F328DA20C0B4965AE35ADD44"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_577C53E281B2051752A3584F761B7AB9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1363,15 +1345,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Minecraft Texture Editor"
-        "ProductCode" = "8:{C19309B4-05EE-4408-A312-1D61CD9D845A}"
-        "PackageCode" = "8:{9DFAA93D-02F5-4035-ABC2-254AEA36C695}"
+        "ProductCode" = "8:{79EFAB75-00F4-4721-A227-E9DF041075BA}"
+        "PackageCode" = "8:{BA4064C3-6100-4E50-B8D2-FAE80053D4AC}"
         "UpgradeCode" = "8:{34AB37E5-CBAB-4BEC-B783-907EF469655C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.6.1"
+        "ProductVersion" = "8:2.7.0"
         "Manufacturer" = "8:MKSoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://lordmartinkingofsealand.co.uk"

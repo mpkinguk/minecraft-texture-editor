@@ -71,7 +71,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var x = 20; int y = 60;
+                var x = 5; int y = 10;
 
                 var inc = 30;
 
@@ -105,8 +105,8 @@ namespace MinecraftTextureEditorUI
 
                     textBox.TextChanged += TextBoxTextChanged;
 
-                    Controls.Add(label);
-                    Controls.Add(textBox);
+                    panelOptions.Controls.Add(label);
+                    panelOptions.Controls.Add(textBox);
 
                     y += inc;
                 }
@@ -124,7 +124,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                foreach (Control control in Controls.OfType<TextBox>())
+                foreach (Control control in panelOptions.Controls.OfType<TextBox>())
                 {
                     var key = (string)control.Tag;
                     ConfigurationHelper.SaveSetting(key, control.Text);

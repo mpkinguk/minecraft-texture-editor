@@ -124,6 +124,11 @@ namespace MinecraftTextureEditorAPI
         public static string OptionsChangedMessage = "Some options have been changed.\nDo you wish to save your settings?";
 
         /// <summary>
+        /// Options have changed
+        /// </summary>
+        public static string OptionsChangedRestartMessage = "Some options have been changed.\nDo you wish to reload the application to use them?";
+
+        /// <summary>
         /// Package deployed as zip
         /// </summary>
         public static string PackageDeployedAsZipMessage = "Package deployed as zip file\nWould you like to access this location?";
