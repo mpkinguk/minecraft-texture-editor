@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace MinecraftTextureEditorUI
 {
     partial class MDIMainForm
@@ -72,6 +73,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDeploymentWizard = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCreateProjectWizard = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemMakeAllBlocksTheSame = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,8 +100,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripModifierLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripToolTypeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripBrushSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripProgressBarCpu = new CustomControls.MyToolStripProgressBar();
-            this.toolStripProgressBarRam = new CustomControls.MyToolStripProgressBar();
+            this.toolStripProgressBarCpu = new MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar();
+            this.toolStripProgressBarRam = new MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -348,6 +350,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripSeparator7,
             this.toolStripMenuItemDeploymentWizard,
             this.toolStripMenuItemCreateProjectWizard,
+            this.toolStripSeparator7,
+            this.toolStripMenuItemMakeAllBlocksTheSame,
             this.toolStripSeparator5,
             this.optionsToolStripMenuItem});
             this.toolsMenu.Font = new System.Drawing.Font("Minecraft", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -470,6 +474,14 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemCreateProjectWizard.Size = new System.Drawing.Size(390, 22);
             this.toolStripMenuItemCreateProjectWizard.Text = "\"Create Project\" Wizard ...";
             this.toolStripMenuItemCreateProjectWizard.Click += new System.EventHandler(this.ToolStripMenuItemCreateProjectWizardClick);
+            // 
+            // toolStripMenuItemMakeAllBlocksTheSame
+            // 
+            this.toolStripMenuItemMakeAllBlocksTheSame.Name = "toolStripMenuItemMakeAllBlocksTheSame";
+            this.toolStripMenuItemMakeAllBlocksTheSame.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A)));
+            this.toolStripMenuItemMakeAllBlocksTheSame.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItemMakeAllBlocksTheSame.Text = "Make All Blocks The Same ...";
+            this.toolStripMenuItemMakeAllBlocksTheSame.Click += new System.EventHandler(this.ToolStripMenuItemMakeAllBlocksTheSameClick);
             // 
             // toolStripSeparator5
             // 
@@ -672,8 +684,8 @@ namespace MinecraftTextureEditorUI
             this.toolStripToolTypeLabel,
             this.toolStripModifierLabel,
             this.toolStripBrushSizeLabel,
-            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarCpu,
-            (CustomControls.MyToolStripProgressBar)this.toolStripProgressBarRam});
+            (MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar)this.toolStripProgressBarCpu,
+            (MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar)this.toolStripProgressBarRam});
             this.statusStrip.Location = new System.Drawing.Point(0, 431);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
@@ -765,6 +777,8 @@ namespace MinecraftTextureEditorUI
             this.PerformLayout();
         }
 
+        
+        
         #endregion
 
 
@@ -804,6 +818,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripButton saveToolStripButton;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDeploymentWizard;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemMakeAllBlocksTheSame;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveAs;
         private System.Windows.Forms.ToolStripButton toolStripButtonUndo;
         private System.Windows.Forms.ToolStripButton toolStripButtonRedo;
@@ -831,8 +846,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripStatusLabel toolStripBrushSizeLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripModifierLabel;
-        private CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
-        private CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
+        private MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar toolStripProgressBarCpu;
+        private MinecraftTextureEditorUI.CustomControls.MyToolStripProgressBar toolStripProgressBarRam;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRotateFlip;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemShape;

@@ -475,6 +475,37 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Make all blocks the same as the one currently edited (not saved)
+        /// </summary>
+        private void MakeAllBlocksTheSame()
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+
+                if (!MessageBox.Show(this, Constants.MakeAllBlocksTheSameMessage, Constants.Warning,
+                        MessageBoxButtons.OKCancel, MessageBoxIcon.Warning).Equals(DialogResult.OK))
+                {
+                    return;
+                }
+
+                foreach (var file in GetFiles(State.Path, "*.png", true).Where(x => x.Contains("\\block\\")))
+                {
+                    State.Editor.SaveFile(file);
+                    State.TexturePicker.RefreshImage(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        /// <summary>
         /// Open the Create Project Wizard form
         /// </summary>
         private async Task OpenCreateProjectWizardForm()
@@ -1377,6 +1408,16 @@ namespace MinecraftTextureEditorUI
         private void ToolStripButtonDeploymentWizardClick(object sender, EventArgs e)
         {
             OpenDeploymentWizardForm();
+        }
+
+        /// <summary>
+        /// Make all blacks the same :D
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemMakeAllBlocksTheSameClick(object sender, EventArgs e)
+        {
+            MakeAllBlocksTheSame();
         }
 
         /// <summary>

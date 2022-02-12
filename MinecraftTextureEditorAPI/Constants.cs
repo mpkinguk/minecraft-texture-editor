@@ -131,12 +131,12 @@ namespace MinecraftTextureEditorAPI
         /// <summary>
         /// Package deployed as zip
         /// </summary>
-        public static string PackageDeployedAsZipMessage = "Package deployed as zip file\nWould you like to access this location?";
+        public static string PackageDeployedAsZipMessage = "Package deployed as zip file.\nWould you like to access this location?";
 
         /// <summary>
         /// Package deployed open Minecraft
         /// </summary>
-        public static string PackageDeployedMessage = "Package deployed\nPlease open Minecraft and select your texture pack to test it out!";
+        public static string PackageDeployedMessage = "Package deployed.\nPlease open Minecraft and select your texture pack to test it out!";
 
         /// <summary>
         /// Package exists create backup
@@ -162,6 +162,11 @@ namespace MinecraftTextureEditorAPI
         /// Less lag flag
         /// </summary>
         public static bool LessLag = Convert.ToBoolean(ConfigurationHelper.LoadSetting("LessLag"));
+
+        /// <summary>
+        /// Make all blocks the same
+        /// </summary>
+        public static string MakeAllBlocksTheSameMessage = "Make all blocks the same.\nThis cannot be reversed.\nAre you sure?";
 
         #endregion Messages
 
