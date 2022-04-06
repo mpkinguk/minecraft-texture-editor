@@ -343,16 +343,6 @@ namespace MinecraftTextureEditorUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap steve {
-            get {
-                object obj = ResourceManager.GetObject("steve", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap stone_pickaxe {
             get {
                 object obj = ResourceManager.GetObject("stone_pickaxe", resourceCulture);
@@ -456,6 +446,16 @@ namespace MinecraftTextureEditorUI.Properties {
         public static System.Drawing.Bitmap wallpaper5 {
             get {
                 object obj = ResourceManager.GetObject("wallpaper5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap wallpaper6 {
+            get {
+                object obj = ResourceManager.GetObject("wallpaper6", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

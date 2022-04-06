@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MinecraftTextureEditorUI
+﻿namespace MinecraftTextureEditorUI
 {
     partial class MDIMainForm
     {
@@ -68,6 +66,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorY = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemShape = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTransparencyLock = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemResizeImage = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemRotateFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -345,6 +344,7 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemMirrorX,
             this.toolStripMenuItemMirrorY,
             this.toolStripMenuItemTransparencyLock,
+            this.toolStripMenuItemResizeImage,
             this.toolStripSeparator10,
             this.toolStripMenuItemRotateFlip,
             this.toolStripSeparator7,
@@ -441,12 +441,20 @@ namespace MinecraftTextureEditorUI
             this.toolStripMenuItemTransparencyLock.Text = "Transparency Lock";
             this.toolStripMenuItemTransparencyLock.Click += new System.EventHandler(this.ToolStripMenuItemTransparencyLockClick);
             // 
+            // toolStripMenuItemResizeImage
+            // 
+            this.toolStripMenuItemResizeImage.Name = "toolStripMenuItemResizeImage";
+            this.toolStripMenuItemResizeImage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.R)));
+            this.toolStripMenuItemResizeImage.Size = new System.Drawing.Size(390, 22);
+            this.toolStripMenuItemResizeImage.Text = "Resize Image";
+            this.toolStripMenuItemResizeImage.Click += new System.EventHandler(this.ToolStripMenuItemResizeImageClick);
+            // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(387, 6);
             // 
-            // toolStripMenuItem1
+            // toolStripMenuItemRotateFlip
             // 
             this.toolStripMenuItemRotateFlip.Name = "toolStripMenuItemRotateFlip";
             this.toolStripMenuItemRotateFlip.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
@@ -777,8 +785,8 @@ namespace MinecraftTextureEditorUI
             this.PerformLayout();
         }
 
-        
-        
+
+
         #endregion
 
 
@@ -841,6 +849,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFloodFill;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRainbow;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTransparencyLock;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemResizeImage;
         private System.Windows.Forms.ToolStripMenuItem newImageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripBrushSizeLabel;

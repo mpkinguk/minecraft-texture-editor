@@ -610,34 +610,12 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var rnd = new System.Random();
+                var rnd = new Random();              
 
-                switch (rnd.Next(1, 6))
-                {
-                    case 2:
-                        BackgroundImage = Properties.Resources.wallpaper2;
-                        break;
+                var resman = new System.Resources.ResourceManager("MinecraftTextureEditorUI.Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
 
-                    case 3:
-                        BackgroundImage = Properties.Resources.wallpaper3;
-                        break;
+                BackgroundImage = (Bitmap)resman.GetObject($"wallpaper{rnd.Next(1, 6)}");
 
-                    case 4:
-                        BackgroundImage = Properties.Resources.wallpaper4;
-                        break;
-
-                    case 5:
-                        BackgroundImage = Properties.Resources.wallpaper5;
-                        break;
-
-                    case 6:
-                        BackgroundImage = Properties.Resources.steve;
-                        break;
-
-                    default:
-                        BackgroundImage = Properties.Resources.wallpaper1;
-                        break;
-                }
             }
             catch (Exception ex)
             {
@@ -658,6 +636,29 @@ namespace MinecraftTextureEditorUI
             if (State.Editor.RedoEnabled)
             {
                 State.Editor.Redo();
+            }
+        }
+
+        /// <summary>
+        /// Resize the current Image
+        /// </summary>
+        private void ResizeImage()
+        {
+            if (State.Editor is null)
+            {
+                return;
+            }
+
+            using (var form = new ResolutionForm(_log))
+            {
+                if (form.ShowDialog(this).Equals(DialogResult.OK))
+                {
+                    State.Editor.Texture = new Bitmap(State.Editor.Texture, new Size(form.ImageWidth, form.ImageHeight));
+
+                    State.TexturePicker.RefreshImage(State.Editor.FileName);
+
+                    State.Editor.AddItem();
+                }                
             }
         }
 
@@ -1458,6 +1459,16 @@ namespace MinecraftTextureEditorUI
         private void ToolStripButtonTransparentClick(object sender, EventArgs e)
         {
             ToggleTransparentGrid();
+        }
+
+        /// <summary>
+        /// Resize the current Image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemResizeImageClick(object sender, EventArgs e)
+        {
+            ResizeImage();
         }
 
         /// <summary>

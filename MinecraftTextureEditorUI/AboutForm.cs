@@ -106,7 +106,7 @@ namespace MinecraftTextureEditorUI
         {
             var g = e.Graphics;
 
-            g.DrawImage(Properties.Resources.steve, ClientRectangle);
+            g.DrawImage(Properties.Resources.wallpaper6, ClientRectangle);
 
             var index = 0;
 

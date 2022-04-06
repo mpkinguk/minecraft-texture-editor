@@ -80,6 +80,8 @@ namespace MinecraftTextureEditorUI
 
                 Paint += TexturePickerFormPaint;
 
+                flowLayoutPanelTextures.Scroll += FlowLayoutPanelTextures_Scroll;
+
                 // Reduce display flicker
                 SetStyle(ControlStyles.AllPaintingInWmPaint & ControlStyles.UserPaint & ControlStyles.OptimizedDoubleBuffer & ControlStyles.ResizeRedraw, true);
 
@@ -95,6 +97,16 @@ namespace MinecraftTextureEditorUI
             {
                 _log?.Error(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Re-draw items when scrolling so it's not so laggy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FlowLayoutPanelTextures_Scroll(object sender, ScrollEventArgs e)
+        {
+            flowLayoutPanelTextures.Invalidate(true);
         }
 
         /// <summary>
@@ -202,8 +214,8 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                if (e.ClipRectangle.IntersectsWith(flowLayoutPanelTextures.ClientRectangle))
-                {
+                //if (e.ClipRectangle.IntersectsWith(flowLayoutPanelTextures.ClientRectangle))
+                //{
                     var button = (Button)sender;
 
                     var g = e.Graphics;
@@ -219,7 +231,7 @@ namespace MinecraftTextureEditorUI
                     g.DrawRectangle(button.Focused ? Pens.Red : Pens.Black, new Rectangle(0, 0, button.ClientRectangle.Width - 1, button.ClientRectangle.Height - 1));
 
                     g.Flush();
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -349,7 +361,7 @@ namespace MinecraftTextureEditorUI
 
                     var itemText = fileInfo.Name.Length > 6 ? $"{fileInfo.Name.Substring(0, 7)}..." : fileInfo.Name;
 
-                    var item = new Button() { Text = itemText, Location = new Point(0, 0), Size = new Size(Constants.ItemSize, Constants.ItemSize), Font = new Font("Minecraft", 6F) };
+                    var item = new Button() { Text = itemText, Location = new Point(0, 0), Size = new Size(ItemSize, ItemSize), Font = new Font("Minecraft", 6F) };
 
                     toolTip1.SetToolTip(item, fileInfo.Name);
 
@@ -360,7 +372,7 @@ namespace MinecraftTextureEditorUI
                     {
                         using (var image = (Image)FileHelper.LoadFile(file))
                         {
-                            tmp = new Bitmap(image);
+                            tmp = new Bitmap(image, new Size(ItemSize, ItemSize));
                         }
                     }
                     catch (Exception ex)
@@ -527,18 +539,18 @@ namespace MinecraftTextureEditorUI
                                             break;
 
                                         case FilterType.Category:
-                                            isCategory = category.Contains(tuple.Item2);
+                                            isCategory = category.ToLowerInvariant().Contains(tuple.Item2.ToLowerInvariant());
                                             break;
 
                                         case FilterType.Name:
-                                            isName = filename.Contains(tuple.Item2);
+                                            isName = filename.ToLowerInvariant().Contains(tuple.Item2.ToLowerInvariant());
                                             break;
                                     }
                                 }
                             }
                             else
                             {
-                                isName = filename.Contains(text);
+                                isName = filename.ToLowerInvariant().Contains(text.ToLowerInvariant());
                             }
                         }
 
