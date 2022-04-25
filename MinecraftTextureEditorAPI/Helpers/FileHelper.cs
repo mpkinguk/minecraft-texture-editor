@@ -1,10 +1,12 @@
 ﻿using log4net;
+using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace MinecraftTextureEditorAPI.Helpers
@@ -333,6 +335,24 @@ namespace MinecraftTextureEditorAPI.Helpers
             {
                 Log?.Error(ex.Message);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Return a serialized Json object
+        /// </summary>
+        /// <param name="file">The meta file object</param>
+        /// <returns>string</returns>
+        public static string Serialize(MetaFile file)
+        {
+            try
+            {
+                return JsonSerializer.Serialize(file, new JsonSerializerOptions { WriteIndented = true });
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                throw;
             }
         }
 

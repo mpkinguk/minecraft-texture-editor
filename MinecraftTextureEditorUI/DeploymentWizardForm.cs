@@ -5,7 +5,6 @@ using MinecraftTextureEditorAPI.Model;
 using System;
 using System.Drawing;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipFileManagerAPI;
@@ -288,7 +287,7 @@ namespace MinecraftTextureEditorUI
 
                 var file = new MetaFile() { Pack = pack };
 
-                var jsonString = JsonSerializer.Serialize(file, new JsonSerializerOptions { WriteIndented = true });
+                var jsonString = FileHelper.Serialize(file);
 
                 using (TextWriter fs = File.CreateText(fileName))
                 {
