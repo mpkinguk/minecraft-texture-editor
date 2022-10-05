@@ -20,7 +20,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="searchPattern">The search pattern</param>
         /// <param name="searchOpt">Search options</param>
         /// <returns>String enumerable</returns>
-        public static IEnumerable<string> EnumerateDirectories(string parentDirectory, string searchPattern, SearchOption searchOpt)
+        public static IEnumerable<string> EnumerateDirectories(string parentDirectory, string searchPattern, SearchOption searchOpt = SearchOption.AllDirectories)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// <param name="searchPattern">The search pattern</param>
         /// <param name="searchOpt">Search options</param>
         /// <returns>String enumerable</returns>
-        public static IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOpt)
+        public static IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOpt = SearchOption.AllDirectories)
         {
             try
             {
