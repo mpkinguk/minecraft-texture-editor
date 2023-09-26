@@ -23,17 +23,25 @@ namespace MinecraftTextureEditorAPI
 
         #endregion Enums
 
+        #region Minecraft Editions
+
+        public static string JavaSettings = "javaSettings";
+
+        public static string BedrockSettings = "bedrockSettings";
+
+        #endregion Minecraft Editions
+
         #region Folders
 
         /// <summary>
         /// AssetsFolder
         /// </summary>
-        public static string AssetsFolder = ConfigurationHelper.LoadSetting("AssetsFolder");
+        public static string AssetsFolder = ConfigurationHelper.LoadSetting("AssetsFolder", JavaSettings);
 
         /// <summary>
         /// ProjectFolder
         /// </summary>
-        public static string DocumentsFolder = ConfigurationHelper.LoadSetting("ProjectFolder");
+        public static string DocumentsFolder = ConfigurationHelper.LoadSetting("ProjectFolder", JavaSettings);
 
         /// <summary>
         /// Filter
@@ -43,22 +51,22 @@ namespace MinecraftTextureEditorAPI
         /// <summary>
         /// MinecraftFolder
         /// </summary>
-        public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder");
+        public static string MinecraftFolder = ConfigurationHelper.LoadSetting("MinecraftFolder", JavaSettings);
 
         /// <summary>
         /// ResourcePackFolder
         /// </summary>
-        public static string ResourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder");
+        public static string ResourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder", JavaSettings);
 
         /// <summary>
         /// Versions
         /// </summary>
-        public static string Versions = ConfigurationHelper.LoadSetting("Versions");
+        public static string Versions = ConfigurationHelper.LoadSetting("Versions", JavaSettings);
 
         /// <summary>
         /// VersionsFolder
         /// </summary>
-        public static string VersionsFolder = ConfigurationHelper.LoadSetting("VersionsFolder");
+        public static string VersionsFolder = ConfigurationHelper.LoadSetting("VersionsFolder", JavaSettings);
 
         #endregion Folders
 

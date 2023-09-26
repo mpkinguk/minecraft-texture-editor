@@ -533,7 +533,7 @@ namespace MinecraftTextureEditorUI
             }
             else
             {
-                var versions = ConfigurationHelper.LoadSetting("Versions");
+                var versions = State.IsJava ? ConfigurationHelper.LoadSetting("Versions") : ConfigurationHelper.LoadSetting("Versions", Constants.BedrockSettings);
 
                 var versionSplit = versions.Split(';');
 

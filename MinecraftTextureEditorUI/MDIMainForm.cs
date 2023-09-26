@@ -56,6 +56,9 @@ namespace MinecraftTextureEditorUI
 
             try
             {
+                // Always assume this is the case, gets decided when creating a project
+                State.IsJava = true;    
+
                 ResizeRedraw = true;
 
                 Resize += (sender, e) => { Refresh(); };

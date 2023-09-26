@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace MinecraftTextureEditorUI
 {
     partial class CreateProjectWizardForm
@@ -40,10 +42,13 @@ namespace MinecraftTextureEditorUI
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageCreate2 = new System.Windows.Forms.TabPage();
+            this.radioButtonBedrock = new System.Windows.Forms.RadioButton();
+            this.radioButtonJava = new System.Windows.Forms.RadioButton();
+            this.labelEdition = new System.Windows.Forms.Label();
             this.comboBoxVersion = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.labelMetaFile = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.labelCurrentPackDetails = new System.Windows.Forms.Label();
+            this.labelVersion = new System.Windows.Forms.Label();
             this.tabPageCreate3 = new System.Windows.Forms.TabPage();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxPackName = new System.Windows.Forms.TextBox();
@@ -116,7 +121,7 @@ namespace MinecraftTextureEditorUI
             this.buttonPrevious.UseVisualStyleBackColor = true;
             this.buttonPrevious.Click += new System.EventHandler(this.ButtonPreviousClick);
             // 
-            // tabControlDeploy
+            // tabControlCreate
             // 
             this.tabControlCreate.Controls.Add(this.tabPageCreate1);
             this.tabControlCreate.Controls.Add(this.tabPageCreate2);
@@ -126,7 +131,7 @@ namespace MinecraftTextureEditorUI
             this.tabControlCreate.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControlCreate.Location = new System.Drawing.Point(0, 0);
             this.tabControlCreate.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.tabControlCreate.Name = "tabControlDeploy";
+            this.tabControlCreate.Name = "tabControlCreate";
             this.tabControlCreate.SelectedIndex = 0;
             this.tabControlCreate.Size = new System.Drawing.Size(639, 398);
             this.tabControlCreate.TabIndex = 2;
@@ -198,10 +203,13 @@ namespace MinecraftTextureEditorUI
             // 
             this.tabPageCreate2.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.tabPageCreate2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.tabPageCreate2.Controls.Add(this.radioButtonBedrock);
+            this.tabPageCreate2.Controls.Add(this.radioButtonJava);
+            this.tabPageCreate2.Controls.Add(this.labelEdition);
             this.tabPageCreate2.Controls.Add(this.comboBoxVersion);
             this.tabPageCreate2.Controls.Add(this.label2);
-            this.tabPageCreate2.Controls.Add(this.labelMetaFile);
-            this.tabPageCreate2.Controls.Add(this.label3);
+            this.tabPageCreate2.Controls.Add(this.labelCurrentPackDetails);
+            this.tabPageCreate2.Controls.Add(this.labelVersion);
             this.tabPageCreate2.ForeColor = System.Drawing.Color.Yellow;
             this.tabPageCreate2.Location = new System.Drawing.Point(4, 26);
             this.tabPageCreate2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -212,11 +220,46 @@ namespace MinecraftTextureEditorUI
             this.tabPageCreate2.Text = "Step 2";
             this.tabPageCreate2.UseVisualStyleBackColor = true;
             // 
+            // radioButtonBedrock
+            // 
+            this.radioButtonBedrock.AutoSize = true;
+            this.radioButtonBedrock.Location = new System.Drawing.Point(314, 104);
+            this.radioButtonBedrock.Name = "radioButtonBedrock";
+            this.radioButtonBedrock.Size = new System.Drawing.Size(94, 21);
+            this.radioButtonBedrock.TabIndex = 11;
+            this.radioButtonBedrock.Text = "Bedrock";
+            this.radioButtonBedrock.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonJava
+            // 
+            this.radioButtonJava.AutoSize = true;
+            this.radioButtonJava.Checked = true;
+            this.radioButtonJava.Location = new System.Drawing.Point(161, 104);
+            this.radioButtonJava.Name = "radioButtonJava";
+            this.radioButtonJava.Size = new System.Drawing.Size(66, 21);
+            this.radioButtonJava.TabIndex = 10;
+            this.radioButtonJava.TabStop = true;
+            this.radioButtonJava.Text = "Java";
+            this.radioButtonJava.UseVisualStyleBackColor = true;
+            this.radioButtonJava.CheckedChanged += new System.EventHandler(this.RadioButtonJavaCheckedChanged);
+            // 
+            // labelEdition
+            // 
+            this.labelEdition.AutoSize = true;
+            this.labelEdition.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelEdition.ForeColor = System.Drawing.Color.Yellow;
+            this.labelEdition.Location = new System.Drawing.Point(36, 104);
+            this.labelEdition.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelEdition.Name = "labelEdition";
+            this.labelEdition.Size = new System.Drawing.Size(64, 17);
+            this.labelEdition.TabIndex = 9;
+            this.labelEdition.Text = "Edition:";
+            // 
             // comboBoxVersion
             // 
             this.comboBoxVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxVersion.FormattingEnabled = true;
-            this.comboBoxVersion.Location = new System.Drawing.Point(158, 129);
+            this.comboBoxVersion.Location = new System.Drawing.Point(161, 199);
             this.comboBoxVersion.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.comboBoxVersion.Name = "comboBoxVersion";
             this.comboBoxVersion.Size = new System.Drawing.Size(437, 25);
@@ -226,36 +269,36 @@ namespace MinecraftTextureEditorUI
             // 
             this.label2.Font = new System.Drawing.Font("Minecraft", 9.75F);
             this.label2.ForeColor = System.Drawing.Color.Yellow;
-            this.label2.Location = new System.Drawing.Point(155, 158);
+            this.label2.Location = new System.Drawing.Point(158, 228);
             this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(433, 52);
+            this.label2.Size = new System.Drawing.Size(433, 53);
             this.label2.TabIndex = 6;
             this.label2.Text = "Select which version you wish to base your new project on!";
             // 
-            // labelMetaFile
+            // labelCurrentPackDetails
             // 
-            this.labelMetaFile.AutoSize = true;
-            this.labelMetaFile.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMetaFile.ForeColor = System.Drawing.Color.Yellow;
-            this.labelMetaFile.Location = new System.Drawing.Point(8, 8);
-            this.labelMetaFile.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.labelMetaFile.Name = "labelMetaFile";
-            this.labelMetaFile.Size = new System.Drawing.Size(209, 20);
-            this.labelMetaFile.TabIndex = 2;
-            this.labelMetaFile.Text = "Current Pack details";
+            this.labelCurrentPackDetails.AutoSize = true;
+            this.labelCurrentPackDetails.Font = new System.Drawing.Font("Minecraft", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCurrentPackDetails.ForeColor = System.Drawing.Color.Yellow;
+            this.labelCurrentPackDetails.Location = new System.Drawing.Point(8, 8);
+            this.labelCurrentPackDetails.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelCurrentPackDetails.Name = "labelCurrentPackDetails";
+            this.labelCurrentPackDetails.Size = new System.Drawing.Size(209, 20);
+            this.labelCurrentPackDetails.TabIndex = 2;
+            this.labelCurrentPackDetails.Text = "Current Pack details";
             // 
-            // label3
+            // labelVersion
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Yellow;
-            this.label3.Location = new System.Drawing.Point(33, 129);
-            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 17);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Version:";
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersion.ForeColor = System.Drawing.Color.Yellow;
+            this.labelVersion.Location = new System.Drawing.Point(36, 199);
+            this.labelVersion.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(74, 17);
+            this.labelVersion.TabIndex = 0;
+            this.labelVersion.Text = "Version:";
             // 
             // tabPageCreate3
             // 
@@ -428,8 +471,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.TabPage tabPageCreate1;
         private System.Windows.Forms.TabPage tabPageCreate2;
         private System.Windows.Forms.TabPage tabPageCreate4;
-        private System.Windows.Forms.Label labelMetaFile;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelCurrentPackDetails;
+        private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
@@ -446,5 +489,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonProjectPathBrowser;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label labelEdition;
+        private System.Windows.Forms.RadioButton radioButtonBedrock;
+        private System.Windows.Forms.RadioButton radioButtonJava;
     }
 }

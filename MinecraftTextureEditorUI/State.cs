@@ -92,5 +92,10 @@ namespace MinecraftTextureEditorUI
         /// The mirror y setting
         /// </summary>
         public static bool MirrorY => Modifiers.HasFlag(Modifier.MirrorY);
+
+        /// <summary>
+        /// Is Java Edition project
+        /// </summary>
+        public static bool IsJava;
     }
 }

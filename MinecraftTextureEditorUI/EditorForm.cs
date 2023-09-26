@@ -772,6 +772,11 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
+                if(fileName == string.Empty)
+                {
+                    Close();
+                }
+
                 using (var image = (Bitmap)FileHelper.LoadFile(fileName))
                 {
                     if (image is null)

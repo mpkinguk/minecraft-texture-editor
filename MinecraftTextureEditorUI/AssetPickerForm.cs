@@ -3,7 +3,12 @@ using MinecraftTextureEditorAPI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MinecraftTextureEditorUI
 {
@@ -38,7 +43,43 @@ namespace MinecraftTextureEditorUI
 
                 comboBoxAsset.SelectedIndexChanged += ComboBoxAssetSelectedIndexChanged;
 
-                comboBoxAsset.Items.AddRange(assets.ToArray());
+                Dictionary<string, string> assetList = new Dictionary<string, string>();
+
+                foreach (var asset in assets)
+                {
+                    var info = new FileInfo(asset);
+                    
+                    var assetName = info.Directory.Name;
+
+                    try
+                    {
+                        assetList.Add(assetName, asset);
+                    }
+                    catch(Exception ex) 
+                    {
+                        // Version number is the sub directory, so get the value of the conflicted key and remove it
+                        var value = assetList[assetName];
+
+                        assetList.Remove(assetName);
+
+                        var newAssetName = new FileInfo(value).Directory.Parent.Name;
+
+                        // Re-add the old one, as you can't update a dictionary key once defined
+                        assetList.Add(newAssetName, value);                        
+
+                        // Then apply same logic to the new one
+                        newAssetName = new FileInfo(asset).Directory.Parent.Name;
+
+                        // Add the new key! :)
+                        assetList.Add(newAssetName, asset);
+
+                        _log?.Warn(ex.Message);
+                    }
+                }
+
+                comboBoxAsset.DataSource = new BindingSource(assetList, null);
+                comboBoxAsset.DisplayMember = "Key";
+                comboBoxAsset.ValueMember = "Value";
 
                 comboBoxAsset.SelectedIndex = 0;
 
@@ -65,12 +106,12 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var button = (Button)sender;
+                var button = (System.Windows.Forms.Button)sender;
 
                 switch (button.Name)
                 {
                     case (nameof(buttonOK)):
-                        Asset = comboBoxAsset.Text;
+                        Asset = ((KeyValuePair<string, string>)comboBoxAsset.SelectedItem).Value;
                         DialogResult = DialogResult.OK;
                         break;
 
@@ -97,6 +138,7 @@ namespace MinecraftTextureEditorUI
             try
             {
                 Asset = comboBoxAsset.Text;
+                toolTip1.SetToolTip(comboBoxAsset, ((KeyValuePair<string, string>)comboBoxAsset.SelectedItem).Value);
             }
             catch (Exception ex)
             {

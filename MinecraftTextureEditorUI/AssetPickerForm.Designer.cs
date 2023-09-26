@@ -33,9 +33,9 @@ namespace MinecraftTextureEditorUI
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelImageResolution = new System.Windows.Forms.Label();
             this.labelWidth = new System.Windows.Forms.Label();
-            this.comboBoxAsset = new System.Windows.Forms.ComboBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.comboBoxAsset = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -77,17 +77,6 @@ namespace MinecraftTextureEditorUI
             this.labelWidth.Text = "You have multiple asset folders within your chosen folder. Please chose one from " +
     "the dropdown list below:";
             // 
-            // comboBoxAsset
-            // 
-            this.comboBoxAsset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxAsset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxAsset.FormattingEnabled = true;
-            this.comboBoxAsset.Location = new System.Drawing.Point(12, 157);
-            this.comboBoxAsset.Name = "comboBoxAsset";
-            this.comboBoxAsset.Size = new System.Drawing.Size(608, 25);
-            this.comboBoxAsset.TabIndex = 7;
-            // 
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -100,6 +89,17 @@ namespace MinecraftTextureEditorUI
             this.buttonOK.Text = "&OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.ButtonClick);
+            // 
+            // dropDownListAsset
+            // 
+            this.comboBoxAsset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxAsset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxAsset.FormattingEnabled = true;
+            this.comboBoxAsset.Location = new System.Drawing.Point(12, 157);
+            this.comboBoxAsset.Name = "dropDownListAsset";
+            this.comboBoxAsset.Size = new System.Drawing.Size(608, 25);
+            this.comboBoxAsset.TabIndex = 7;
             // 
             // AssetPickerForm
             // 
@@ -129,8 +129,8 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelImageResolution;
         private System.Windows.Forms.Label labelWidth;
-        private System.Windows.Forms.ComboBox comboBoxAsset;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ComboBox comboBoxAsset;
     }
 }

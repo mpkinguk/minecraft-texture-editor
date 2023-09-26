@@ -2,6 +2,7 @@
 using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -111,6 +112,8 @@ namespace MinecraftTextureEditorUI
                         {
                             throw new ArgumentException("Pack Name is empty");
                         }
+
+                        State.IsJava = radioButtonJava.Checked;
 
                         // Clone to prevent threading issues
                         var packVersion = (string)comboBoxVersion.Text.Clone();
@@ -272,6 +275,16 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Populate the versions dropdown when checkbox value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RadioButtonJavaCheckedChanged(object sender, EventArgs e)
+        {
+            EditionChanged();
+        }
+
         #endregion Form events
 
         #region Threadsafe methods
@@ -365,8 +378,14 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    var versions = FileHelper.GetVersions();
-                    comboBoxVersion.Items.AddRange(versions);
+                    var versions = State.IsJava ? ConfigurationHelper.LoadSetting("Versions", Constants.JavaSettings) : ConfigurationHelper.LoadSetting("Versions", Constants.BedrockSettings);
+
+                    var versionSplit = versions.Split(';');
+
+                    comboBoxVersion.Items.Clear();
+
+                    comboBoxVersion.Items.AddRange(versionSplit);
+
                     comboBoxVersion.SelectedIndex = 0;
                 }
             }
@@ -448,16 +467,32 @@ namespace MinecraftTextureEditorUI
             }
         }
 
+        /// <summary>
+        /// Threadsafe method for increment tab selected index
+        /// </summary>
+        private void EditionChanged()
+        {
+            try
+            {
+                if (radioButtonJava.InvokeRequired)
+                {
+                    var d = new Action(EditionChanged);
+                    Invoke(d);
+                }
+                else
+                {
+                    State.IsJava = radioButtonJava.Checked;
+                    PopulateVersions();
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+            }
+        }
+
         #endregion Threadsafe methods
 
-        ///// <summary>
-        ///// Get the folder
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void ButtonProjectPathBrowserClick(object sender, EventArgs e)
-        //{
-        //    textBoxProjectPath.Text = FileHelper.SelectFolder(textBoxProjectPath.Text);
-        //}
+
     }
 }
