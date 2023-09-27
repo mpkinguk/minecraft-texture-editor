@@ -168,7 +168,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         {
             try
             {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.ResourcePackFolder);
+                var path = Path.Combine(GetMineCraftFolder(), Constants.JavaResourcePackFolder);
 
                 if (!Directory.Exists(path))
                 {
@@ -188,7 +188,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Gets a list of version folders from the default minecraft folder
         /// </summary>
         /// <returns>object[]</returns>
-        public static object[] GetVersions()
+        public static string[] GetVersions()
         {
             try
             {
@@ -201,12 +201,12 @@ namespace MinecraftTextureEditorAPI.Helpers
 
                 var list = Directory.GetDirectories(path, "*.*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x).Name);
 
-                return list.ToArray<object>();
+                return list.ToArray<string>();
             }
             catch (Exception ex)
             {
                 Log?.Error(ex.Message);
-                return new object[0];
+                return new string[0];
             }
         }
 

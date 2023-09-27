@@ -5,9 +5,14 @@ using System;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipFileManagerAPI;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MinecraftTextureEditorUI
 {
@@ -19,6 +24,8 @@ namespace MinecraftTextureEditorUI
         public bool Success { get; set; }
 
         private readonly ILog _log;
+
+        private bool _downloading;
 
         /// <summary>
         /// Constructor
@@ -238,12 +245,61 @@ namespace MinecraftTextureEditorUI
 
                 var projectFolder = Path.Combine(outputPath);
 
-                var packFile = Path.Combine(FileHelper.GetMineCraftFolder(), "versions", packVersion, string.Concat(packVersion, ".jar"));
+                string packFile;
 
-                if (!File.Exists(packFile))
+                if (State.IsJava) {
+
+                    packFile= Path.Combine(FileHelper.GetMineCraftFolder(), "versions", packVersion, string.Concat(packVersion, ".jar"));
+
+                    if (!File.Exists(packFile))
+                    {
+                        throw new FileNotFoundException($"Could not find .jar file for version {packVersion} in {packFile}");
+                    }
+                } else
                 {
-                    throw new FileNotFoundException($"Could not find .jar file for version {packVersion} in {packFile}");
+                    packFile = Path.Combine(Constants.BedrockResourcePackFolder, string.Concat(packVersion, ".zip"));
+
+                    outputPath = string.Concat(outputPath, ".zip");
+
+                    using (var client = new HttpClient())
+                    {
+                        using (var s = await client.GetStreamAsync(packFile))
+                        {
+                            using (var fs = new FileStream(outputPath, FileMode.OpenOrCreate))
+                            {
+                                UpdateProgressLabel("Downloading pack from Mojang github server...");
+
+                                await s.CopyToAsync(fs).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                        
+
+                    //using (WebClient wc = new WebClient())
+                    //{
+                    //    _downloading = true;
+
+                    //    wc.DownloadProgressChanged += Wc_DownloadProgressChanged;
+                    //    wc.DownloadFileCompleted += Wc_DownloadFileCompleted;
+
+                    //    wc.DownloadFileAsync(
+                    //        // Param1 = Link of file
+                    //        new System.Uri(packFile),
+                    //        // Param2 = Path to save
+                    //        outputPath
+                    //    );
+
+                    //    while (_downloading)
+                    //    {
+                    //        Thread.Sleep(10);
+                    //        Application.DoEvents(); 
+                    //    }
+                    //}
+
+                    packFile = outputPath;
                 }
+
+                UpdateProgressLabel("Unpacking file...");
 
                 var zipFileManager = new ZipFileManager(_log);
 
@@ -273,6 +329,18 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(false);
             }
+        }
+
+        // Event to track when file has finished downloading
+        private void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            _downloading = false;
+        }
+
+        // Event to track the progress
+        void Wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            UpdateProgressLabel($"Downloading bedrock example pack: {e.ProgressPercentage}");
         }
 
         /// <summary>
@@ -378,9 +446,9 @@ namespace MinecraftTextureEditorUI
                 }
                 else
                 {
-                    var versions = State.IsJava ? ConfigurationHelper.LoadSetting("Versions", Constants.JavaSettings) : ConfigurationHelper.LoadSetting("Versions", Constants.BedrockSettings);
+                    var versions = ConfigurationHelper.LoadSetting("Versions", Constants.BedrockSettings);
 
-                    var versionSplit = versions.Split(';');
+                    var versionSplit = State.IsJava? FileHelper.GetVersions(): versions.Split(";".ToCharArray());
 
                     comboBoxVersion.Items.Clear();
 
