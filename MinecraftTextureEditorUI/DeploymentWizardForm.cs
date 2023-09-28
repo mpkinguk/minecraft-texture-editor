@@ -128,6 +128,7 @@ namespace MinecraftTextureEditorUI
                         else
                         {
                             //TODO: Add code for deployin bedrock pack
+                            throw new NotImplementedException("Bedrock deployment currently unavailable");    
                         }
 
                         IncrementTabControl();
