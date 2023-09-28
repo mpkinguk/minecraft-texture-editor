@@ -39,6 +39,11 @@ namespace MinecraftTextureEditorAPI
         public static string AssetsFolder = ConfigurationHelper.LoadSetting("AssetsFolder", JavaSettings);
 
         /// <summary>
+        /// Bedrock ResourcePackFolder
+        /// </summary>
+        public static string BedrockResourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder", BedrockSettings);
+
+        /// <summary>
         /// ProjectFolder
         /// </summary>
         public static string DocumentsFolder = ConfigurationHelper.LoadSetting("ProjectFolder", JavaSettings);
@@ -59,9 +64,9 @@ namespace MinecraftTextureEditorAPI
         public static string JavaResourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder", JavaSettings);
 
         /// <summary>
-        /// Bedrock ResourcePackFolder
+        /// Textures folder
         /// </summary>
-        public static string BedrockResourcePackFolder = ConfigurationHelper.LoadSetting("ResourcePackFolder", BedrockSettings);
+        public static string TextureFolder = ConfigurationHelper.LoadSetting("TexturesFolder", BedrockSettings);
 
         /// <summary>
         /// Versions

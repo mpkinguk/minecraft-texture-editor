@@ -435,15 +435,27 @@ namespace MinecraftTextureEditorUI
                     }
                     else
                     {
-                        if (MessageBox.Show(this, Constants.AssetsFolderNotFoundMessage, Constants.Warning,
-                            MessageBoxButtons.OKCancel, MessageBoxIcon.Warning).Equals(DialogResult.OK))
+                        assetsDirectorySearch = SafeFileEnumerator.EnumerateDirectories(State.Path, Constants.TextureFolder, SearchOption.AllDirectories).ToList();
+
+                        if (assetsDirectorySearch.Any())
                         {
-                            await LoadTextures(browse).ConfigureAwait(false);
-                            return;
+
+                            // We've hit bedrock :)
+                            State.IsJava = false;
+                            directory = State.Path;
                         }
                         else
                         {
-                            return;
+                            if (MessageBox.Show(this, Constants.AssetsFolderNotFoundMessage, Constants.Warning,
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Warning).Equals(DialogResult.OK))
+                            {
+                                await LoadTextures(browse).ConfigureAwait(false);
+                                return;
+                            }
+                            else
+                            {
+                                return;
+                            }
                         }
                     }
                 }

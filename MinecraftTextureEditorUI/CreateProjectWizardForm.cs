@@ -273,28 +273,6 @@ namespace MinecraftTextureEditorUI
                             }
                         }
                     }
-                        
-
-                    //using (WebClient wc = new WebClient())
-                    //{
-                    //    _downloading = true;
-
-                    //    wc.DownloadProgressChanged += Wc_DownloadProgressChanged;
-                    //    wc.DownloadFileCompleted += Wc_DownloadFileCompleted;
-
-                    //    wc.DownloadFileAsync(
-                    //        // Param1 = Link of file
-                    //        new System.Uri(packFile),
-                    //        // Param2 = Path to save
-                    //        outputPath
-                    //    );
-
-                    //    while (_downloading)
-                    //    {
-                    //        Thread.Sleep(10);
-                    //        Application.DoEvents(); 
-                    //    }
-                    //}
 
                     packFile = outputPath;
                 }
