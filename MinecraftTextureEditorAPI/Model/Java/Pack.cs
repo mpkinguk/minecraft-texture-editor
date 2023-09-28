@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftTextureEditorAPI.Model
+namespace MinecraftTextureEditorAPI.Model.Java
 {
     /// <summary>
     /// The pack details

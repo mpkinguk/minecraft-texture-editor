@@ -1,5 +1,6 @@
 ﻿using log4net;
-using MinecraftTextureEditorAPI.Model;
+using MinecraftTextureEditorAPI.Model.Java;
+using MinecraftTextureEditorAPI.Model.Bedrock;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

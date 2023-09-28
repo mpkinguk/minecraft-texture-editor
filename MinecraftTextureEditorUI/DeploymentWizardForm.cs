@@ -1,7 +1,8 @@
 ﻿using log4net;
 using MinecraftTextureEditorAPI;
 using MinecraftTextureEditorAPI.Helpers;
-using MinecraftTextureEditorAPI.Model;
+using MinecraftTextureEditorAPI.Model.Java;
+using MinecraftTextureEditorAPI.Model.Bedrock;
 using System;
 using System.Drawing;
 using System.IO;
@@ -120,73 +121,13 @@ namespace MinecraftTextureEditorUI
                     case 2:
                         IncrementTabControl();
 
-                        // Validate inputs before trying to create pack
-                        if (!int.TryParse(comboBoxFormat.Text.Split(':')[0], out int format))
+                        if (State.IsJava)
                         {
-                            throw new Exception("Invalid format");
-                        }
-
-                        // If we cannot create the pack file, abort!
-                        if (!CreateMetaFile(textBoxDescription.Text, format))
-                        {
-                            throw new Exception("Could not create meta file");
-                        }
-
-                        // Clone to prevent threading issues
-                        string PackName = (string)textBoxPackName.Text.Clone();
-
-                        var resourcePackFolder = FileHelper.GetResourcePackFolder();
-
-                        var outputFile = Path.Combine(resourcePackFolder, string.Concat(PackName, ".zip"));
-
-                        _zipFilePath = outputFile;
-
-                        var unpackDirectory = outputFile.Replace(".zip", "");
-
-                        if (File.Exists(outputFile))
-                        {
-                            switch (MessageBox.Show(this, Constants.PackageExistsCreateBackupMessage, Constants.Warning, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
-                            {
-                                case DialogResult.Yes:
-                                    File.Move(outputFile, $"{outputFile}.bak");
-                                    if (_unpack)
-                                    {
-                                        if (Directory.Exists(unpackDirectory))
-                                        {
-                                            Directory.Move(unpackDirectory, $"{unpackDirectory}_bak");
-                                        }
-                                    }
-                                    break;
-
-                                case DialogResult.No:
-                                    File.Delete(outputFile);
-                                    if (_unpack)
-                                    {
-                                        if (Directory.Exists(unpackDirectory))
-                                        {
-                                            Directory.Delete(unpackDirectory);
-                                        }
-                                    }
-                                    break;
-
-                                case DialogResult.Cancel:
-                                    throw new OperationCanceledException("Operation cancelled");
-                            }
-                        }
-
-                        _deployed = await CreatePackZipFile(outputFile).ConfigureAwait(false);
-
-                        if (!_deployed)
-                        {
-                            throw new Exception("Could not create resource pack!");
+                            await DeployJavaPack().ConfigureAwait(false);
                         }
                         else
                         {
-                            if (_unpack)
-                            {
-                                UpdateProgressLabel("Unpacking zip file to resource pack folder...");
-                                await UnpackZipFile(PackName).ConfigureAwait(false);
-                            }
+                            //TODO: Add code for deployin bedrock pack
                         }
 
                         IncrementTabControl();
@@ -275,7 +216,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="description">the description</param>
         /// <param name="format">The format</param>
-        private bool CreateMetaFile(string description, int format)
+        private bool CreateJavaMetaFile(string description, int format)
         {
             try
             {
@@ -310,7 +251,7 @@ namespace MinecraftTextureEditorUI
         /// </summary>
         /// <param name="outputFile">The output file name</param>
         /// <returns>bool</returns>
-        private async Task<bool> CreatePackZipFile(string outputFile)
+        private async Task<bool> CreateJavaPackZipFile(string outputFile)
         {
             try
             {
@@ -647,5 +588,86 @@ namespace MinecraftTextureEditorUI
         }
 
         #endregion Threadsafe methods
+
+        #region Private methods
+
+        /// <summary>
+        /// Deploy as a Java edition pack
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        private async Task DeployJavaPack()
+        {
+            // Validate inputs before trying to create pack
+            if (!int.TryParse(comboBoxFormat.Text.Split(':')[0], out int format))
+            {
+                throw new Exception("Invalid format");
+            }
+
+            // If we cannot create the pack file, abort!
+            if (!CreateJavaMetaFile(textBoxDescription.Text, format))
+            {
+                throw new Exception("Could not create meta file");
+            }
+
+            // Clone to prevent threading issues
+            string PackName = (string)textBoxPackName.Text.Clone();
+
+            var resourcePackFolder = FileHelper.GetResourcePackFolder();
+
+            var outputFile = Path.Combine(resourcePackFolder, string.Concat(PackName, ".zip"));
+
+            _zipFilePath = outputFile;
+
+            var unpackDirectory = outputFile.Replace(".zip", "");
+
+            if (File.Exists(outputFile))
+            {
+                switch (MessageBox.Show(this, Constants.PackageExistsCreateBackupMessage, Constants.Warning, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                {
+                    case DialogResult.Yes:
+                        File.Move(outputFile, $"{outputFile}.bak");
+                        if (_unpack)
+                        {
+                            if (Directory.Exists(unpackDirectory))
+                            {
+                                Directory.Move(unpackDirectory, $"{unpackDirectory}_bak");
+                            }
+                        }
+                        break;
+
+                    case DialogResult.No:
+                        File.Delete(outputFile);
+                        if (_unpack)
+                        {
+                            if (Directory.Exists(unpackDirectory))
+                            {
+                                Directory.Delete(unpackDirectory);
+                            }
+                        }
+                        break;
+
+                    case DialogResult.Cancel:
+                        throw new OperationCanceledException("Operation cancelled");
+                }
+            }
+
+            _deployed = await CreateJavaPackZipFile(outputFile).ConfigureAwait(false);
+
+            if (!_deployed)
+            {
+                throw new Exception("Could not create resource pack!");
+            }
+            else
+            {
+                if (_unpack)
+                {
+                    UpdateProgressLabel("Unpacking zip file to resource pack folder...");
+                    await UnpackZipFile(PackName).ConfigureAwait(false);
+                }
+            }
+        }
+
+        #endregion Private Methods
     }
 }

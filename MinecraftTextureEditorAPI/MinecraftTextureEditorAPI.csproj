@@ -93,8 +93,11 @@
     <Compile Include="Helpers\SafeFileEnumerator.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\UnsafeBitmapHelper.cs" />
-    <Compile Include="Model\MetaFile.cs" />
-    <Compile Include="Model\Pack.cs" />
+    <Compile Include="Model\Bedrock\Header.cs" />
+    <Compile Include="Model\Bedrock\Manifest.cs" />
+    <Compile Include="Model\Bedrock\Modules.cs" />
+    <Compile Include="Model\Java\MetaFile.cs" />
+    <Compile Include="Model\Java\Pack.cs" />
     <Compile Include="Model\Pixel.cs" />
     <Compile Include="Model\ImageInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
