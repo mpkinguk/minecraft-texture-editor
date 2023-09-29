@@ -14,7 +14,7 @@ namespace MinecraftTextureEditorAPI.Model.Bedrock
         public Header Header { get; set; }
 
         [JsonPropertyName("modules")]
-        public Modules Modules { get; set; }
+        public Modules[] Modules { get; set; }
 
         /// <summary>
         /// Constructor
@@ -23,7 +23,7 @@ namespace MinecraftTextureEditorAPI.Model.Bedrock
         {
             FormatVersion = 2;
             Header = new Header();
-            Modules = new Modules();    
+            Modules = new Modules[] { new Modules() };
         }
     }
 }

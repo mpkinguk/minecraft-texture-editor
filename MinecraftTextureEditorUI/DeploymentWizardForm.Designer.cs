@@ -45,13 +45,13 @@ namespace MinecraftTextureEditorUI
             this.labelMetaFile = new System.Windows.Forms.Label();
             this.comboBoxFormat = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.labelFormatDeescription = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelFormat = new System.Windows.Forms.Label();
             this.tabPageDeploy3 = new System.Windows.Forms.TabPage();
             this.checkBoxOnlyIncludeTextures = new System.Windows.Forms.CheckBox();
-            this.checkBoxUnpackZipFile = new System.Windows.Forms.CheckBox();
+            this.checkBoxInstallPackFile = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabPageDeploy4 = new System.Windows.Forms.TabPage();
             this.labelProgress = new System.Windows.Forms.Label();
@@ -195,10 +195,10 @@ namespace MinecraftTextureEditorUI
             this.tabPageDeploy2.Controls.Add(this.labelMetaFile);
             this.tabPageDeploy2.Controls.Add(this.comboBoxFormat);
             this.tabPageDeploy2.Controls.Add(this.label10);
-            this.tabPageDeploy2.Controls.Add(this.label9);
+            this.tabPageDeploy2.Controls.Add(this.labelFormatDeescription);
             this.tabPageDeploy2.Controls.Add(this.label8);
             this.tabPageDeploy2.Controls.Add(this.label3);
-            this.tabPageDeploy2.Controls.Add(this.label1);
+            this.tabPageDeploy2.Controls.Add(this.labelFormat);
             this.tabPageDeploy2.Location = new System.Drawing.Point(4, 26);
             this.tabPageDeploy2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.tabPageDeploy2.Name = "tabPageDeploy2";
@@ -278,17 +278,17 @@ namespace MinecraftTextureEditorUI
             this.label10.TabIndex = 0;
             this.label10.Text = "The description to display in Minecraft";
             // 
-            // label9
+            // labelFormatDeescription
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.Yellow;
-            this.label9.Location = new System.Drawing.Point(155, 182);
-            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(279, 17);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "Which format does your pack use?";
+            this.labelFormatDeescription.AutoSize = true;
+            this.labelFormatDeescription.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFormatDeescription.ForeColor = System.Drawing.Color.Yellow;
+            this.labelFormatDeescription.Location = new System.Drawing.Point(155, 182);
+            this.labelFormatDeescription.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelFormatDeescription.Name = "labelFormatDeescription";
+            this.labelFormatDeescription.Size = new System.Drawing.Size(279, 17);
+            this.labelFormatDeescription.TabIndex = 0;
+            this.labelFormatDeescription.Text = "Which format does your pack use?";
             // 
             // label8
             // 
@@ -314,24 +314,24 @@ namespace MinecraftTextureEditorUI
             this.label3.TabIndex = 0;
             this.label3.Text = "Pack Name:";
             // 
-            // label1
+            // labelFormat
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Yellow;
-            this.label1.Location = new System.Drawing.Point(33, 156);
-            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 17);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Format:";
+            this.labelFormat.AutoSize = true;
+            this.labelFormat.Font = new System.Drawing.Font("Minecraft", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFormat.ForeColor = System.Drawing.Color.Yellow;
+            this.labelFormat.Location = new System.Drawing.Point(33, 156);
+            this.labelFormat.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelFormat.Name = "labelFormat";
+            this.labelFormat.Size = new System.Drawing.Size(68, 17);
+            this.labelFormat.TabIndex = 0;
+            this.labelFormat.Text = "Format:";
             // 
             // tabPageDeploy3
             // 
             this.tabPageDeploy3.BackgroundImage = global::MinecraftTextureEditorUI.Properties.Resources.texturewallpaper;
             this.tabPageDeploy3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.tabPageDeploy3.Controls.Add(this.checkBoxOnlyIncludeTextures);
-            this.tabPageDeploy3.Controls.Add(this.checkBoxUnpackZipFile);
+            this.tabPageDeploy3.Controls.Add(this.checkBoxInstallPackFile);
             this.tabPageDeploy3.Controls.Add(this.label11);
             this.tabPageDeploy3.Location = new System.Drawing.Point(4, 26);
             this.tabPageDeploy3.Name = "tabPageDeploy3";
@@ -356,20 +356,20 @@ namespace MinecraftTextureEditorUI
             this.checkBoxOnlyIncludeTextures.UseVisualStyleBackColor = true;
             this.checkBoxOnlyIncludeTextures.CheckedChanged += new System.EventHandler(this.CheckBoxOnlyIncludeTexturesCheckedChanged);
             // 
-            // checkBoxUnpackZipFile
+            // checkBoxInstallPackFile
             // 
-            this.checkBoxUnpackZipFile.AutoSize = true;
-            this.checkBoxUnpackZipFile.Checked = true;
-            this.checkBoxUnpackZipFile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxUnpackZipFile.ForeColor = System.Drawing.Color.Yellow;
-            this.checkBoxUnpackZipFile.Location = new System.Drawing.Point(158, 211);
-            this.checkBoxUnpackZipFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.checkBoxUnpackZipFile.Name = "checkBoxUnpackZipFile";
-            this.checkBoxUnpackZipFile.Size = new System.Drawing.Size(299, 21);
-            this.checkBoxUnpackZipFile.TabIndex = 6;
-            this.checkBoxUnpackZipFile.Text = "Unpack zip file to resource folder";
-            this.checkBoxUnpackZipFile.UseVisualStyleBackColor = true;
-            this.checkBoxUnpackZipFile.CheckedChanged += new System.EventHandler(this.CheckBoxUnpackZipFileCheckedChanged);
+            this.checkBoxInstallPackFile.AutoSize = true;
+            this.checkBoxInstallPackFile.Checked = true;
+            this.checkBoxInstallPackFile.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxInstallPackFile.ForeColor = System.Drawing.Color.Yellow;
+            this.checkBoxInstallPackFile.Location = new System.Drawing.Point(158, 211);
+            this.checkBoxInstallPackFile.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.checkBoxInstallPackFile.Name = "checkBoxInstallPackFile";
+            this.checkBoxInstallPackFile.Size = new System.Drawing.Size(252, 21);
+            this.checkBoxInstallPackFile.TabIndex = 6;
+            this.checkBoxInstallPackFile.Text = "Install pack file to Minecraft";
+            this.checkBoxInstallPackFile.UseVisualStyleBackColor = true;
+            this.checkBoxInstallPackFile.CheckedChanged += new System.EventHandler(this.CheckBoxUnpackZipFileCheckedChanged);
             // 
             // label11
             // 
@@ -475,7 +475,7 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelMetaFile;
         private System.Windows.Forms.ComboBox comboBoxFormat;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelFormat;
         private System.Windows.Forms.TextBox textBoxPackName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -485,11 +485,11 @@ namespace MinecraftTextureEditorUI
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ProgressBar progressBarDeploymentProgress;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label labelFormatDeescription;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TabPage tabPageDeploy3;
         private System.Windows.Forms.CheckBox checkBoxOnlyIncludeTextures;
-        private System.Windows.Forms.CheckBox checkBoxUnpackZipFile;
+        private System.Windows.Forms.CheckBox checkBoxInstallPackFile;
         private System.Windows.Forms.Label label11;
     }
 }

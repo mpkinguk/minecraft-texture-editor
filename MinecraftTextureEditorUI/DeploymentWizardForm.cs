@@ -9,6 +9,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZipFileManagerAPI;
+using System.Linq;
+using System.Diagnostics;
 
 namespace MinecraftTextureEditorUI
 {
@@ -56,7 +58,7 @@ namespace MinecraftTextureEditorUI
 
             textBoxPackName.PreviewKeyDown += TextBoxPackName_PreviewKeyDown;
 
-            _unpack = checkBoxUnpackZipFile.Checked;
+            _unpack = checkBoxInstallPackFile.Checked;
             _onlyTextures = checkBoxOnlyIncludeTextures.Checked;
 
             if (Constants.LessLag)
@@ -67,6 +69,12 @@ namespace MinecraftTextureEditorUI
                     tabControlPage.BackColor = Color.DimGray;
                 }
             }
+
+            //Hide and disable any fields not relating to bedrock
+            comboBoxFormat.Visible = State.IsJava;
+            labelFormat.Visible = State.IsJava;
+            labelFormatDeescription.Visible = State.IsJava; 
+            checkBoxOnlyIncludeTextures.Visible = State.IsJava; 
         }
 
         #region Form events
@@ -127,8 +135,7 @@ namespace MinecraftTextureEditorUI
                         }
                         else
                         {
-                            //TODO: Add code for deployin bedrock pack
-                            throw new NotImplementedException("Bedrock deployment currently unavailable");    
+                            await DeployBedrockPack().ConfigureAwait(false);
                         }
 
                         IncrementTabControl();
@@ -169,7 +176,7 @@ namespace MinecraftTextureEditorUI
             var checkBox = (CheckBox)sender;
             switch (checkBox.Name)
             {
-                case nameof(checkBoxUnpackZipFile):
+                case nameof(checkBoxInstallPackFile):
                     _unpack = checkBox.Checked;
                     break;
 
@@ -221,7 +228,7 @@ namespace MinecraftTextureEditorUI
         {
             try
             {
-                var filesPath = FileHelper.GetProjectRootFolder(State.Path);
+                var filesPath = FileHelper.GetJavaProjectRootFolder(State.Path);
 
                 var fileName = Path.Combine(filesPath, "pack.mcmeta");
 
@@ -229,7 +236,7 @@ namespace MinecraftTextureEditorUI
 
                 var file = new MetaFile() { Pack = pack };
 
-                var jsonString = FileHelper.Serialize(file);
+                var jsonString = FileHelper.SerializeJava(file);
 
                 using (TextWriter fs = File.CreateText(fileName))
                 {
@@ -248,6 +255,109 @@ namespace MinecraftTextureEditorUI
         }
 
         /// <summary>
+        /// Create meta file and deploy it to current path
+        /// </summary>
+        /// <param name="filesPath">THe files path</param>
+        /// <param name="formatVersion">The format version</param>
+        /// <param name="description">The pack description</param>
+        /// <param name="name">The pack name</param>
+        /// <param name="version">The pack version</param>
+        /// <param name="minEngineVersion">The minimum engine version</param>
+        /// <returns></returns>
+        private bool CreateBedrockMetaFile(string filesPath, int formatVersion, string description, string name, int[] version, int[] minEngineVersion)
+        {
+            try
+            {
+                var fileName = Path.Combine(filesPath, "manifest.json");
+
+                var header = new Header() { Description = description, Name = name, MinEngineVersion  = minEngineVersion, Uuid = Guid.NewGuid().ToString(), Version = version };
+
+                var modules = new Modules[] { new Modules { Description = description, Type = "resources", Uuid = Guid.NewGuid().ToString(), Version = version } };
+
+                var file = new Manifest() { Header = header, Modules = modules, FormatVersion = formatVersion };
+
+                var jsonString = FileHelper.SerializeBedrock(file);
+
+                using (TextWriter fs = File.CreateText(fileName))
+                {
+                    fs.Write(jsonString);
+
+                    fs.Flush();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Create the bedrock McPack file
+        /// </summary>
+        /// <param name="outputFile">The output filename</param>
+        /// <returns></returns>
+        private async Task<bool> CreateBedrockMcPackFile(string outputFile)
+        {
+            try
+            {
+                UpdateCursor(true);
+
+                var outputPath = new FileInfo(outputFile).Directory.FullName;
+
+                var resourcePath = Directory.GetDirectories(outputPath, "resource_pack", SearchOption.AllDirectories).First();
+
+                var texturesPath = Path.Combine(resourcePath, "textures");
+
+                var files = await Task.Run(() => FileHelper.GetFiles(texturesPath, "*.*", true)).ConfigureAwait(false);
+
+                files.Add(Path.Combine(resourcePath, "manifest.json"));
+                files.Add(Path.Combine(resourcePath, "pack_icon.png"));
+
+                UpdateProgressBarMin(0);
+                UpdateProgressBarValue(0);
+                UpdateProgressBarMax(files.Count);
+
+                var zipFileManager = new ZipFileManager(_log);
+
+                zipFileManager.FileProcessed += FileProcessed;
+
+                _deployed = await zipFileManager.ZipFiles(outputFile, resourcePath, files).ConfigureAwait(false);
+
+                if (_unpack)
+                {
+                    UpdateProgressLabel("Installing mcpack file to Minecraft...");
+                    using (var installProcess = new Process())
+                    {
+                        installProcess.StartInfo.FileName = outputFile;
+                        installProcess.Start();
+                    }
+                }
+
+                return _deployed;
+
+            }
+            catch (Exception ex)
+            {
+                _log?.Error(ex.Message);
+                return false;
+            }
+            finally
+            {
+                if (_deployed)
+                {
+                    DisablePreviousButton();
+                }
+
+                UpdateProgressLabel(_deployed ? "Deployment Complete" : "Deployment Failed");
+
+                UpdateCursor(false);
+            }
+        }
+
+        /// <summary>
         /// Create a new pack file in the resources folder
         /// </summary>
         /// <param name="outputFile">The output file name</param>
@@ -258,7 +368,7 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(true);
 
-                var filesPath = FileHelper.GetProjectRootFolder(State.Path);
+                var filesPath = FileHelper.GetJavaProjectRootFolder(State.Path);
 
                 var files = await Task.Run(() => FileHelper.GetFiles(filesPath, _onlyTextures ? "*.png" : "*.*", true)).ConfigureAwait(false);
 
@@ -361,7 +471,7 @@ namespace MinecraftTextureEditorUI
 
                 UpdateCursor(true);
 
-                var resourcePackFolder = FileHelper.GetResourcePackFolder();
+                var resourcePackFolder = FileHelper.GetJavaResourcePackFolder();
 
                 var input = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
@@ -592,6 +702,60 @@ namespace MinecraftTextureEditorUI
 
         #region Private methods
 
+        // <summary>
+        /// Deploy as a bedrock edition pack
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
+        private async Task DeployBedrockPack()
+        {
+            var description = (string)textBoxDescription.Text.Clone();
+
+            var packName = (string)textBoxPackName.Text.Clone();
+
+            var version = (string)comboBoxFormat.Text.Clone();
+
+            var resourcePackPath = Directory.GetDirectories(State.Path, "resource_pack", SearchOption.AllDirectories).First();
+
+            var versionSplit = version.Replace("v", "").Split('.');
+
+            var minEngineVersion = new int[] { Convert.ToInt16(versionSplit[0]), Convert.ToInt16(versionSplit[1]), Convert.ToInt16(versionSplit[2]) };
+
+            // If we cannot create the pack file, abort!
+            if (!CreateBedrockMetaFile(resourcePackPath, 2, description, packName, new int[] { 0, 0, 1 }, minEngineVersion))
+            {
+                throw new Exception("Could not create meta file");
+            }
+
+            var outputFile = Path.Combine(State.Path, string.Concat(packName, ".mcpack"));
+
+            _zipFilePath = outputFile;
+
+            if (File.Exists(outputFile))
+            {
+                switch (MessageBox.Show(this, Constants.PackageExistsCreateBackupMessage, Constants.Warning, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning))
+                {
+                    case DialogResult.Yes:
+                        File.Move(outputFile, $"{outputFile}.bak");
+                        break;
+
+                    case DialogResult.No:
+                        File.Delete(outputFile);
+                        break;
+
+                    case DialogResult.Cancel:
+                        throw new OperationCanceledException("Operation cancelled");
+                }
+            }
+
+            _deployed = await CreateBedrockMcPackFile(outputFile).ConfigureAwait(false);
+
+            if (!_deployed)
+            {
+                throw new Exception("Could not create resource pack!");
+            }
+        }
+
         /// <summary>
         /// Deploy as a Java edition pack
         /// </summary>
@@ -599,24 +763,28 @@ namespace MinecraftTextureEditorUI
         /// <exception cref="OperationCanceledException"></exception>
         private async Task DeployJavaPack()
         {
+            var description = (string)textBoxDescription.Text.Clone();
+
+            var version = (string)comboBoxFormat.Text.Clone();
+
             // Validate inputs before trying to create pack
-            if (!int.TryParse(comboBoxFormat.Text.Split(':')[0], out int format))
+            if (!int.TryParse(version.Split(':')[0], out int format))
             {
                 throw new Exception("Invalid format");
             }
 
             // If we cannot create the pack file, abort!
-            if (!CreateJavaMetaFile(textBoxDescription.Text, format))
+            if (!CreateJavaMetaFile(description, format))
             {
                 throw new Exception("Could not create meta file");
             }
 
             // Clone to prevent threading issues
-            string PackName = (string)textBoxPackName.Text.Clone();
+            string packName = (string)textBoxPackName.Text.Clone();
 
-            var resourcePackFolder = FileHelper.GetResourcePackFolder();
+            var resourcePackFolder = FileHelper.GetJavaResourcePackFolder();
 
-            var outputFile = Path.Combine(resourcePackFolder, string.Concat(PackName, ".zip"));
+            var outputFile = Path.Combine(resourcePackFolder, string.Concat(packName, ".zip"));
 
             _zipFilePath = outputFile;
 
@@ -664,7 +832,7 @@ namespace MinecraftTextureEditorUI
                 if (_unpack)
                 {
                     UpdateProgressLabel("Unpacking zip file to resource pack folder...");
-                    await UnpackZipFile(PackName).ConfigureAwait(false);
+                    await UnpackZipFile(packName).ConfigureAwait(false);
                 }
             }
         }

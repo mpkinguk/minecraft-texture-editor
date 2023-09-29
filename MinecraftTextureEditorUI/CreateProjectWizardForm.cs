@@ -25,8 +25,6 @@ namespace MinecraftTextureEditorUI
 
         private readonly ILog _log;
 
-        private bool _downloading;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -249,7 +247,7 @@ namespace MinecraftTextureEditorUI
 
                 if (State.IsJava) {
 
-                    packFile= Path.Combine(FileHelper.GetMineCraftFolder(), "versions", packVersion, string.Concat(packVersion, ".jar"));
+                    packFile= Path.Combine(FileHelper.GetJavaMineCraftFolder(), "versions", packVersion, string.Concat(packVersion, ".jar"));
 
                     if (!File.Exists(packFile))
                     {
@@ -307,18 +305,6 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(false);
             }
-        }
-
-        // Event to track when file has finished downloading
-        private void Wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            _downloading = false;
-        }
-
-        // Event to track the progress
-        void Wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            UpdateProgressLabel($"Downloading bedrock example pack: {e.ProgressPercentage}");
         }
 
         /// <summary>
@@ -426,7 +412,7 @@ namespace MinecraftTextureEditorUI
                 {
                     var versions = ConfigurationHelper.LoadSetting("Versions", Constants.BedrockSettings);
 
-                    var versionSplit = State.IsJava? FileHelper.GetVersions(): versions.Split(";".ToCharArray());
+                    var versionSplit = State.IsJava? FileHelper.GetJavaVersions(): versions.Split(";".ToCharArray());
 
                     comboBoxVersion.Items.Clear();
 

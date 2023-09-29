@@ -112,7 +112,7 @@ namespace ZipFileManagerAPI
                     {
                         using (var t = Task.Run(() =>
                         {
-                            var newPath = file.Replace(path, "");
+                            var newPath = file.Replace(path, "").TrimStart("\\".ToCharArray());
                             zip.CreateEntryFromFile(file, newPath, CompressionLevel.Optimal);
                         }))
                         {

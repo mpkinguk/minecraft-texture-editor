@@ -184,7 +184,7 @@ namespace MinecraftTextureEditorUI
                     var imageInfo = (ImageInfo)button.Tag;
                     if (imageInfo.FullPath.Equals(filename, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        button.Image = (Image)FileHelper.LoadFile(filename);
+                        button.Image = (Image)FileHelper.LoadImageFile(filename);
                         return;
                     }
                 }
@@ -370,7 +370,7 @@ namespace MinecraftTextureEditorUI
 
                     try
                     {
-                        using (var image = (Image)FileHelper.LoadFile(file))
+                        using (var image = (Image)FileHelper.LoadImageFile(file))
                         {
                             tmp = new Bitmap(image, new Size(ItemSize, ItemSize));
                         }

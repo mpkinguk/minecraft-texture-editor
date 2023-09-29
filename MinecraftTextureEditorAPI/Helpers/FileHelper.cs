@@ -42,11 +42,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Returns the default assets folder
         /// </summary>
         /// <returns>string</returns>
-        public static string GetAssetsFolder()
+        public static string GetJavaAssetsFolder()
         {
             try
             {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.AssetsFolder);
+                var path = Path.Combine(GetJavaMineCraftFolder(), Constants.AssetsFolder);
 
                 if (!Directory.Exists(path))
                 {
@@ -121,7 +121,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Returns the default minecraft folder
         /// </summary>
         /// <returns>string</returns>
-        public static string GetMineCraftFolder()
+        public static string GetJavaMineCraftFolder()
         {
             try
             {
@@ -146,7 +146,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="path">The path</param>
         /// <returns>string</returns>
-        public static string GetProjectRootFolder(string path)
+        public static string GetJavaProjectRootFolder(string path)
         {
             var filesPath = path;
 
@@ -165,11 +165,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Returns the default assets folder
         /// </summary>
         /// <returns>string</returns>
-        public static string GetResourcePackFolder()
+        public static string GetJavaResourcePackFolder()
         {
             try
             {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.JavaResourcePackFolder);
+                var path = Path.Combine(GetJavaMineCraftFolder(), Constants.JavaResourcePackFolder);
 
                 if (!Directory.Exists(path))
                 {
@@ -189,11 +189,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Gets a list of version folders from the default minecraft folder
         /// </summary>
         /// <returns>object[]</returns>
-        public static string[] GetVersions()
+        public static string[] GetJavaVersions()
         {
             try
             {
-                var path = GetVersionsFolder();
+                var path = GetJavaVersionsFolder();
 
                 if (!Directory.Exists(path))
                 {
@@ -215,11 +215,11 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// Returns the default minecraft folder
         /// </summary>
         /// <returns>string</returns>
-        public static string GetVersionsFolder()
+        public static string GetJavaVersionsFolder()
         {
             try
             {
-                var path = Path.Combine(GetMineCraftFolder(), Constants.VersionsFolder);
+                var path = Path.Combine(GetJavaMineCraftFolder(), Constants.VersionsFolder);
 
                 if (!Directory.Exists(path))
                 {
@@ -240,7 +240,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="fileName">The filename</param>
         /// <returns>Image</returns>
-        public static object LoadFile(string fileName = "")
+        public static object LoadImageFile(string fileName = "")
         {
             try
             {
@@ -340,11 +340,29 @@ namespace MinecraftTextureEditorAPI.Helpers
         }
 
         /// <summary>
-        /// Return a serialized Json object
+        /// Return a serialized Json object for java
         /// </summary>
         /// <param name="file">The meta file object</param>
         /// <returns>string</returns>
-        public static string Serialize(MetaFile file)
+        public static string SerializeJava(MetaFile file)
+        {
+            try
+            {
+                return JsonSerializer.Serialize(file, new JsonSerializerOptions { WriteIndented = true });
+            }
+            catch (Exception ex)
+            {
+                Log?.Error(ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Return a serialized Json object for bedrock
+        /// </summary>
+        /// <param name="file">The manifest file object</param>
+        /// <returns>string</returns>
+        public static string SerializeBedrock(Manifest file)
         {
             try
             {
@@ -362,7 +380,7 @@ namespace MinecraftTextureEditorAPI.Helpers
         /// </summary>
         /// <param name="image">The image</param>
         /// <returns>Bool</returns>
-        public static bool SaveFile(Image image, string fileName = "")
+        public static bool SaveImageFile(Image image, string fileName = "")
         {
             try
             {
