@@ -364,6 +364,12 @@ namespace MinecraftTextureEditorUI
             try
             {
                 _skipResolutionCheck = true;
+
+                if(fileName == string.Empty)
+                {
+                    fileName = FileHelper.OpenFileName();
+                }
+
                 ShowNewEditorForm(this, new EventArgs());
                 State.Editor.LoadFile(fileName);
                 _skipResolutionCheck = false;
@@ -504,7 +510,7 @@ namespace MinecraftTextureEditorUI
                     return;
                 }
 
-                foreach (var file in GetFiles(State.Path, "*.png", true).Where(x => x.Contains("\\block\\")))
+                foreach (var file in GetFiles(State.Path, "*.png", true).Where(x => x.Contains(State.IsJava?"\\block\\": "\\blocks\\")))
                 {
                     State.Editor.SaveFile(file);
                     State.TexturePicker.RefreshImage(file);
