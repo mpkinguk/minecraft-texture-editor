@@ -16,3 +16,4 @@
 /.vs/MinecraftTextureEditor/v16/.suo
 /GitExtensions.settings
 /GitExtensions.settings.backup
+/MinecraftTextureEditorAPI/Helpers/StreamExtensions.cs
