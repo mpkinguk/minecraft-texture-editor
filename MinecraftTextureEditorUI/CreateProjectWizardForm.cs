@@ -131,7 +131,7 @@ namespace MinecraftTextureEditorUI
 
                         IncrementTabControl();
 
-                        UpdateProgressLabel("Unpacking minecraft version file to project folder...");
+                        UpdateProgressLabel(State.IsJava ? "Unpacking minecraft version file to project folder..." : "Downloading Pack file from Mojang...");
 
                         var result = await UnpackZipFile(packVersion, newProjectPath).ConfigureAwait(false);
 
@@ -305,6 +305,15 @@ namespace MinecraftTextureEditorUI
             {
                 UpdateCursor(false);
             }
+        }
+
+        /// <summary>
+        /// Updates the progress label with the message
+        /// </summary>
+        /// <param name="message"></param>
+        private void FileHelper_ProgressEvent(string message)
+        {
+            UpdateProgressLabel($"{message}");
         }
 
         /// <summary>
