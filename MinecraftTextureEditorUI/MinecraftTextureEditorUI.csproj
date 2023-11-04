@@ -171,6 +171,9 @@
     <Compile Include="TexturePickerForm.Designer.cs">
       <DependentUpon>TexturePickerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThumbnailPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <None Include="packages.config" />
     <None Include="Resources\shape.png" />
     <EmbeddedResource Include="AboutForm.resx">
