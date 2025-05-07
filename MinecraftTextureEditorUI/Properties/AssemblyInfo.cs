@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Minecraft Texture Editor")]
-[assembly: AssemblyDescription("Texture editor and packager for Minecraft Java Edition")]
+[assembly: AssemblyDescription("Texture editor and packager for Minecraft Java and Bedrock Editions")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MKSoft")]
 [assembly: AssemblyProduct("MinecraftTextureEditor")]
-[assembly: AssemblyCopyright("Copyright © Lord Martin King of Sealand 2021")]
+[assembly: AssemblyCopyright("Copyright © Lord Martin King of Sealand 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.2.1.0")]
-[assembly: AssemblyFileVersion("3.2.1.0")]
+[assembly: AssemblyVersion("3.2.2.0")]
+[assembly: AssemblyFileVersion("3.2.2.0")]
